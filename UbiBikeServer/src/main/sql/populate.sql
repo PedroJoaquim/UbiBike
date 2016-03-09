@@ -1,1 +1,1 @@
-INSERT INTO private_info (public_key, private_key)
+INSERT INTO users(uid, username, email, public_key, password, points) VALUES (1, "pedro", "email", "public_key", 0, 0);

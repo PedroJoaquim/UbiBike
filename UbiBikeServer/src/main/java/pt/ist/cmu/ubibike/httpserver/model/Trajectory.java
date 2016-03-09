@@ -1,20 +1,21 @@
 package pt.ist.cmu.ubibike.httpserver.model;
 
-/**
- * Created by ASUS on 09/03/2016.
- */
+import java.util.Date;
+
 public class Trajectory {
 
     private int tid;
     private int uid;
     private int pointsEarned;
     private String coordsJSON;
+    private Date rideTimestamp;
 
-    public Trajectory(int tid, int uid, int pointsEarned, String coordsJSON) {
+    public Trajectory(int tid, int uid, int pointsEarned, String coordsJSON, Date rideTimestamp) {
         this.tid = tid;
         this.uid = uid;
         this.pointsEarned = pointsEarned;
         this.coordsJSON = coordsJSON;
+        this.rideTimestamp = rideTimestamp;
     }
 
     public int getTid() {
@@ -47,5 +48,13 @@ public class Trajectory {
 
     public void setCoordsJSON(String coordsJSON) {
         this.coordsJSON = coordsJSON;
+    }
+
+    public Date getRideTimestamp() {
+        return rideTimestamp;
+    }
+
+    public void setRideTimestamp(Date rideTimestamp) {
+        this.rideTimestamp = rideTimestamp;
     }
 }

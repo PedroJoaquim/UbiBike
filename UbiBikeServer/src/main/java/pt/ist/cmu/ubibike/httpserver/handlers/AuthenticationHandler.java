@@ -1,19 +1,23 @@
 package pt.ist.cmu.ubibike.httpserver.handlers;
 
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-
-import java.io.IOException;
-import java.io.OutputStream;
 
 
-public class AuthenticationHandler implements HttpHandler {
+public class AuthenticationHandler extends BaseHandler {
+
+
     @Override
-    public void handle(HttpExchange httpExchange) throws IOException {
-        String response = "This is the response";
-        httpExchange.sendResponseHeaders(200, response.length());
-        OutputStream os = httpExchange.getResponseBody();
-        os.write(response.getBytes());
-        os.close();
+    protected void validateAction(HttpExchange httpExchange) throws Exception{
+
+    }
+
+    @Override
+    protected void executeAction(HttpExchange httpExchange) throws Exception {
+
+    }
+
+    @Override
+    protected void produceAnswer(HttpExchange httpExchange) throws Exception{
+
     }
 }

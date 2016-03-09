@@ -8,7 +8,7 @@ CREATE TABLE users(
   email VARCHAR (256) NULL,
   public_key VARCHAR(2048) NOT NULL,
   password BLOB NOT NULL,
-  points INT NOT NULL,
+  points INT NOT NULL DEFAULT 0,
   PRIMARY KEY (uid),
   UNIQUE (email, username)
 );
@@ -19,6 +19,7 @@ CREATE TABLE trajectories(
   uid INT NOT NULL,
   coords_json VARCHAR(5000),
   points_earned INT NOT NULL,
+  ride_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (tid)
 );
 
@@ -28,9 +29,11 @@ CREATE TABLE points_transactions(
   sender_uid INT NOT NULL,
   receiver_uid INT NOT NULL,
   points INT NOT NULL,
+  execution_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (ptid, sender_uid, receiver_uid),
   FOREIGN KEY (sender_uid) REFERENCES users(uid),
-  FOREIGN KEY (receiver_uid) REFERENCES users(uid)
+  FOREIGN KEY (receiver_uid) REFERENCES users(uid),
+  UNIQUE (ptid)
 );
 
 SET foreign_key_checks = 1 ;

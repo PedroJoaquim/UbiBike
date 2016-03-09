@@ -1,14 +1,21 @@
 package pt.ist.cmu.ubibike.httpserver.handlers;
 
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 
-import java.io.IOException;
+public class RegistrationHandler extends BaseHandler {
 
-
-public class RegistrationHandler implements HttpHandler {
     @Override
-    public void handle(HttpExchange httpExchange) throws IOException {
+    protected void validateAction(HttpExchange httpExchange) throws Exception {
+
+    }
+
+    @Override
+    protected void executeAction(HttpExchange httpExchange) throws Exception{
+
+    }
+
+    @Override
+    protected void produceAnswer(HttpExchange httpExchange) throws Exception{
 
     }
 }

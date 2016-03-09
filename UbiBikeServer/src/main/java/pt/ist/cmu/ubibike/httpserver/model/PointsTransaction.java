@@ -1,20 +1,21 @@
 package pt.ist.cmu.ubibike.httpserver.model;
 
-/**
- * Created by ASUS on 09/03/2016.
- */
+import java.util.Date;
+
 public class PointsTransaction {
 
     private int ptid;
-    private String senderUID;
-    private String receiverUID;
     private int points;
+    private int senderUID;
+    private int receiverUID;
+    private Date executionTimestamp;
 
-    public PointsTransaction(int ptid, String senderUID, String receiverUID, int points) {
+    public PointsTransaction(int ptid, int senderUID, int receiverUID, int points, Date executionTimestamp) {
         this.ptid = ptid;
         this.senderUID = senderUID;
         this.receiverUID = receiverUID;
         this.points = points;
+        this.executionTimestamp = executionTimestamp;
     }
 
     public int getPtid() {
@@ -25,19 +26,19 @@ public class PointsTransaction {
         this.ptid = ptid;
     }
 
-    public String getSenderUID() {
+    public int getSenderUID() {
         return senderUID;
     }
 
-    public void setSenderUID(String senderUID) {
+    public void setSenderUID(int senderUID) {
         this.senderUID = senderUID;
     }
 
-    public String getReceiverUID() {
+    public int getReceiverUID() {
         return receiverUID;
     }
 
-    public void setReceiverUID(String receiverUID) {
+    public void setReceiverUID(int receiverUID) {
         this.receiverUID = receiverUID;
     }
 
@@ -47,5 +48,13 @@ public class PointsTransaction {
 
     public void setPoints(int points) {
         this.points = points;
+    }
+
+    public Date getExecutionTimestamp() {
+        return executionTimestamp;
+    }
+
+    public void setExecutionTimestamp(Date executionTimestamp) {
+        this.executionTimestamp = executionTimestamp;
     }
 }
