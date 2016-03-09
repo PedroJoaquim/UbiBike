@@ -1,0 +1,51 @@
+package pt.ist.cmu.ubibike.httpserver.model;
+
+/**
+ * Created by ASUS on 09/03/2016.
+ */
+public class Trajectory {
+
+    private int tid;
+    private int uid;
+    private int pointsEarned;
+    private String coordsJSON;
+
+    public Trajectory(int tid, int uid, int pointsEarned, String coordsJSON) {
+        this.tid = tid;
+        this.uid = uid;
+        this.pointsEarned = pointsEarned;
+        this.coordsJSON = coordsJSON;
+    }
+
+    public int getTid() {
+        return tid;
+    }
+
+    public void setTid(int tid) {
+        this.tid = tid;
+    }
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
+
+    public int getPointsEarned() {
+        return pointsEarned;
+    }
+
+    public void setPointsEarned(int pointsEarned) {
+        this.pointsEarned = pointsEarned;
+    }
+
+    public String getCoordsJSON() {
+        return coordsJSON;
+    }
+
+    public void setCoordsJSON(String coordsJSON) {
+        this.coordsJSON = coordsJSON;
+    }
+}
