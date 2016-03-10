@@ -2,7 +2,7 @@ package pt.ulisboa.tecnico.cmu.ubibike.fragments;
 
 
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -67,7 +67,7 @@ public class RegisterAccountFragment extends Fragment {
 
                     rightPasswordImage.setVisibility(View.VISIBLE);
 
-                    if(!mPassword.equals(s)){
+                    if(!mPassword.getText().toString().equals(s.toString())){
                         rightPasswordImage.setImageResource(R.drawable.wrong);
                     }
                     else{

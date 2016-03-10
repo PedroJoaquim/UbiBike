@@ -15,12 +15,15 @@
         android:singleLine="true"
         android:hint="Name"
         android:backgroundTint="#ffffff"
+        android:layout_marginTop="163dp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="164dp" />
+        android:layout_alignLeft="@+id/email_editText"
+        android:layout_alignStart="@+id/email_editText"
+        android:layout_alignRight="@+id/email_editText"
+        android:layout_alignEnd="@+id/email_editText" />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
@@ -33,7 +36,7 @@
         android:layout_centerHorizontal="true" />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
@@ -41,10 +44,11 @@
         android:hint="Password"
         android:backgroundTint="#ffffff"
         android:layout_below="@+id/email_editText"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignLeft="@+id/email_editText"
+        android:layout_alignStart="@+id/email_editText" />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
@@ -52,16 +56,18 @@
         android:hint="Re-enter password"
         android:backgroundTint="#ffffff"
         android:layout_below="@+id/password_editText"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignLeft="@+id/password_editText"
+        android:layout_alignStart="@+id/password_editText" />
 
     <ImageView
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:id="@+id/right_password_imageView"
-        android:background="@drawable/check"
         android:visibility="invisible"
-        android:layout_below="@+id/reentered_password_editText"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignBottom="@+id/reentered_password_editText"
+        android:layout_toRightOf="@+id/reentered_password_editText"
+        android:layout_toEndOf="@+id/reentered_password_editText"
+        android:layout_marginBottom="10dp" />
 
 
     <Button
@@ -78,6 +84,7 @@
         android:layout_alignLeft="@+id/reentered_password_editText"
         android:layout_alignStart="@+id/reentered_password_editText"
         android:layout_alignRight="@+id/reentered_password_editText"
-        android:layout_alignEnd="@+id/reentered_password_editText" />
+        android:layout_alignEnd="@+id/reentered_password_editText"
+        android:alpha="0.7" />
 
 </RelativeLayout>
