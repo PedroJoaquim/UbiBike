@@ -51,8 +51,8 @@ public class Server {
             return;
         }
 
-        Server server = new Server();
-        server.start(Integer.valueOf(args[0]));
+       Server server = new Server();
+       server.start(Integer.valueOf(args[0]));
     }
 
 }

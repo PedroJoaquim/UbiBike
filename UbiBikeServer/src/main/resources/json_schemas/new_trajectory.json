@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Trajectory",
+  "description": "Bike trajectory",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "The unique identifier for a trajectory",
+      "type": "string"
+    },
+    "trajectory_coords": {
+      "description": "the trajectory coords",
+      "type": "array",
+      "items":{
+        "type":"object",
+        "properties":{
+          "lat":{"type":"number"},
+          "lgn":{"type":"number"}
+        },
+        "minItems": 1
+      }
+    },
+    "points_earned":{
+      "type":"integer"
+    }
+  },
+
+  "required": ["id", "trajectory_coords", "points_earned"]
+}

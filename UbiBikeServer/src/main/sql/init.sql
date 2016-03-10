@@ -19,6 +19,7 @@ CREATE TABLE trajectories(
   uid INT NOT NULL,
   coords_json VARCHAR(5000),
   points_earned INT NOT NULL,
+  user_tid VARCHAR(124) NOT NULL UNIQUE,
   ride_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (tid)
 );

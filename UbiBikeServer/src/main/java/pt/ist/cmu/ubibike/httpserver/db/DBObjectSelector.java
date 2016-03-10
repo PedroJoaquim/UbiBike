@@ -38,7 +38,22 @@ public class DBObjectSelector {
 
         if(!result.next()){ return null;}
 
-        Trajectory t = new Trajectory(result.getInt("tid"), result.getInt("uid"), result.getInt("points_earned"), result.getString("coords_json"), result.getTimestamp("ride_timestamp"));
+        Trajectory t = new Trajectory(result.getInt("tid"), result.getInt("uid"), result.getInt("points_earned"), result.getString("coords_json"), result.getString("user_tid"), result.getTimestamp("ride_timestamp"));
+
+        try{result.close(); stmt.close();}catch (SQLException e) {/*ignore*/}
+
+        return  t;
+
+    }
+
+    public static Trajectory getTrajectoryFromUserTID(Connection conn, String userTID) throws SQLException {
+
+        Statement stmt = conn.createStatement();
+        ResultSet result = stmt.executeQuery("SELECT * FROM trajectories WHERE user_tid = " + userTID);
+
+        if(!result.next()){ return null;}
+
+        Trajectory t = new Trajectory(result.getInt("tid"), result.getInt("uid"), result.getInt("points_earned"), result.getString("coords_json"), result.getString("user_tid"), result.getTimestamp("ride_timestamp"));
 
         try{result.close(); stmt.close();}catch (SQLException e) {/*ignore*/}
 
@@ -54,7 +69,7 @@ public class DBObjectSelector {
         ResultSet result = stmt.executeQuery("SELECT * FROM trajectories WHERE uid = " + uid);
 
         while (result.next()){
-            resultList.add(new Trajectory(result.getInt("tid"), result.getInt("uid"), result.getInt("points_earned"), result.getString("coords_json"), result.getTimestamp("ride_timestamp")));
+            resultList.add(new Trajectory(result.getInt("tid"), result.getInt("uid"), result.getInt("points_earned"), result.getString("coords_json"), result.getString("user_tid"), result.getTimestamp("ride_timestamp")));
         }
 
         try{result.close(); stmt.close();}catch (SQLException e) {/*ignore*/}

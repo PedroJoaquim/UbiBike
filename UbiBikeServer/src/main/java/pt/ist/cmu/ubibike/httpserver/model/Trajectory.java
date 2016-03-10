@@ -8,13 +8,15 @@ public class Trajectory {
     private int uid;
     private int pointsEarned;
     private String coordsJSON;
+    private String userTID;
     private Date rideTimestamp;
 
-    public Trajectory(int tid, int uid, int pointsEarned, String coordsJSON, Date rideTimestamp) {
+    public Trajectory(int tid, int uid, int pointsEarned, String coordsJSON, String userTID, Date rideTimestamp) {
         this.tid = tid;
         this.uid = uid;
         this.pointsEarned = pointsEarned;
         this.coordsJSON = coordsJSON;
+        this.userTID = userTID;
         this.rideTimestamp = rideTimestamp;
     }
 
@@ -56,5 +58,13 @@ public class Trajectory {
 
     public void setRideTimestamp(Date rideTimestamp) {
         this.rideTimestamp = rideTimestamp;
+    }
+
+    public String getUserTID() {
+        return userTID;
+    }
+
+    public void setUserTID(String userTID) {
+        this.userTID = userTID;
     }
 }

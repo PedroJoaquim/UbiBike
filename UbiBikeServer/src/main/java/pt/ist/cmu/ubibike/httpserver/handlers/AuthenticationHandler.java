@@ -1,6 +1,8 @@
 package pt.ist.cmu.ubibike.httpserver.handlers;
 
+import com.github.fge.jsonschema.main.JsonValidator;
 import com.sun.net.httpserver.HttpExchange;
+import pt.ist.cmu.ubibike.httpserver.util.JSONSchemaValidation;
 
 
 public class AuthenticationHandler extends BaseHandler {

@@ -28,14 +28,15 @@ public class DBObjectCreation {
         return newId;
     }
 
-    public static int insertTrajectory(Connection conn, int uid, String coordsJSON, int pointsEarned) throws SQLException {
+    public static int insertTrajectory(Connection conn, int uid, String coordsJSON, int pointsEarned, String userTID) throws SQLException {
 
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO trajectories(uid, coords_json, points_earned) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO trajectories(uid, coords_json, points_earned, user_tid) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
         int newId;
 
         stmt.setInt(1, uid);
         stmt.setString(2, coordsJSON);
         stmt.setInt(3, pointsEarned);
+        stmt.setString(4, userTID);
 
         stmt.executeUpdate();
 
