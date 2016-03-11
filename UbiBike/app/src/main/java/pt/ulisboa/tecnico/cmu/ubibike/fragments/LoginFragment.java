@@ -48,6 +48,10 @@ public class LoginFragment extends Fragment {
         signUp = (TextView) view.findViewById(R.id.sign_up_textView);
 
 
+        email.setHintTextColor(getResources().getColor(R.color.white));
+        password.setHintTextColor(getResources().getColor(R.color.white));
+
+
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

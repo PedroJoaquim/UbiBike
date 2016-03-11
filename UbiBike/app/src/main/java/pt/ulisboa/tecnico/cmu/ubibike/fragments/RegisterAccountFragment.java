@@ -50,6 +50,10 @@ public class RegisterAccountFragment extends Fragment {
         rightPasswordImage = (ImageView) view.findViewById(R.id.right_password_imageView);
         createAccount = (Button) view.findViewById(R.id.create_account_Button);
 
+        name.setHintTextColor(getResources().getColor(R.color.white));
+        email.setHintTextColor(getResources().getColor(R.color.white));
+        mPassword.setHintTextColor(getResources().getColor(R.color.white));
+        reenteredPassword.setHintTextColor(getResources().getColor(R.color.white));
 
         reenteredPassword.addTextChangedListener(new TextWatcher() {
             @Override
