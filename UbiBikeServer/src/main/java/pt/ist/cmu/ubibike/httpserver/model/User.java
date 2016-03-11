@@ -43,12 +43,12 @@ public class User {
         this.email = email;
     }
 
-    public String getPublic_key() {
+    public String getPublicKey() {
         return public_key;
     }
 
-    public void setPublic_key(String public_key) {
-        this.public_key = public_key;
+    public void setPublicKey(String publicKey) {
+        this.public_key = publicKey;
     }
 
     public byte[] getPassword() {
