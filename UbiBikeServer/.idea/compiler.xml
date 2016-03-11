@@ -22,11 +22,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="UbiBikeServer" />
+        <module name="ubi-server" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="UbiBikeServer" target="1.5" />
+      <module name="ubi-server" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>
