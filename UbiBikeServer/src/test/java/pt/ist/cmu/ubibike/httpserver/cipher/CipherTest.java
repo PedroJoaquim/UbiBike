@@ -3,7 +3,6 @@ package pt.ist.cmu.ubibike.httpserver.cipher;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import pt.ist.cmu.ubibike.httpserver.util.ResourceFileLoader;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;

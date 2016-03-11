@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ubi-server.iml" filepath="$PROJECT_DIR$/ubi-server.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ubi-server.iml" filepath="$PROJECT_DIR$/ubi-server.iml" />
     </modules>
   </component>
 </project>

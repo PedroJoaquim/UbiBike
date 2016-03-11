@@ -1,6 +1,7 @@
-package pt.ist.cmu.ubibike.httpserver.Session.Tokens;
+package pt.ist.cmu.ubibike.httpserver.session.tokens;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import org.joda.time.DateTime;
 import pt.ist.cmu.ubibike.httpserver.model.User;
 
@@ -34,6 +35,7 @@ public class PublicKeyToken {
         return uid;
     }
 
+    @JsonSetter("uid")
     public void setUid(int uid) {
         this.uid = uid;
     }
@@ -43,15 +45,17 @@ public class PublicKeyToken {
         return username;
     }
 
+    @JsonSetter("username")
     public void setUsername(String username) {
         this.username = username;
     }
 
-    @JsonGetter("publicKey")
+    @JsonGetter("public_key")
     public String getPublicKey() {
         return publicKey;
     }
 
+    @JsonSetter("public_key")
     public void setPublicKey(String publicKey) {
         this.publicKey = publicKey;
     }
@@ -61,6 +65,7 @@ public class PublicKeyToken {
         return validationTimestamp;
     }
 
+    @JsonSetter("ttl")
     public void setValidationTimestamp(String validationTimestamp) {
         this.validationTimestamp = validationTimestamp;
     }
