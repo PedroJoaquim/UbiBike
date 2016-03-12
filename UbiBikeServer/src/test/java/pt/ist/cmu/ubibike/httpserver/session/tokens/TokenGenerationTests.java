@@ -11,9 +11,7 @@ import pt.ist.cmu.ubibike.httpserver.model.User;
 
 import java.io.IOException;
 
-/**
- * Created by ASUS on 11/03/2016.
- */
+
 public class TokenGenerationTests {
 
     private static User u;
