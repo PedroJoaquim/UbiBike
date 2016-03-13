@@ -7,14 +7,12 @@ public class User {
 
     private int uid;
     private String username;
-    private String email;
     private String public_key;
     private byte[] password;
 
-    public User(int uid, String username, String email, String public_key, byte[] password) {
+    public User(int uid, String username, String public_key, byte[] password) {
         this.uid = uid;
         this.username = username;
-        this.email = email;
         this.public_key = public_key;
         this.password = password;
     }
@@ -33,14 +31,6 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getPublicKey() {

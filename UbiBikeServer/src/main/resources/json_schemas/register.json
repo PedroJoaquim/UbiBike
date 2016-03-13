@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "register",
+  "description": "Info posted for repository creation",
+  "type": "object",
+
+  "properties": {
+
+    "username": {
+      "description": "username",
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 16,
+      "pattern":"^[a-zA-Z0-9_]+$"
+    },
+    "password":{
+      "description": "user password",
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 25
+    },
+    "public_key":{
+      "description": "user public key",
+      "type": "string"
+    }
+  },
+  "required": ["username", "password", "public_key"]
+}

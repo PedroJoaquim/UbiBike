@@ -1,14 +1,11 @@
 package pt.ist.cmu.ubibike.httpserver;
 
 import com.sun.net.httpserver.HttpServer;
-import pt.ist.cmu.ubibike.httpserver.cipher.PublicKeyReader;
 import pt.ist.cmu.ubibike.httpserver.handlers.AuthenticationHandler;
 import pt.ist.cmu.ubibike.httpserver.handlers.RegistrationHandler;
-import pt.ist.cmu.ubibike.httpserver.util.ResourceFileLoader;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.security.PublicKey;
 import java.util.concurrent.Executors;
 
 public class Server {

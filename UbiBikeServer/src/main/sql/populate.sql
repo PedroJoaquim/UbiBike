@@ -1,1 +1,1 @@
-INSERT INTO users(uid, username, email, public_key, password, points) VALUES (1, "pedro", "email", "public_key", 0, 0);
+INSERT INTO users(uid, username, public_key, password, points) VALUES (1, "pedro", "public_key", 0, 0);

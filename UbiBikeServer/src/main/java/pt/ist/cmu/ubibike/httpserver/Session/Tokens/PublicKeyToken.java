@@ -1,7 +1,6 @@
 package pt.ist.cmu.ubibike.httpserver.session.tokens;
 
 import com.fasterxml.jackson.annotation.*;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.joda.time.DateTime;
 import pt.ist.cmu.ubibike.httpserver.model.User;
 
