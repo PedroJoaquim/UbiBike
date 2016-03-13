@@ -15,6 +15,8 @@ import pt.ulisboa.tecnico.cmu.ubibike.domain.Trajectory;
 
 public class TrajectoryListFragment extends ListFragment {
 
+    private static final String TITLE = "Trajectories";
+
     private ArrayList<Trajectory> mTrajectories;
 
     public TrajectoryListFragment() {
@@ -36,12 +38,19 @@ public class TrajectoryListFragment extends ListFragment {
         setListAdapter(adapter);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getParentActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getParentActivity().getSupportActionBar().setTitle(TITLE);
+    }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        getParentActivity().showTrajectoryOnMap(mTrajectories.get(position).getTrajectoryID(), true);
+        getParentActivity().showTrajectoryOnMap(mTrajectories.get(position).getTrajectoryID(), false);
     }
 
 }

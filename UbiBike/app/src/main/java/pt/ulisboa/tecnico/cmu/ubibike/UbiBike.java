@@ -7,7 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
+import pt.ulisboa.tecnico.cmu.ubibike.fragments.HomeFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.LoginFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.MapFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.RegisterAccountFragment;
@@ -22,7 +25,7 @@ public class UbiBike extends AppCompatActivity {
 
         setViewElements();
 
-       showPastTrajectoriesList();
+       showHome();
 
     }
 
@@ -53,6 +56,7 @@ public class UbiBike extends AppCompatActivity {
         // Set a toolbar to replace the action bar.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
     }
 
 
@@ -61,62 +65,95 @@ public class UbiBike extends AppCompatActivity {
      *
      * @param fragment - fragment to be showed
      */
-    private void replaceFragment (Fragment fragment, boolean explicitReplace, boolean addToBackStack){
+    private void replaceFragment (Fragment fragment, boolean explicitReplace){
         String backStateName =  fragment.getClass().getName();
         String fragmentTag = backStateName;
+        boolean fragmentPopped = false;
 
         FragmentManager manager = getSupportFragmentManager();
-        boolean fragmentPopped = manager.popBackStackImmediate (backStateName, 0);
 
-        if (explicitReplace || !fragmentPopped && manager.findFragmentByTag(fragmentTag) == null){ //fragment not in back stack, create it.
+        if(!explicitReplace){
+            fragmentPopped = manager.popBackStackImmediate (backStateName, 0);
+        }
+
+        if(!fragmentPopped && manager.findFragmentByTag(fragmentTag) == null){ //fragment not in back stack, create it.
+
             FragmentTransaction ft = manager.beginTransaction();
             ft.replace(R.id.content_frame, fragment, fragmentTag);
-            if(addToBackStack) {
-                ft.addToBackStack(backStateName);
-            }
+            ft.addToBackStack(backStateName);
+            ft.commit();
+        }
+        else if(explicitReplace){
+
+            manager.popBackStack();
+            FragmentTransaction ft = manager.beginTransaction();
+            ft.replace(R.id.content_frame, fragment, fragmentTag);
+            ft.addToBackStack(backStateName);
             ft.commit();
         }
     }
 
-    public void showLoginFragment(){
+
+    /**
+     * Shows Home screen
+     */
+    public void showHome(){
+        Fragment fragment = new HomeFragment();
+        replaceFragment(fragment, false);
+    }
+
+    /**
+     * Shows Login screen
+     */
+    public void showLogin(){
         getSupportActionBar().hide();
 
         Fragment fragment = new LoginFragment();
-        replaceFragment(fragment, false, false);
+        replaceFragment(fragment, false);
     }
 
+    /**
+     * Shows Register Account screen
+     */
     public void showRegisterAccountFragment(){
         Fragment fragment = new RegisterAccountFragment();
-        replaceFragment(fragment, false, true);
+        replaceFragment(fragment, false);
     }
 
+    /**
+     * Shows nearby bike stations on map
+     */
     public void showBikeStationsNearbyOnMap(){
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Stations nearby");
-
         Fragment fragment = new MapFragment();
-        replaceFragment(fragment, true, true);
+        replaceFragment(fragment, false);
     }
 
+    /**
+     * Shows past trajectories on list, most recent first
+     */
     public void showPastTrajectoriesList(){
         Fragment fragment = new TrajectoryListFragment();
-        replaceFragment(fragment, true, true);
+        replaceFragment(fragment, false);
     }
 
-    public void showTrajectoryOnMap(int trajectoryID, boolean addToBackStack){
+    /**
+     * Shows a given trajectory on map
+     *
+     * @param trajectoryID - trajectory to show
+     * @param explicitReplace - not relevant here
+     */
+    public void showTrajectoryOnMap(int trajectoryID, boolean explicitReplace){
         Fragment fragment = new MapFragment();
 
-        int trajectoryCount = ApplicationContext.getInstance().getData().getTrajectoriesCount();
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Trajectory view (" + (trajectoryID + 1) + "/" + trajectoryCount + ")");
+        int trajectoriesCount = ApplicationContext.getInstance().getData().getTrajectoriesCount();
 
         Bundle arguments = new Bundle();
         arguments.putInt("trajectoryID", trajectoryID);
+        arguments.putInt("trajectoriesCount", trajectoriesCount);
         fragment.setArguments(arguments);
 
-        replaceFragment(fragment, true, addToBackStack);
+        replaceFragment(fragment, explicitReplace);
     }
 
 }

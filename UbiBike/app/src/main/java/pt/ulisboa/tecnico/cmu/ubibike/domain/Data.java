@@ -16,6 +16,7 @@ public class Data {
     private ArrayList<Chat> mConversations;
     private ArrayList<BikePickupStation> mBikeStationsNearby;
     private HashMap<Integer, Trajectory> mTrajectories;
+    private LatLng mLastPosition;
 
     public Data(){
         mConversations = new ArrayList<>();
@@ -123,6 +124,23 @@ public class Data {
         Collections.sort(trajectories);
 
         return trajectories;
+    }
+
+    /**
+     * Sets last GPS synced position to given one
+     *
+     * @param latitude - coordinate
+     * @param longitude - coordinate
+     */
+    public void setLastPosition(double latitude, double longitude){
+        mLastPosition = new LatLng(latitude, longitude);
+    }
+
+    /**
+     * @return - last GPS synced position
+     */
+    public LatLng getLastPosition(){
+        return new LatLng(38.748101, -9.148148);    //hardcoded at Entrecampos
     }
 
 }
