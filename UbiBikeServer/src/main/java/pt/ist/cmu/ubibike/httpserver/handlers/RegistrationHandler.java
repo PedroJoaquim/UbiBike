@@ -13,11 +13,9 @@ import pt.ist.cmu.ubibike.httpserver.model.User;
 import pt.ist.cmu.ubibike.httpserver.session.SessionManager;
 import pt.ist.cmu.ubibike.httpserver.session.tokens.TokenHandler;
 import pt.ist.cmu.ubibike.httpserver.util.JSONSchemaValidation;
-import pt.ist.cmu.ubibike.httpserver.util.UserInputValidation;
 
 import java.io.*;
 import java.sql.Connection;
-import java.util.Map;
 
 public class RegistrationHandler extends BaseHandler {
 
@@ -43,7 +41,7 @@ public class RegistrationHandler extends BaseHandler {
 
         String json = getRequestBody(httpExchange);
 
-        if(!JSONSchemaValidation.validateSchema(json, JSONSchemaValidation.REGISTE_USER)){
+        if(!JSONSchemaValidation.validateSchema(json, JSONSchemaValidation.REGISTER_USER)){
             throw new RuntimeException("Invalid json submited");
         }
 

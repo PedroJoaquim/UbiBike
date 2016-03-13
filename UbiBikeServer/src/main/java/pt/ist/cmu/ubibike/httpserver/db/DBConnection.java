@@ -11,8 +11,19 @@ public class DBConnection {
     private static final String username = "ist175624";
     private static final String password = "teho1967";
 
-    public static Connection getConnection(){
 
+    private static Connection conn;
+
+    public static Connection getConnection() {
+
+        if (conn == null) {
+            conn = loadConnection();
+        }
+
+        return conn;
+    }
+
+    private static Connection loadConnection() {
         String host = "jdbc:mysql://" + DBConnection.host + ":3306/" + DBConnection.db;
 
         try {
@@ -26,5 +37,4 @@ public class DBConnection {
 
         return null;
     }
-
 }

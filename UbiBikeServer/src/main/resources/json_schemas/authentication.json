@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "authentication",
+  "description": "user authentication",
+  "type": "object",
+
+  "properties": {
+
+    "username": {
+      "description": "username",
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 16,
+      "pattern":"^[a-zA-Z0-9_]+$"
+    },
+    "password":{
+      "description": "user password",
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 25
+    }
+
+  },
+  "required": ["username", "password"]
+}

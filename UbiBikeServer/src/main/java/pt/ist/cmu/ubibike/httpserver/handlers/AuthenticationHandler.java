@@ -1,25 +1,79 @@
 package pt.ist.cmu.ubibike.httpserver.handlers;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.fge.jsonschema.main.JsonValidator;
 import com.sun.net.httpserver.HttpExchange;
+import pt.ist.cmu.ubibike.httpserver.cipher.CipherUtils;
+import pt.ist.cmu.ubibike.httpserver.db.DBConnection;
+import pt.ist.cmu.ubibike.httpserver.db.DBObjectSelector;
+import pt.ist.cmu.ubibike.httpserver.model.User;
+import pt.ist.cmu.ubibike.httpserver.session.SessionManager;
+import pt.ist.cmu.ubibike.httpserver.session.tokens.TokenHandler;
 import pt.ist.cmu.ubibike.httpserver.util.JSONSchemaValidation;
+
+import java.io.OutputStream;
+import java.sql.Connection;
+import java.util.Arrays;
 
 
 public class AuthenticationHandler extends BaseHandler {
 
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
+
+    private String sessionToken;
+    private User user;
 
     @Override
     protected void validateAction(HttpExchange httpExchange) throws Exception{
+
+        if(!"post".equalsIgnoreCase(httpExchange.getRequestMethod())){
+            throw new RuntimeException("Authentication must be a post request");
+        }
+
+        String json = getRequestBody(httpExchange);
+
+        if(!JSONSchemaValidation.validateSchema(json, JSONSchemaValidation.AUTHENTICATE_USER)){
+            throw new RuntimeException("Invalid json submited");
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonObj = mapper.readTree(json);
+
+        String username = jsonObj.get(USERNAME).textValue();
+        String password = jsonObj.get(PASSWORD).textValue();
+
+        if((this.user = DBObjectSelector.getUserFromUsername(DBConnection.getConnection(),  username)) == null){
+            throw new RuntimeException("the submited user does not exist");
+        }
+
+        if(!Arrays.equals(this.user.getPassword(), CipherUtils.getSHA2Digest(password.getBytes()))){
+            throw new RuntimeException("invalid credentials");
+        }
 
     }
 
     @Override
     protected void executeAction(HttpExchange httpExchange) throws Exception {
-
+        this.sessionToken = SessionManager.startSession(this.user);
     }
 
     @Override
     protected void produceAnswer(HttpExchange httpExchange) throws Exception{
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode jNode = mapper.createObjectNode();
+
+        jNode.put("session_token", this.sessionToken);
+        jNode.put("uid", this.user.getUid());
+
+        String json = jNode.toString();
+
+        httpExchange.sendResponseHeaders(200, json.length());
+        OutputStream os = httpExchange.getResponseBody();
+        os.write(json.getBytes());
+        os.close();
 
     }
 }
