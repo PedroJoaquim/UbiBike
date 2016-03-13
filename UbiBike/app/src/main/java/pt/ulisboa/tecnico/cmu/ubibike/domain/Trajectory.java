@@ -1,16 +1,23 @@
 package pt.ulisboa.tecnico.cmu.ubibike.domain;
 
+import android.text.format.DateUtils;
+
 import com.google.android.gms.maps.model.LatLng;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import pt.ulisboa.tecnico.cmu.ubibike.utils.SphericalUtil;
 
+
 /**
- * Created by andriy on 12.03.2016.
+ * Represents a bike ride - trajectory
+ * Can be compared to other Trajectory by time both trajectories were ago
  */
-public class Trajectory {
+public class Trajectory implements Comparable<Trajectory> {
 
     private int mTrajectoryID;
     private String mStartStation;
@@ -63,6 +70,13 @@ public class Trajectory {
         LatLng startPosition = route.get(0);
         LatLng endPosition = route.get(route.size() - 1);
         mCameraPosition = SphericalUtil.interpolate(startPosition, endPosition, 0.5);
+    }
+
+    /**
+     * @return - current Trajectory ID
+     */
+    public int getTrajectoryID(){
+        return mTrajectoryID;
     }
 
     /**
@@ -131,7 +145,62 @@ public class Trajectory {
     /**
      * @return - Distance, in meters, travelled in current route
      */
-    public double getTraveledDistance(){
+    public double getTravelledDistance(){
         return mDistance;
+    }
+
+    /**
+     * @return - Distance, in km, travelled in current route
+     */
+    public double getTravelledDistanceInKm(){
+        return mDistance * 0.001;
+    }
+
+    /**
+     * @return - Points earned with current ride
+     */
+    public int getPointsEarned(){
+        return mPointsEarned;
+    }
+
+    /**
+     * @return - Time when route has been finished
+     */
+    public Date getEndTime(){
+        return mEndTime;
+    }
+
+    /**
+     * @return - Travel time in hours:minutes:seconds format
+     */
+    public String getReadableTravelTime(){
+        int time = (int) (mEndTime.getTime() - mStartTime.getTime());
+
+        return new SimpleDateFormat("HH:mm:ss").format(new Date(time)).toString();
+    }
+
+    /**
+     * @return - Time the ride was ago in readable format, ex. "2 days ago"
+     */
+    public String getReadableFinishTime(){
+        return DateUtils.getRelativeTimeSpanString(mEndTime.getTime()).toString();
+    }
+
+
+    /**
+     * Compares current trajectory to a given one by the times they have been finished
+     * Oldest one is greater
+     *
+     * @param anotherTrajectory - trajectory to compare to
+     * @return - positive number if current trajectory is older
+     */
+    @Override
+    public int compareTo(Trajectory anotherTrajectory) {
+        Date now = new Date();
+
+        int thisAgo = (int) (now.getTime() - mEndTime.getTime());
+        int anotherAgo = (int) (now.getTime() - anotherTrajectory.getEndTime().getTime());
+
+        return thisAgo - anotherAgo;
     }
 }

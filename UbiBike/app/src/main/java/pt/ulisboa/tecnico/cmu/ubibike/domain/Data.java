@@ -3,6 +3,9 @@ package pt.ulisboa.tecnico.cmu.ubibike.domain;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -38,7 +41,11 @@ public class Data {
         route.add(new LatLng(38.735270, -9.139541));
         route.add(new LatLng(38.735361, -9.142362));
 
-        Trajectory trajectory = new Trajectory(0, "Alameda Station", "Arco do Cego Station", route, 0.0, null, null);
+        Date start1 =  new Date(1457794692 * 1000L); // 12/03/2016  14:58:12
+        Date end1 =  new Date(1457796849 * 1000L); // 12/03/2016  15:34:09
+
+
+        Trajectory trajectory = new Trajectory(0, "Alameda Station", "Arco do Cego Station", route, 2398, start1, end1);
 
         mTrajectories.put(0, trajectory);
 
@@ -47,7 +54,10 @@ public class Data {
         route2.add(new LatLng(38.774883, -9.097268));
         route2.add(new LatLng(38.762047, -9.098372));
 
-        Trajectory trajectory2 = new Trajectory(0, "Station1", "Station2", route2, 0.0, null, null);
+        Date start2 =  new Date(1457882169 * 1000L); // 13/03/2016  15:16:09
+        Date end2 =  new Date(1457882471 * 1000L); // 13/03/2016  15:21:11
+
+        Trajectory trajectory2 = new Trajectory(1, "Station1", "Station2", route2, 519, start2, end2);
 
         mTrajectories.put(1, trajectory2);
 
@@ -56,7 +66,10 @@ public class Data {
         route3.add(new LatLng(38.741828, -9.133448));
         route3.add(new LatLng(38.717370, -9.135922));
 
-        Trajectory trajectory3 = new Trajectory(0, "Station3", "Station4", route3, 0.0, null, null);
+        Date start3 =  new Date(1457860871 * 1000L); // 13/03/2016  09:21:11
+        Date end3 =  new Date(1457862011 * 1000L); // 13/03/2016  09:40:11
+
+        Trajectory trajectory3 = new Trajectory(2, "Station3", "Station4", route3, 600, start3, end3);
 
         mTrajectories.put(2, trajectory3);
     }
@@ -96,6 +109,20 @@ public class Data {
      */
     public int getTrajectoriesCount(){
         return mTrajectories.size();
+    }
+
+
+    /**
+     * Gets all past trajectories sorted by the time they finished
+     *
+     * @return - trajectories list
+     */
+    public ArrayList<Trajectory> getAllTrajectories(){
+
+        ArrayList<Trajectory> trajectories = new ArrayList<>(mTrajectories.values());
+        Collections.sort(trajectories);
+
+        return trajectories;
     }
 
 }

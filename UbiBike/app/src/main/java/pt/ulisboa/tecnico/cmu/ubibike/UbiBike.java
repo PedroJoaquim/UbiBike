@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.LoginFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.MapFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.RegisterAccountFragment;
+import pt.ulisboa.tecnico.cmu.ubibike.fragments.TrajectoryListFragment;
 
 public class UbiBike extends AppCompatActivity {
 
@@ -21,7 +22,7 @@ public class UbiBike extends AppCompatActivity {
 
         setViewElements();
 
-        //showBikeStationsNearbyOnMap();
+       showPastTrajectoriesList();
 
     }
 
@@ -32,8 +33,6 @@ public class UbiBike extends AppCompatActivity {
         getSupportActionBar().show();
         getSupportActionBar().setTitle("UbiBike");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
-        showTrajectoryOnMap(0, true);
     }
 
     @Override
@@ -97,6 +96,11 @@ public class UbiBike extends AppCompatActivity {
         getSupportActionBar().setTitle("Stations nearby");
 
         Fragment fragment = new MapFragment();
+        replaceFragment(fragment, true, true);
+    }
+
+    public void showPastTrajectoriesList(){
+        Fragment fragment = new TrajectoryListFragment();
         replaceFragment(fragment, true, true);
     }
 
