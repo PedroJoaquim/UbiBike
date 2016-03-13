@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.LoginFragment;
+import pt.ulisboa.tecnico.cmu.ubibike.fragments.MapFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.RegisterAccountFragment;
 
 public class UbiBike extends AppCompatActivity {
@@ -20,6 +21,9 @@ public class UbiBike extends AppCompatActivity {
         setContentView(R.layout.activity_ubi_bike);
 
         setViewElements();
+
+        //showTrajectoryOnMap(0);
+        showBikeStationsNearbyOnMap();
 
     }
 
@@ -60,6 +64,21 @@ public class UbiBike extends AppCompatActivity {
 
     public void showRegisterAccountFragment(){
         Fragment fragment = new RegisterAccountFragment();
+        replaceFragment(fragment);
+    }
+
+    public void showBikeStationsNearbyOnMap(){
+        Fragment fragment = new MapFragment();
+        replaceFragment(fragment);
+    }
+
+    public void showTrajectoryOnMap(int trajectoryID){
+        Fragment fragment = new MapFragment();
+
+        Bundle arguments = new Bundle();
+        arguments.putInt("trajectoryID", trajectoryID);
+        fragment.setArguments(arguments);
+
         replaceFragment(fragment);
     }
 

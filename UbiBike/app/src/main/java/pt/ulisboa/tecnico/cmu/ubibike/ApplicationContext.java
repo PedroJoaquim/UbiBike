@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.cmu.ubibike;
 
 import android.app.Application;
 
+import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.StorageManager;
 
 /**
@@ -10,7 +11,7 @@ import pt.ulisboa.tecnico.cmu.ubibike.managers.StorageManager;
 public class ApplicationContext extends Application {
 
     private static ApplicationContext mInstance;
-
+    private Data mData;
     private StorageManager mStorageManager;
 
 
@@ -23,10 +24,14 @@ public class ApplicationContext extends Application {
         super.onCreate();
         mInstance = this;
         mStorageManager = new StorageManager(this);
+        mData = new Data();     //TODO change
     }
 
     public StorageManager getStorageManager(){
         return mStorageManager;
+    }
+    public Data getData(){
+        return mData;
     }
 
 }

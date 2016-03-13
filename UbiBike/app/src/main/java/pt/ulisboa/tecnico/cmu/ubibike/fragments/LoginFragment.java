@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmu.ubibike.fragments;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -48,8 +49,13 @@ public class LoginFragment extends Fragment {
         signUp = (TextView) view.findViewById(R.id.sign_up_textView);
 
 
-        email.setHintTextColor(getResources().getColor(R.color.white));
-        password.setHintTextColor(getResources().getColor(R.color.white));
+        int alpha = (int)(0.5 * 255.0f);
+        int color = Color.argb(alpha, 255, 255, 255);   //white color
+
+        email.setHintTextColor(color);
+        password.setHintTextColor(color);
+
+        signIn.getBackground().setAlpha(220);
 
 
         signIn.setOnClickListener(new View.OnClickListener() {

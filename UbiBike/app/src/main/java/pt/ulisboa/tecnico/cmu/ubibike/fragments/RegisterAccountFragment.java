@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmu.ubibike.fragments;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -50,10 +51,15 @@ public class RegisterAccountFragment extends Fragment {
         rightPasswordImage = (ImageView) view.findViewById(R.id.right_password_imageView);
         createAccount = (Button) view.findViewById(R.id.create_account_Button);
 
-        name.setHintTextColor(getResources().getColor(R.color.white));
-        email.setHintTextColor(getResources().getColor(R.color.white));
-        mPassword.setHintTextColor(getResources().getColor(R.color.white));
-        reenteredPassword.setHintTextColor(getResources().getColor(R.color.white));
+        int alpha = (int)(0.5 * 255.0f);
+        int color = Color.argb(alpha, 255, 255, 255);   //white color
+
+        name.setHintTextColor(color);
+        email.setHintTextColor(color);
+        mPassword.setHintTextColor(color);
+        reenteredPassword.setHintTextColor(color);
+
+        createAccount.getBackground().setAlpha(220);
 
         reenteredPassword.addTextChangedListener(new TextWatcher() {
             @Override
@@ -95,6 +101,4 @@ public class RegisterAccountFragment extends Fragment {
             }
         });
     }
-
-
 }

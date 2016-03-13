@@ -5,71 +5,115 @@
     android:background="@drawable/blured_background">
 
 
-    <EditText
-        android:layout_width="wrap_content"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools" android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/name_editText"
-        android:textColor="#ffffff"
-        android:singleLine="true"
-        android:hint="Name"
-        android:backgroundTint="#ffffff"
-        android:layout_marginTop="163dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/email_editText"
-        android:layout_alignStart="@+id/email_editText"
-        android:layout_alignRight="@+id/email_editText"
-        android:layout_alignEnd="@+id/email_editText" />
+        android:background="@drawable/corner_radius_shape"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentBottom="false"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_centerInParent="true"
+        android:id="@+id/relativeLayout">
 
-    <EditText
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/email_editText"
-        android:textColor="#ffffff"
-        android:singleLine="true"
-        android:hint="E-mail"
-        android:backgroundTint="#ffffff"
-        android:layout_below="@+id/name_editText"
-        android:layout_centerHorizontal="true" />
+        <EditText
+            android:layout_width="250dp"
+            android:layout_height="45dp"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/name_editText"
+            android:textColor="@color/white"
+            android:singleLine="true"
+            android:hint="Name"
+            android:backgroundTint="@color/white"
+            android:layout_alignParentTop="true"
+            android:layout_alignLeft="@+id/email_editText"
+            android:layout_alignStart="@+id/email_editText"
+            android:layout_alignRight="@+id/email_editText"
+            android:layout_alignEnd="@+id/email_editText"
+            android:background="@android:color/transparent"
+            android:paddingLeft="10dp" />
 
-    <EditText
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/password_editText"
-        android:hint="Password"
-        android:backgroundTint="#ffffff"
-        android:layout_below="@+id/email_editText"
-        android:layout_alignLeft="@+id/email_editText"
-        android:layout_alignStart="@+id/email_editText"
-        android:textColor="#ffffff" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/darker_gray"
+            android:alpha="0.2"
+            android:layout_below="@+id/name_editText" />
 
-    <EditText
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/reentered_password_editText"
-        android:hint="Re-enter password"
-        android:backgroundTint="#ffffff"
-        android:layout_below="@+id/password_editText"
-        android:layout_alignLeft="@+id/password_editText"
-        android:layout_alignStart="@+id/password_editText"
-        android:textColor="#ffffff" />
+        <EditText
+            android:layout_width="250dp"
+            android:layout_height="45dp"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/email_editText"
+            android:textColor="@color/white"
+            android:singleLine="true"
+            android:hint="E-mail"
+            android:backgroundTint="@color/white"
+            android:layout_below="@+id/name_editText"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/transparent"
+            android:paddingLeft="10dp" />
 
-    <ImageView
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:id="@+id/right_password_imageView"
-        android:visibility="invisible"
-        android:layout_alignBottom="@+id/reentered_password_editText"
-        android:layout_toRightOf="@+id/reentered_password_editText"
-        android:layout_toEndOf="@+id/reentered_password_editText"
-        android:layout_marginBottom="10dp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/darker_gray"
+            android:layout_alignTop="@+id/password_editText"
+            android:alpha="0.2" />
+
+        <EditText
+            android:layout_width="250dp"
+            android:layout_height="45dp"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/password_editText"
+            android:hint="Password"
+            android:backgroundTint="@color/white"
+            android:layout_below="@+id/email_editText"
+            android:layout_alignLeft="@+id/email_editText"
+            android:layout_alignStart="@+id/email_editText"
+            android:textColor="@color/white"
+            android:background="@android:color/transparent"
+            android:paddingLeft="10dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/darker_gray"
+            android:alpha="0.2"
+            android:layout_below="@+id/password_editText" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/password_editText">
+
+            <EditText
+                android:layout_width="250dp"
+                android:layout_height="45dp"
+                android:inputType="textPassword"
+                android:ems="10"
+                android:id="@+id/reentered_password_editText"
+                android:hint="Re-enter password"
+                android:backgroundTint="@color/white"
+                android:textColor="@color/white"
+                android:background="@android:color/transparent"
+                android:paddingLeft="10dp" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:id="@+id/right_password_imageView"
+                android:visibility="invisible"
+                android:layout_alignParentRight="false"
+                android:layout_alignParentEnd="true"
+                android:layout_alignRight="@+id/reentered_password_editText"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp" />
+        </RelativeLayout>
+
+    </RelativeLayout>
 
 
     <Button
@@ -78,15 +122,11 @@
         android:width="100dp"
         android:text="Join Now"
         android:textColor="#FFFFFFFF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="250dp"
+        android:layout_height="45dp"
         android:background="@drawable/buttonshape"
-        android:layout_marginTop="74dp"
-        android:layout_below="@+id/right_password_imageView"
-        android:layout_alignLeft="@+id/reentered_password_editText"
-        android:layout_alignStart="@+id/reentered_password_editText"
-        android:layout_alignRight="@+id/reentered_password_editText"
-        android:layout_alignEnd="@+id/reentered_password_editText"
-        android:alpha="0.7" />
+        android:layout_marginTop="50dp"
+        android:layout_below="@+id/relativeLayout"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
