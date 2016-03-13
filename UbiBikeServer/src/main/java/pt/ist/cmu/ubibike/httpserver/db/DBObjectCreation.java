@@ -4,15 +4,14 @@ import java.sql.*;
 
 public class DBObjectCreation {
 
-    public static int insertUser(Connection conn, String username, String email, String public_key, byte[] password) throws SQLException {
+    public static int insertUser(Connection conn, String username, String public_key, byte[] password) throws SQLException {
 
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO users(username, email, public_key, password) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO users(username, public_key, password) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
         int newId;
 
         stmt.setString(1, username);
-        stmt.setString(2, email);
-        stmt.setString(3, public_key);
-        stmt.setBytes(4, password);
+        stmt.setString(2, public_key);
+        stmt.setBytes(3, password);
 
         stmt.executeUpdate();
 
@@ -71,6 +70,18 @@ public class DBObjectCreation {
         try{result.close(); stmt.close();} catch (SQLException e) {/*ignore*/}
 
         return newId;
+    }
+
+    public static void insertSession(Connection conn, int uid, int sessionID) throws SQLException{
+
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO sessions(uid, session_id) VALUES(?,?)");
+
+        stmt.setInt(1, uid);
+        stmt.setInt(2, sessionID);
+
+        stmt.executeUpdate();
+
+        try{stmt.close();} catch (SQLException e) {/*ignore*/}
     }
 
 }

@@ -9,10 +9,12 @@ public class JSONSchemaValidation {
 
     public static final int TRAJECTORY = 1;
     public static final int POINTS_TRANSACTION = 2;
+    public static final int REGISTE_USER = 3;
 
     private static final String BASE_PATH = "resource:/json_schemas/";
     private static final String TRAJECTORY_SCHEMA = "new_trajectory.json";
     private static final String POINTS_TRANSACTION_SCHEMA = "points_transaction.json";
+    private static final String REGISTER_TRANSACTION_SCHEMA = "register.json";
 
 
     private static String getFilePath(int code) {
@@ -22,8 +24,11 @@ public class JSONSchemaValidation {
             schemaPath += TRAJECTORY_SCHEMA;
         } else if (code == POINTS_TRANSACTION) {
             schemaPath += POINTS_TRANSACTION_SCHEMA;
-        } else {
+        } else if (code == TRAJECTORY) {
             schemaPath += TRAJECTORY_SCHEMA;
+        }
+        else {
+            schemaPath += REGISTER_TRANSACTION_SCHEMA;
         }
 
         return schemaPath;

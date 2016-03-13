@@ -3,14 +3,13 @@ SET foreign_key_checks = 0;
 
 DROP TABLE IF EXISTS users ;
 CREATE TABLE users(
-  uid 			INT NOT NULL,
+  uid 			INT NOT NULL AUTO_INCREMENT,
   username VARCHAR (30) NULL,
-  email VARCHAR (256) NULL,
   public_key VARCHAR(2048) NOT NULL,
   password BLOB NOT NULL,
   points INT NOT NULL DEFAULT 0,
   PRIMARY KEY (uid),
-  UNIQUE (email, username)
+  UNIQUE (username)
 );
 
 DROP TABLE IF EXISTS trajectories;
@@ -35,6 +34,14 @@ CREATE TABLE points_transactions(
   FOREIGN KEY (sender_uid) REFERENCES users(uid),
   FOREIGN KEY (receiver_uid) REFERENCES users(uid),
   UNIQUE (ptid)
+);
+
+DROP TABLE IF EXISTS sessions;
+CREATE TABLE sessions(
+  uid INT NOT NULL,
+  session_id INT NOT NULL,
+  start_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (session_id)
 );
 
 SET foreign_key_checks = 1 ;

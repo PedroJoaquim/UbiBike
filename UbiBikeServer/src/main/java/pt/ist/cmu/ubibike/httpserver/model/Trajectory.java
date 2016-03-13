@@ -9,9 +9,9 @@ public class Trajectory {
     private int pointsEarned;
     private String coordsJSON;
     private String userTID;
-    private Date rideTimestamp;
+    private long rideTimestamp;
 
-    public Trajectory(int tid, int uid, int pointsEarned, String coordsJSON, String userTID, Date rideTimestamp) {
+    public Trajectory(int tid, int uid, int pointsEarned, String coordsJSON, String userTID, long rideTimestamp) {
         this.tid = tid;
         this.uid = uid;
         this.pointsEarned = pointsEarned;
@@ -52,11 +52,11 @@ public class Trajectory {
         this.coordsJSON = coordsJSON;
     }
 
-    public Date getRideTimestamp() {
+    public long getRideTimestamp() {
         return rideTimestamp;
     }
 
-    public void setRideTimestamp(Date rideTimestamp) {
+    public void setRideTimestamp(long rideTimestamp) {
         this.rideTimestamp = rideTimestamp;
     }
 
