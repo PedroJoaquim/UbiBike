@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -16,15 +17,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
-import java.util.Set;
 
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.R;
+import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.BikePickupStation;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Trajectory;
 
@@ -36,6 +36,11 @@ public class MapFragment extends Fragment {
 
     private SupportMapFragment mSupportMapFragment;
 
+    private int mTrajectoryBeingShowed;
+
+    private UbiBike getParentActivity(){
+        return (UbiBike) getActivity();
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -43,6 +48,7 @@ public class MapFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.map_fragment, null, false);
 
+        setViewElements(v);
 
         mSupportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.google_map);
 
@@ -50,7 +56,7 @@ public class MapFragment extends Fragment {
             FragmentManager fragmentManager = getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             mSupportMapFragment = SupportMapFragment.newInstance();
-            fragmentTransaction.replace(R.id.google_map, mSupportMapFragment).commit();
+            fragmentTransaction.add(R.id.google_map, mSupportMapFragment).commit();
         }
 
         if (mSupportMapFragment != null) {
@@ -62,34 +68,14 @@ public class MapFragment extends Fragment {
 
                         googleMap.getUiSettings().setAllGesturesEnabled(true);
 
-                        //TODO add logic
-
-                        /**
-                         * Just testing around
-
-                        googleMap.addMarker(new MarkerOptions()
-                                .position(KIEL)
-                                .title("Kiel")
-                                .snippet("Kiel is cool")
-                                .icon(BitmapDescriptorFactory
-                                        .fromResource(R.drawable.wrong)));
-
-
-                        PolylineOptions route =  new PolylineOptions().geodesic(true);
-                        for(double lat = 53.551; lat < 59.0; lat += 0.1){
-                            route.add(new LatLng(lat, 9.993));
-                        }
-
-                        googleMap.addPolyline(route);
-                         */
 
                         CameraPosition cameraPosition;
 
                         if(getArguments() != null){ //check if we are on trajectory view
 
-                            int trajectoryID = getArguments().getInt("trajectoryID");
+                            mTrajectoryBeingShowed = getArguments().getInt("trajectoryID");
                             Trajectory trajectory = ApplicationContext.getInstance()
-                                                    .getData().getTrajectory(trajectoryID);
+                                                    .getData().getTrajectory(mTrajectoryBeingShowed);
 
                             ArrayList<LatLng> route = trajectory.getRoute();
 
@@ -161,4 +147,60 @@ public class MapFragment extends Fragment {
 
         return v;
     }
+
+    private void setViewElements(View v) {
+
+        FrameLayout nextTrajectory = (FrameLayout) v.findViewById(R.id.next_trajectory_frame);
+        FrameLayout previousTrajectory = (FrameLayout) v.findViewById(R.id.prev_trajectory_frame);
+
+        nextTrajectory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showNextTrajectoryOnMap();
+            }
+        });
+
+        previousTrajectory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPreviousTrajectoryOnMap();
+            }
+        });
+    }
+
+
+    /**
+     * Shows next trajectory on map
+     */
+    public void showNextTrajectoryOnMap(){
+
+        int trajectoriesCount = ApplicationContext.getInstance().getData().getTrajectoriesCount();
+
+        if(trajectoriesCount == 1) return;
+
+        if(mTrajectoryBeingShowed + 1 == trajectoriesCount){
+            getParentActivity().showTrajectoryOnMap(0, false);
+        }
+        else{
+            getParentActivity().showTrajectoryOnMap(mTrajectoryBeingShowed + 1, false);
+        }
+    }
+
+    /**
+     * Shows previous trajectory on map
+     */
+    public void showPreviousTrajectoryOnMap(){
+
+        int trajectoriesCount = ApplicationContext.getInstance().getData().getTrajectoriesCount();
+
+        if(trajectoriesCount == 1) return;
+
+        if(mTrajectoryBeingShowed == 0){
+            getParentActivity().showTrajectoryOnMap(trajectoriesCount - 1, false);
+        }
+        else{
+            getParentActivity().showTrajectoryOnMap(mTrajectoryBeingShowed - 1, false);
+        }
+    }
+
 }

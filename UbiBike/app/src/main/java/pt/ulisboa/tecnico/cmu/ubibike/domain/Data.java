@@ -38,9 +38,27 @@ public class Data {
         route.add(new LatLng(38.735270, -9.139541));
         route.add(new LatLng(38.735361, -9.142362));
 
-        Trajectory trajectory = new Trajectory(0, "Alameda Station", "Arco do Cego Station", route);
+        Trajectory trajectory = new Trajectory(0, "Alameda Station", "Arco do Cego Station", route, 0.0, null, null);
 
         mTrajectories.put(0, trajectory);
+
+
+        ArrayList<LatLng> route2 = new ArrayList<>();
+        route2.add(new LatLng(38.774883, -9.097268));
+        route2.add(new LatLng(38.762047, -9.098372));
+
+        Trajectory trajectory2 = new Trajectory(0, "Station1", "Station2", route2, 0.0, null, null);
+
+        mTrajectories.put(1, trajectory2);
+
+
+        ArrayList<LatLng> route3 = new ArrayList<>();
+        route3.add(new LatLng(38.741828, -9.133448));
+        route3.add(new LatLng(38.717370, -9.135922));
+
+        Trajectory trajectory3 = new Trajectory(0, "Station3", "Station4", route3, 0.0, null, null);
+
+        mTrajectories.put(2, trajectory3);
     }
 
 
@@ -71,6 +89,13 @@ public class Data {
      */
     public Trajectory getTrajectory(int trajectoryID){
         return mTrajectories.get(new Integer(trajectoryID));
+    }
+
+    /**
+     * @return - number of trajectories
+     */
+    public int getTrajectoriesCount(){
+        return mTrajectories.size();
     }
 
 }

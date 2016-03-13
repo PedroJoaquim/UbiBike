@@ -6,14 +6,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.LoginFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.MapFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.RegisterAccountFragment;
 
 public class UbiBike extends AppCompatActivity {
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +21,32 @@ public class UbiBike extends AppCompatActivity {
 
         setViewElements();
 
-        //showTrajectoryOnMap(0);
-        showBikeStationsNearbyOnMap();
+        //showBikeStationsNearbyOnMap();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        getSupportActionBar().show();
+        getSupportActionBar().setTitle("UbiBike");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        showTrajectoryOnMap(0, true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void setViewElements() {
@@ -32,8 +54,6 @@ public class UbiBike extends AppCompatActivity {
         // Set a toolbar to replace the action bar.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        showLoginFragment();
     }
 
 
@@ -42,55 +62,57 @@ public class UbiBike extends AppCompatActivity {
      *
      * @param fragment - fragment to be showed
      */
-    private void replaceFragment (Fragment fragment){
+    private void replaceFragment (Fragment fragment, boolean explicitReplace, boolean addToBackStack){
         String backStateName =  fragment.getClass().getName();
         String fragmentTag = backStateName;
 
         FragmentManager manager = getSupportFragmentManager();
         boolean fragmentPopped = manager.popBackStackImmediate (backStateName, 0);
 
-        if (!fragmentPopped && manager.findFragmentByTag(fragmentTag) == null){ //fragment not in back stack, create it.
+        if (explicitReplace || !fragmentPopped && manager.findFragmentByTag(fragmentTag) == null){ //fragment not in back stack, create it.
             FragmentTransaction ft = manager.beginTransaction();
             ft.replace(R.id.content_frame, fragment, fragmentTag);
-            ft.addToBackStack(backStateName);
+            if(addToBackStack) {
+                ft.addToBackStack(backStateName);
+            }
             ft.commit();
         }
     }
 
     public void showLoginFragment(){
+        getSupportActionBar().hide();
+
         Fragment fragment = new LoginFragment();
-        replaceFragment(fragment);
+        replaceFragment(fragment, false, false);
     }
 
     public void showRegisterAccountFragment(){
         Fragment fragment = new RegisterAccountFragment();
-        replaceFragment(fragment);
+        replaceFragment(fragment, false, true);
     }
 
     public void showBikeStationsNearbyOnMap(){
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Stations nearby");
+
         Fragment fragment = new MapFragment();
-        replaceFragment(fragment);
+        replaceFragment(fragment, true, true);
     }
 
-    public void showTrajectoryOnMap(int trajectoryID){
+    public void showTrajectoryOnMap(int trajectoryID, boolean addToBackStack){
         Fragment fragment = new MapFragment();
+
+        int trajectoryCount = ApplicationContext.getInstance().getData().getTrajectoriesCount();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Trajectory view (" + (trajectoryID + 1) + "/" + trajectoryCount + ")");
 
         Bundle arguments = new Bundle();
         arguments.putInt("trajectoryID", trajectoryID);
         fragment.setArguments(arguments);
 
-        replaceFragment(fragment);
+        replaceFragment(fragment, true, addToBackStack);
     }
-
-    public void showToolbar(boolean show){
-
-        if(show) {
-            getSupportActionBar().show();
-        }
-        else {
-            getSupportActionBar().hide();
-        }
-    }
-
 
 }
