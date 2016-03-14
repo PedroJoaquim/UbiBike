@@ -1,8 +1,7 @@
 package pt.ist.cmu.ubibike.httpserver;
 
 import com.sun.net.httpserver.HttpServer;
-import pt.ist.cmu.ubibike.httpserver.handlers.AuthenticationHandler;
-import pt.ist.cmu.ubibike.httpserver.handlers.RegistrationHandler;
+import pt.ist.cmu.ubibike.httpserver.handlers.*;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -19,6 +18,14 @@ public class Server {
     private void registerHandlers(HttpServer server){
         server.createContext("/auth", new AuthenticationHandler());
         server.createContext("/registration", new RegistrationHandler());
+        server.createContext("/PublicKeyToken", new TokenRequestHandler());
+        server.createContext("/BikeBooking", new BikeBookingHandler());
+        server.createContext("/BikePickDrop", new BikePickDropHandler());
+        server.createContext("/Trajectory", new NewTrajectoryHandler());
+        server.createContext("/Stations", new StationsInfoHandler());
+        server.createContext("/TrajectoriesHistory", new TrajectoriesHistoryHandler());
+        server.createContext("/User", new UserInfoHandler());
+
     }
 
 
