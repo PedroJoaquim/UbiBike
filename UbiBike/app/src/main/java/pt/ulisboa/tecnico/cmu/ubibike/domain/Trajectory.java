@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmu.ubibike.domain;
 
 import android.text.format.DateUtils;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -188,6 +189,21 @@ public class Trajectory implements Comparable<Trajectory> {
 
 
     /**
+     * @return - double value of the zoom to use when showing current trajectory on map
+     */
+    public double getOptimalZoom(){
+        LatLng firstPosition = mTrajectoryPositions.get(0);
+        LatLng lastPosition = mTrajectoryPositions.get(mTrajectoryPositions.size() - 1);
+
+        //TODO find appropriate function
+
+        double distance = SphericalUtil.computeDistanceBetween(firstPosition, lastPosition);
+
+        return 15.0;
+    }
+
+
+    /**
      * Compares current trajectory to a given one by the times they have been finished
      * Oldest one is greater
      *
@@ -203,4 +219,5 @@ public class Trajectory implements Comparable<Trajectory> {
 
         return thisAgo - anotherAgo;
     }
+
 }

@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.cmu.ubibike.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,7 +43,10 @@ public class MapFragment extends Fragment {
     private int mTrajectoryBeingShowed;
     private int mTrajectoriesCount;
 
+    private View mView;
+
     private boolean mTrajectoryView;
+    private boolean mShowTrajectoryInfo;
 
     private UbiBike getParentActivity(){
         return (UbiBike) getActivity();
@@ -52,11 +58,12 @@ public class MapFragment extends Fragment {
 
         getParentActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        final View v = inflater.inflate(R.layout.map_fragment, null, false);
+        mView =  inflater.inflate(R.layout.map_fragment, null, false);
 
         if(getArguments() != null) { //check if we are on trajectory view
 
             mTrajectoryView = true;
+            mShowTrajectoryInfo = false;
 
             mTrajectoryBeingShowed = getArguments().getInt("trajectoryID");
             mTrajectoriesCount = getArguments().getInt("trajectoriesCount");
@@ -68,15 +75,16 @@ public class MapFragment extends Fragment {
 
         setMap();
 
-        setViewElements(v);
+        setViewElements();
 
-        return v;
+        return mView;
     }
 
-    private void setViewElements(View v) {
+    private void setViewElements() {
 
-        FrameLayout nextTrajectory = (FrameLayout) v.findViewById(R.id.next_trajectory_frame);
-        FrameLayout previousTrajectory = (FrameLayout) v.findViewById(R.id.prev_trajectory_frame);
+        FrameLayout nextTrajectory = (FrameLayout) mView.findViewById(R.id.next_trajectory_frame);
+        FrameLayout previousTrajectory = (FrameLayout) mView.findViewById(R.id.prev_trajectory_frame);
+        FrameLayout trajectoryInfo = (FrameLayout) mView.findViewById(R.id.trajectory_info_frame);
 
         if(mTrajectoryView) {
 
@@ -93,10 +101,20 @@ public class MapFragment extends Fragment {
                     showPreviousTrajectoryOnMap();
                 }
             });
+
+            trajectoryInfo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mShowTrajectoryInfo = !mShowTrajectoryInfo;
+                    mView.findViewById(R.id.trajectory_info)
+                            .setVisibility(mShowTrajectoryInfo ? View.VISIBLE : View.INVISIBLE);
+                }
+            });
         }
         else{
             nextTrajectory.setVisibility(View.INVISIBLE);
             previousTrajectory.setVisibility(View.INVISIBLE);
+            trajectoryInfo.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -222,11 +240,39 @@ public class MapFragment extends Fragment {
 
         mGoogleMap.addMarker(finishMarker);
 
+        double optimalZoom = trajectory.getOptimalZoom();
+
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(trajectory.getCameraPosition()).zoom(15.0f).build();
+                .target(trajectory.getCameraPosition()).zoom((float) optimalZoom).build();
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
         mGoogleMap.moveCamera(cameraUpdate);
+
+
+        LayoutInflater inflater = (LayoutInflater) getParentActivity().getApplicationContext().getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
+
+        View view = inflater.inflate(R.layout.trajectories_list_row, null);
+
+        TextView from = (TextView) view.findViewById(R.id.from_station_name_textView);
+        TextView to = (TextView) view.findViewById(R.id.to_station_name_textView);
+        TextView distance = (TextView) view.findViewById(R.id.distance_textView);
+        TextView points = (TextView) view.findViewById(R.id.points_textView);
+        TextView time = (TextView) view.findViewById(R.id.time_textView);
+        TextView timeAgo = (TextView) view.findViewById(R.id.time_ago_textView);
+
+        from.setText(trajectory.getStartStationName());
+        to.setText(trajectory.getEndStationName());
+        distance.setText(String.format("%.3f km", trajectory.getTravelledDistanceInKm()));
+        points.setText(String.valueOf(trajectory.getPointsEarned()));
+        time.setText(trajectory.getReadableTravelTime());
+        timeAgo.setText(trajectory.getReadableFinishTime());
+
+        RelativeLayout trajectoryInfoFrame = (RelativeLayout) mView.findViewById(R.id.trajectory_info);
+        trajectoryInfoFrame.removeAllViews();
+        trajectoryInfoFrame.addView(view);
+
+        trajectoryInfoFrame.setVisibility(mShowTrajectoryInfo ? View.VISIBLE : View.INVISIBLE);
     }
 
     private void showBikeStationsNearby() {
@@ -236,20 +282,32 @@ public class MapFragment extends Fragment {
         ArrayList<BikePickupStation> bikeStations = ApplicationContext.getInstance()
                 .getData().getBikeStationsNearby();
 
+        LatLng lastObtainedPosition = ApplicationContext.getInstance().getData().getLastPosition();
+
+        //adding current position to map
+        MarkerOptions currentPositionMarker = new MarkerOptions()
+                .position(lastObtainedPosition)
+                .icon(BitmapDescriptorFactory
+                        .fromResource(R.drawable.current_position_marker));
+
+        mGoogleMap.addMarker(currentPositionMarker);
+
+
+        //adding stations to map
         for(BikePickupStation station : bikeStations){
 
-            MarkerOptions markerOptions = new MarkerOptions()
+            MarkerOptions stationMarker = new MarkerOptions()
                     .position(station.getStationPosition())
                     .title(station.getStationName())
                     .snippet("Bikes Available: " + station.getBikesAvailable())
                     .icon(BitmapDescriptorFactory
                             .fromResource(R.drawable.bike_station));
 
-            mGoogleMap.addMarker(markerOptions);
+            mGoogleMap.addMarker(stationMarker);
         }
 
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(38.735361, -9.142362)).zoom(15.0f).build();
+                .target(lastObtainedPosition).zoom(15.0f).build();
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
         mGoogleMap.moveCamera(cameraUpdate);

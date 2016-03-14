@@ -9,7 +9,31 @@
         android:layout_weight="2"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:id="@+id/google_map">
+
     </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/trajectory_info"
+        android:background="@drawable/map_button_shape"
+        android:alpha="0.8"></RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/map_button_shape"
+        android:id="@+id/trajectory_info_frame"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="100dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView3"
+            android:background="@drawable/ic_info_outline_black_48dp"
+            android:alpha="0.5" />
+    </FrameLayout>
 
     <FrameLayout
         android:layout_width="wrap_content"

@@ -32,6 +32,8 @@ public class HomeFragment extends Fragment {
         getParentActivity().getSupportActionBar().setTitle(TITLE);
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

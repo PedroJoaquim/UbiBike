@@ -26,7 +26,11 @@ public class Data {
 
         mBikeStationsNearby = new ArrayList<>();
         mBikeStationsNearby.add(new BikePickupStation("Alameda Station", 10, 38.737073, -9.133582));
-        mBikeStationsNearby.add(new BikePickupStation("Arco do Cego Station", 10, 38.735361, -9.142362));
+        mBikeStationsNearby.add(new BikePickupStation("Arco do Cego Station", 6, 38.735361, -9.142362));
+        mBikeStationsNearby.add(new BikePickupStation("Campo Grande Station", 20, 38.759571, -9.155870));
+        mBikeStationsNearby.add(new BikePickupStation("Alvalade Station", 11, 38.753040, -9.143829));
+        mBikeStationsNearby.add(new BikePickupStation("Amoreiras Station", 2, 38.724176, -9.161963));
+        mBikeStationsNearby.add(new BikePickupStation("Indendente Station", 13, 38.722102, -9.135514));
 
 
         ArrayList<LatLng> route = new ArrayList<>();

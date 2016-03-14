@@ -51,6 +51,7 @@ public class UbiBike extends AppCompatActivity {
         }
     }
 
+
     private void setViewElements() {
 
         // Set a toolbar to replace the action bar.
@@ -65,7 +66,7 @@ public class UbiBike extends AppCompatActivity {
      *
      * @param fragment - fragment to be showed
      */
-    private void replaceFragment (Fragment fragment, boolean explicitReplace){
+    private void replaceFragment (Fragment fragment, boolean explicitReplace,  boolean addToBackStack){
         String backStateName =  fragment.getClass().getName();
         String fragmentTag = backStateName;
         boolean fragmentPopped = false;
@@ -80,7 +81,9 @@ public class UbiBike extends AppCompatActivity {
 
             FragmentTransaction ft = manager.beginTransaction();
             ft.replace(R.id.content_frame, fragment, fragmentTag);
-            ft.addToBackStack(backStateName);
+            if(addToBackStack) {
+                ft.addToBackStack(backStateName);
+            }
             ft.commit();
         }
         else if(explicitReplace){
@@ -99,7 +102,7 @@ public class UbiBike extends AppCompatActivity {
      */
     public void showHome(){
         Fragment fragment = new HomeFragment();
-        replaceFragment(fragment, false);
+        replaceFragment(fragment, false, false);
     }
 
     /**
@@ -109,7 +112,7 @@ public class UbiBike extends AppCompatActivity {
         getSupportActionBar().hide();
 
         Fragment fragment = new LoginFragment();
-        replaceFragment(fragment, false);
+        replaceFragment(fragment, true, true);
     }
 
     /**
@@ -117,7 +120,7 @@ public class UbiBike extends AppCompatActivity {
      */
     public void showRegisterAccountFragment(){
         Fragment fragment = new RegisterAccountFragment();
-        replaceFragment(fragment, false);
+        replaceFragment(fragment, false, true);
     }
 
     /**
@@ -126,7 +129,7 @@ public class UbiBike extends AppCompatActivity {
     public void showBikeStationsNearbyOnMap(){
 
         Fragment fragment = new MapFragment();
-        replaceFragment(fragment, false);
+        replaceFragment(fragment, false, true);
     }
 
     /**
@@ -134,7 +137,7 @@ public class UbiBike extends AppCompatActivity {
      */
     public void showPastTrajectoriesList(){
         Fragment fragment = new TrajectoryListFragment();
-        replaceFragment(fragment, false);
+        replaceFragment(fragment, false, true);
     }
 
     /**
@@ -153,7 +156,7 @@ public class UbiBike extends AppCompatActivity {
         arguments.putInt("trajectoriesCount", trajectoriesCount);
         fragment.setArguments(arguments);
 
-        replaceFragment(fragment, explicitReplace);
+        replaceFragment(fragment, explicitReplace, true);
     }
 
 }
