@@ -45,24 +45,124 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="BikePickDropHandler.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/BikePickDropHandler.java">
+      <file leaf-file-name="StationsInfoHandler.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/StationsInfoHandler.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.8869565">
+              <caret line="30" column="73" selection-start-line="30" selection-start-column="73" selection-end-line="30" selection-end-column="73" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DBObjectSelector.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/db/DBObjectSelector.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+              <caret line="232" column="61" selection-start-line="232" selection-start-column="61" selection-end-line="232" selection-end-column="61" />
+              <folding>
+                <element signature="e#6441#6450#0" expanded="true" />
+                <element signature="e#7158#7164#0" expanded="true" />
+                <marker date="1458050053386" expanded="true" signature="376:408" placeholder="SELECT * FRO... users" />
+                <marker date="1458050053386" expanded="true" signature="922:960" placeholder="SELECT * FRO... users" />
+                <marker date="1458050053386" expanded="true" signature="1592:1631" placeholder="SELECT * FRO... trajectories" />
+                <marker date="1458050053386" expanded="true" signature="2282:2326" placeholder="SELECT * FRO... trajectories" />
+                <marker date="1458050053386" expanded="true" signature="3047:3086" placeholder="SELECT * FRO... trajectories" />
+                <marker date="1458050053386" expanded="true" signature="3729:3776" placeholder="SELECT * FRO... points_transactions" />
+                <marker date="1458050053386" expanded="true" signature="4563:4645" placeholder="SELECT * FRO... points_transactions" />
+                <marker date="1458050053386" expanded="true" signature="5319:5354" placeholder="SELECT * FRO... points_transactions" />
+                <marker date="1458050053386" expanded="true" signature="5906:5948" placeholder="SELECT * FRO... sessions" />
+                <marker date="1458050053386" expanded="true" signature="6550:6572" placeholder="SELECT * FRO... sessions" />
+                <marker date="1458050053386" expanded="true" signature="7264:7329" placeholder="SELECT bid F... stations" />
+                <marker date="1458050053386" expanded="true" signature="7264:7330" placeholder="SELECT bid F... stations" />
+                <marker date="1458050053386" expanded="true" signature="7264:7405" placeholder="SELECT bid F... stations" />
+                <marker date="1458050053386" expanded="true" signature="7380:7404" placeholder="SELECT bid F... bookings" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ResultSetImpl.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar!/com/mysql/jdbc/ResultSetImpl.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-8.555555">
+              <caret line="1330" column="15" selection-start-line="1330" selection-start-column="15" selection-end-line="1330" selection-end-column="15" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Server.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="DBConnection.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/db/DBConnection.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BaseHandler.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/BaseHandler.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Server.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/Server.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.42255124">
-              <caret line="23" column="50" selection-start-line="23" selection-start-column="50" selection-end-line="23" selection-end-column="50" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="24" column="39" selection-start-line="24" selection-start-column="31" selection-end-line="24" selection-end-column="39" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="JSONSchemaValidation.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/util/JSONSchemaValidation.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="populate.sql" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/sql/populate.sql">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AuthRequiredHandler.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/AuthRequiredHandler.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="23" column="13" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#1591#1607#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TokenHandler.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/session/tokens/TokenHandler.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="16" column="60" selection-start-line="16" selection-start-column="12" selection-end-line="16" selection-end-column="60" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -98,7 +198,6 @@
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/session/Tokens/TokenFactory.java" />
         <option value="$PROJECT_DIR$/src/test/java/pt/ist/cmu/ubibike/httpserver/cipher/CipherTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/session/tokens/PublicKeyToken.java" />
-        <option value="$PROJECT_DIR$/src/main/sql/populate.sql" />
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/model/User.java" />
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/session/tokens/SessionToken.java" />
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/session/tokens/TokenFactory.java" />
@@ -106,13 +205,11 @@
         <option value="$PROJECT_DIR$/src/test/java/pt/ist/cmu/ubibike/httpserver/util/UserInputValidationTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/model/Trajectory.java" />
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/model/Session.java" />
-        <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/db/DBObjectCreation.java" />
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/session/SessionManager.java" />
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/util/ParameterFilter.java" />
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/util/UserInputValidation.java" />
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/BaseHandler.java" />
         <option value="$PROJECT_DIR$/src/main/resources/json_schemas/register.json" />
-        <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/db/DBObjectSelector.java" />
         <option value="$PROJECT_DIR$/src/main/resources/json_schemas/authentication.json" />
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/util/JSONSchemaValidation.java" />
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/RegistrationHandler.java" />
@@ -121,14 +218,20 @@
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/session/tokens/TokenHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/TokenRequestHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/AuthRequiredHandler.java" />
-        <option value="$PROJECT_DIR$/src/main/sql/init.sql" />
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/NewTrajectoryHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/UserInfoHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/TrajectoriesHistoryHandler.java" />
-        <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/StationsInfoHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/BikeBookingHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/BikePickDropHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/Server.java" />
+        <option value="$PROJECT_DIR$/src/main/sql/init.sql" />
+        <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/db/DBObjectCreation.java" />
+        <option value="$APPLICATION_CONFIG_DIR$/consoles/db/df3c0d96-21f4-49d6-916a-04f94d8ac10f/console.sql" />
+        <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/model/Station.java" />
+        <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/model/Bike.java" />
+        <option value="$PROJECT_DIR$/src/main/sql/populate.sql" />
+        <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/db/DBObjectSelector.java" />
+        <option value="$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/StationsInfoHandler.java" />
       </list>
     </option>
   </component>
@@ -203,7 +306,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -253,6 +355,28 @@
               <option name="myItemId" value="main" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sql" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ubi-server" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="UbiBikeServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -280,10 +404,165 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ubi-server" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="UbiBikeServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="httpserver" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="session" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ubi-server" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="UbiBikeServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="httpserver" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="session" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tokens" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ubi-server" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="UbiBikeServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="httpserver" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="model" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ubi-server" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="UbiBikeServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="httpserver" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="handlers" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ubi-server" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="UbiBikeServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="httpserver" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="db" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
+      <pane id="PackagesPane" />
       <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -298,6 +577,9 @@
   <component name="RecentsManager">
     <key name="CreateTestDialog.RecentsKey">
       <recent name="pt.ist.cmu.ubibike.httpserver.util" />
+    </key>
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="pt.ist.cmu.ubibike.httpserver.model" />
     </key>
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
@@ -910,6 +1192,7 @@
       <workItem from="1457828962865" duration="379000" />
       <workItem from="1457893732733" duration="2734000" />
       <workItem from="1457911774355" duration="3308000" />
+      <workItem from="1458043241759" duration="3738000" />
     </task>
     <servers />
   </component>
@@ -946,24 +1229,24 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="31071000" />
+    <option name="totallyTimeSpent" value="34809000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1" y="1" width="1918" height="1038" extended-state="0" />
-    <editor active="false" />
+    <frame x="1" y="1" width="1918" height="1038" extended-state="1" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32560706" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3289183" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4628633" sideWeight="0.495585" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.08073197" sideWeight="0.495585" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33443707" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4628633" sideWeight="0.50441504" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33443707" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3388521" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.40688914" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18675996" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32992464" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2497309" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -974,6 +1257,7 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4628633" sideWeight="0.50441504" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32936078" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
@@ -1028,14 +1312,8 @@
           <properties class="pt.ist.cmu.ubibike.httpserver.session.tokens.TokenGenerationTests" method="publicKeyTokenTest2" />
           <option name="timeStamp" value="5" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/util/JSONSchemaValidation.java</url>
-          <line>21</line>
-          <properties />
-          <option name="timeStamp" value="16" />
-        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="19" />
+      <option name="time" value="21" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1044,28 +1322,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/cipher/CipherUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/cipher/PublicKeyReader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2845982">
-          <caret line="20" column="9" selection-start-line="20" selection-start-column="9" selection-end-line="20" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/cipher/PrivateKeyReader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3794643">
-          <caret line="27" column="53" selection-start-line="27" selection-start-column="21" selection-end-line="27" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/cipher/CipherUtils.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.16722973">
@@ -1107,20 +1363,6 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/df3c0d96-21f4-49d6-916a-04f94d8ac10f/console.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/sql/populate.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="87" selection-start-line="0" selection-start-column="87" selection-end-line="0" selection-end-column="87" />
         </state>
       </provider>
     </entry>
@@ -1221,7 +1463,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.34851936">
           <caret line="20" column="5" selection-start-line="20" selection-start-column="5" selection-end-line="20" selection-end-column="5" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1239,59 +1480,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/db/DBObjectCreation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="61" column="0" selection-start-line="61" selection-start-column="0" selection-end-line="65" selection-end-column="54" />
-          <folding>
-            <marker date="1457802480407" expanded="true" signature="278:344" placeholder="INSERT INTO users... " />
-            <marker date="1457802480407" expanded="true" signature="995:1082" placeholder="INSERT INTO trajectories... " />
-            <marker date="1457802480407" expanded="true" signature="1752:1834" placeholder="INSERT INTO points_transactions... " />
-            <marker date="1457802480407" expanded="true" signature="2436:2473" placeholder="INSERT INTO sessions... " />
-            <marker date="1457802480407" expanded="true" signature="2436:2485" placeholder="INSERT INTO sessions... " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="dbDummy://dbtable:/ab7c6c57/df3c0d96-21f4-49d6-916a-04f94d8ac10f/ist175624.users">
-      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-        <state>
-          <filtering enabled="true" />
-        </state>
-      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/db/DBObjectSelector.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-          <folding>
-            <marker date="1457829271027" expanded="true" signature="549:581" placeholder="SELECT * FRO... users" />
-            <marker date="1457829271027" expanded="true" signature="1058:1096" placeholder="SELECT * FRO... users" />
-            <marker date="1457829271027" expanded="true" signature="1670:1709" placeholder="SELECT * FRO... trajectories" />
-            <marker date="1457829271027" expanded="true" signature="2302:2346" placeholder="SELECT * FRO... trajectories" />
-            <marker date="1457829271027" expanded="true" signature="3009:3048" placeholder="SELECT * FRO... trajectories" />
-            <marker date="1457829271027" expanded="true" signature="3654:3701" placeholder="SELECT * FRO... points_transactions" />
-            <marker date="1457829271027" expanded="true" signature="4576:4658" placeholder="SELECT * FRO... points_transactions" />
-            <marker date="1457829271027" expanded="true" signature="5343:5378" placeholder="SELECT * FRO... points_transactions" />
-            <marker date="1457829271027" expanded="true" signature="5870:5912" placeholder="SELECT * FRO... sessions" />
-          </folding>
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state>
+          <filtering enabled="true" />
         </state>
       </provider>
     </entry>
     <entry file="dbDummy://dbtable:/ab7c6c57/df3c0d96-21f4-49d6-916a-04f94d8ac10f/ist175624.points_transactions">
-      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-        <state>
-          <filtering enabled="true" />
-        </state>
-      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state>
+          <filtering enabled="true" />
         </state>
       </provider>
     </entry>
@@ -1299,14 +1508,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.6812386">
           <caret line="22" column="4" selection-start-line="22" selection-start-column="4" selection-end-line="22" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/util/JSONSchemaValidation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.1130434">
-          <caret line="49" column="0" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1331,7 +1532,7 @@
         <state vertical-scroll-proportion="0.5159453">
           <caret line="41" column="23" selection-start-line="41" selection-start-column="23" selection-end-line="41" selection-end-column="23" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1357,24 +1558,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/session/tokens/PublicKeyToken.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.13553531">
-          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="15" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/RegistrationHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.24487472">
-          <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="39" selection-end-column="9" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/TokenRequestHandler.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.23234624">
@@ -1385,47 +1568,132 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/db/DBConnection.java">
+    <entry file="dbDummy://dbtable:/ab7c6c57/df3c0d96-21f4-49d6-916a-04f94d8ac10f/ist175624.sessions">
+      <provider editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state>
+          <filtering enabled="true" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/NewTrajectoryHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.17425968">
-          <caret line="11" column="52" selection-start-line="11" selection-start-column="44" selection-end-line="11" selection-end-column="52" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/UserInfoHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="22" column="5" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/TrajectoriesHistoryHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.46469247">
+          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/BikeBookingHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4453303">
+          <caret line="23" column="1" selection-start-line="23" selection-start-column="1" selection-end-line="23" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/BikePickDropHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4641638">
+          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/df3c0d96-21f4-49d6-916a-04f94d8ac10f/console.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="2" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="146" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/db/DBObjectCreation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="2.530648">
+          <caret line="85" column="0" selection-start-line="85" selection-start-column="0" selection-end-line="85" selection-end-column="0" />
+          <folding>
+            <marker date="1458044377175" expanded="true" signature="278:344" placeholder="INSERT INTO users... " />
+            <marker date="1458044377175" expanded="true" signature="995:1082" placeholder="INSERT INTO trajectories... " />
+            <marker date="1458044377175" expanded="true" signature="1752:1834" placeholder="INSERT INTO points_transactions... " />
+            <marker date="1458044377175" expanded="true" signature="2436:2473" placeholder="INSERT INTO sessions... " />
+            <marker date="1458044377175" expanded="true" signature="2436:2485" placeholder="INSERT INTO sessions... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/RegistrationHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6708428">
+          <caret line="80" column="32" selection-start-line="80" selection-start-column="32" selection-end-line="80" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/model/Station.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.24487472">
+          <caret line="25" column="8" selection-start-line="25" selection-start-column="8" selection-end-line="25" selection-end-column="8" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/model/Bike.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/sql/init.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="65" column="23" selection-start-line="65" selection-start-column="23" selection-end-line="65" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/session/tokens/PublicKeyToken.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="24" column="3" selection-start-line="24" selection-start-column="3" selection-end-line="26" selection-end-column="5" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/session/tokens/TokenHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.34851936">
-          <caret line="23" column="9" selection-start-line="23" selection-start-column="9" selection-end-line="23" selection-end-column="9" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="16" column="60" selection-start-line="16" selection-start-column="12" selection-end-line="16" selection-end-column="60" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/BaseHandler.java">
+    <entry file="file://$PROJECT_DIR$/src/main/sql/populate.sql">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.23234624">
-          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="dbDummy://dbtable:/ab7c6c57/df3c0d96-21f4-49d6-916a-04f94d8ac10f/ist175624.sessions">
-      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-        <state>
-          <filtering enabled="true" />
-        </state>
-      </provider>
-      <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/sql/init.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4453303">
-          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1441,58 +1709,75 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/NewTrajectoryHandler.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar!/com/mysql/jdbc/ResultSetImpl.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.555555">
+          <caret line="1330" column="15" selection-start-line="1330" selection-start-column="15" selection-end-line="1330" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/db/DBConnection.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/UserInfoHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="22" column="5" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/TrajectoriesHistoryHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.46469247">
-          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/BikeBookingHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4453303">
-          <caret line="23" column="1" selection-start-line="23" selection-start-column="1" selection-end-line="23" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/StationsInfoHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="19" selection-start-line="0" selection-start-column="19" selection-end-line="0" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/BikePickDropHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/Server.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.42255124">
-          <caret line="23" column="50" selection-start-line="23" selection-start-column="50" selection-end-line="23" selection-end-column="50" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="24" column="39" selection-start-line="24" selection-start-column="31" selection-end-line="24" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/util/JSONSchemaValidation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/db/DBObjectSelector.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="232" column="61" selection-start-line="232" selection-start-column="61" selection-end-line="232" selection-end-column="61" />
+          <folding>
+            <element signature="e#6441#6450#0" expanded="true" />
+            <element signature="e#7158#7164#0" expanded="true" />
+            <marker date="1458050053386" expanded="true" signature="376:408" placeholder="SELECT * FRO... users" />
+            <marker date="1458050053386" expanded="true" signature="922:960" placeholder="SELECT * FRO... users" />
+            <marker date="1458050053386" expanded="true" signature="1592:1631" placeholder="SELECT * FRO... trajectories" />
+            <marker date="1458050053386" expanded="true" signature="2282:2326" placeholder="SELECT * FRO... trajectories" />
+            <marker date="1458050053386" expanded="true" signature="3047:3086" placeholder="SELECT * FRO... trajectories" />
+            <marker date="1458050053386" expanded="true" signature="3729:3776" placeholder="SELECT * FRO... points_transactions" />
+            <marker date="1458050053386" expanded="true" signature="4563:4645" placeholder="SELECT * FRO... points_transactions" />
+            <marker date="1458050053386" expanded="true" signature="5319:5354" placeholder="SELECT * FRO... points_transactions" />
+            <marker date="1458050053386" expanded="true" signature="5906:5948" placeholder="SELECT * FRO... sessions" />
+            <marker date="1458050053386" expanded="true" signature="6550:6572" placeholder="SELECT * FRO... sessions" />
+            <marker date="1458050053386" expanded="true" signature="7264:7329" placeholder="SELECT bid F... stations" />
+            <marker date="1458050053386" expanded="true" signature="7264:7330" placeholder="SELECT bid F... stations" />
+            <marker date="1458050053386" expanded="true" signature="7264:7405" placeholder="SELECT bid F... stations" />
+            <marker date="1458050053386" expanded="true" signature="7380:7404" placeholder="SELECT bid F... bookings" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/BaseHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/pt/ist/cmu/ubibike/httpserver/handlers/StationsInfoHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.8869565">
+          <caret line="30" column="73" selection-start-line="30" selection-start-column="73" selection-end-line="30" selection-end-column="73" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

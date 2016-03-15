@@ -58,7 +58,8 @@ CREATE TABLE bikes_stations (
   sid INT NOT NULL,
   bid INT NOT NULL,
   PRIMARY KEY (bid, sid),
-  FOREIGN KEY (sid) REFERENCES stations (sid)
+  FOREIGN KEY (sid) REFERENCES stations (sid),
+  UNIQUE (bid)
 );
 
 DROP TABLE IF EXISTS bookings;
