@@ -15,10 +15,12 @@ DROP TABLE IF EXISTS trajectories;
 CREATE TABLE trajectories (
   tid            INT AUTO_INCREMENT NOT NULL,
   uid            INT                NOT NULL,
-  coords_json    VARCHAR(5000),
+  coords_text    VARCHAR(5000)      NOT NULL,
   points_earned  INT                NOT NULL,
   user_tid       VARCHAR(124)       NOT NULL UNIQUE,
-  ride_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  distance       FLOAT              NOT NULL,
+  ride_start_timestamp LONG  NOT NULL,
+  ride_end_timestamp LONG  NOT NULL,
   PRIMARY KEY (tid)
 );
 

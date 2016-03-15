@@ -9,7 +9,7 @@ public class UserInfoHandler extends AuthRequiredHandler {
 
     @Override
     protected void continueActionValidation(HttpExchange httpExchange) {
-
+        //nothing more todo
     }
 
     @Override
