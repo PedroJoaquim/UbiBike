@@ -3,7 +3,7 @@ SET foreign_key_checks = 0;
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
   uid        INT           NOT NULL AUTO_INCREMENT,
-  username   VARCHAR(30)   NULL,
+  username   VARCHAR(30)   NOT NULL,
   public_key VARCHAR(2048) NOT NULL,
   password   BLOB          NOT NULL,
   points     INT           NOT NULL DEFAULT 0,

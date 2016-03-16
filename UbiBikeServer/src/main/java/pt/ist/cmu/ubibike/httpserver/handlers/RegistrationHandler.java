@@ -72,7 +72,7 @@ public class RegistrationHandler extends BaseHandler {
     }
 
     @Override
-    protected void produceAnswer(HttpExchange httpExchange) throws Exception{
+    protected String produceAnswer(HttpExchange httpExchange) throws Exception{
 
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode jNode = mapper.createObjectNode();
@@ -81,11 +81,6 @@ public class RegistrationHandler extends BaseHandler {
         jNode.put("public_key_token", this.publicKeyToken);
         jNode.put("uid", this.uid);
 
-        String json = jNode.toString();
-
-        httpExchange.sendResponseHeaders(200, json.length());
-        OutputStream os = httpExchange.getResponseBody();
-        os.write(json.getBytes());
-        os.close();
+        return jNode.toString();
     }
 }

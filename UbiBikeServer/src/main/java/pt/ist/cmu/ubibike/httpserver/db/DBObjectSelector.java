@@ -93,7 +93,7 @@ public class DBObjectSelector {
 
     }
 
-    public static List<Trajectory> getTrajectoriesFromUser(Connection conn, int uid) throws SQLException {
+    public static Trajectory[] getTrajectoriesFromUser(Connection conn, int uid) throws SQLException {
 
         List<Trajectory> resultList = new ArrayList<Trajectory>();
 
@@ -110,7 +110,7 @@ public class DBObjectSelector {
             stmt.close();
         } catch (SQLException e) {/*ignore*/}
 
-        return resultList;
+        return resultList.toArray(new Trajectory[resultList.size()]);
     }
 
     public static PointsTransaction getPointsTransactionFromID(Connection conn, int ptid) throws SQLException {
@@ -136,7 +136,7 @@ public class DBObjectSelector {
         return pt;
     }
 
-    public static List<PointsTransaction> getPointsTransactionFromUser(Connection conn, int uid) throws SQLException {
+    public static PointsTransaction[] getPointsTransactionFromUser(Connection conn, int uid) throws SQLException {
 
         List<PointsTransaction> resultList = new ArrayList<PointsTransaction>();
 
@@ -156,7 +156,7 @@ public class DBObjectSelector {
             stmt.close();
         } catch (SQLException e) {/*ignore*/}
 
-        return resultList;
+        return resultList.toArray(new PointsTransaction[resultList.size()]);
     }
 
     public static Session getSessionFromUID(Connection conn, int uid) throws SQLException {
@@ -197,7 +197,7 @@ public class DBObjectSelector {
         return s;
     }
 
-    public static List<Station> getAllStations(Connection conn) throws SQLException {
+    public static Station[] getAllStations(Connection conn) throws SQLException {
 
         List<Station> resultList = new ArrayList<Station>();
 
@@ -215,7 +215,7 @@ public class DBObjectSelector {
         } catch (SQLException e) {/*ignore*/}
 
 
-        return resultList;
+        return resultList.toArray(new Station[resultList.size()]);
     }
 
     private static Bike[] getAvailableBikesFromStation(Connection conn, int sid) throws SQLException {

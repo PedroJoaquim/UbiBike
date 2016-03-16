@@ -49,6 +49,9 @@ public class AuthenticationHandler extends BaseHandler {
             throw new RuntimeException("the submited user does not exist");
         }
 
+        byte[] stored = this.user.getPassword();
+        byte[] submitedPass = CipherUtils.getSHA2Digest(password.getBytes());
+
         if(!Arrays.equals(this.user.getPassword(), CipherUtils.getSHA2Digest(password.getBytes()))){
             throw new RuntimeException("invalid credentials");
         }
@@ -61,19 +64,13 @@ public class AuthenticationHandler extends BaseHandler {
     }
 
     @Override
-    protected void produceAnswer(HttpExchange httpExchange) throws Exception{
+    protected String produceAnswer(HttpExchange httpExchange) throws Exception{
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode jNode = mapper.createObjectNode();
 
         jNode.put("session_token", this.sessionToken);
         jNode.put("uid", this.user.getUid());
 
-        String json = jNode.toString();
-
-        httpExchange.sendResponseHeaders(200, json.length());
-        OutputStream os = httpExchange.getResponseBody();
-        os.write(json.getBytes());
-        os.close();
-
+        return jNode.toString();
     }
 }

@@ -1,6 +1,7 @@
 package pt.ist.cmu.ubibike.httpserver.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
@@ -10,21 +11,23 @@ public class User {
 
     private int uid;
     private String username;
-    private String public_key;
+    @JsonIgnore
+    private String publicKey;
+    @JsonIgnore
     private byte[] password;
     private Trajectory[] trajectories;
 
     public User(int uid, String username, String public_key, byte[] password) {
         this.uid = uid;
         this.username = username;
-        this.public_key = public_key;
+        this.publicKey = public_key;
         this.password = password;
     }
 
     public User(int uid, String username, String public_key, byte[] password, Trajectory[] trajectories) {
         this.uid = uid;
         this.username = username;
-        this.public_key = public_key;
+        this.publicKey = public_key;
         this.password = password;
         this.trajectories = trajectories;
     }
@@ -52,11 +55,11 @@ public class User {
     }
 
     public String getPublicKey() {
-        return public_key;
+        return publicKey;
     }
 
     public void setPublicKey(String publicKey) {
-        this.public_key = publicKey;
+        this.publicKey = publicKey;
     }
 
     public byte[] getPassword() {
@@ -65,14 +68,6 @@ public class User {
 
     public void setPassword(byte[] password) {
         this.password = password;
-    }
-
-    public String getPublic_key() {
-        return public_key;
-    }
-
-    public void setPublic_key(String public_key) {
-        this.public_key = public_key;
     }
 
     @JsonGetter("trajectories")

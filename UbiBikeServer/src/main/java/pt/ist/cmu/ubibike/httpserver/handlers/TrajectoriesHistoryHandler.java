@@ -18,7 +18,7 @@ public class TrajectoriesHistoryHandler extends AuthRequiredHandler {
     }
 
     @Override
-    protected void produceAnswer(HttpExchange httpExchange) throws Exception {
-
+    protected String produceAnswer(HttpExchange httpExchange) throws Exception {
+        return "todo";
     }
 }
