@@ -5,7 +5,7 @@ CREATE TABLE users (
   uid        INT           NOT NULL AUTO_INCREMENT,
   username   VARCHAR(30)   NOT NULL,
   public_key VARCHAR(2048) NOT NULL,
-  password   BLOB          NOT NULL,
+  password   BINARY(32)    NOT NULL,
   points     INT           NOT NULL DEFAULT 0,
   PRIMARY KEY (uid),
   UNIQUE (username)

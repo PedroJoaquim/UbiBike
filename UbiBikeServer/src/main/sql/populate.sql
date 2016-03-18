@@ -1,4 +1,6 @@
-INSERT INTO users(username, public_key, password, points) VALUES ('pedro', 'pedro123123', CONV('2702cb34ee041711b9df0c67a8d5c9de02110c80e3fc966ba8341456dbc9ef2b', 16, 2), 0);
+INSERT INTO users(username, public_key, password, points) VALUES ('pedro', 'pedro123123', CAST(0x2702CB34EE041711B9DF0C67A8D5C9DE02110C80E3FC966BA8341456DBC9EF2B AS BINARY(32)), 0);
+
+INSERT INTO trajectories(tid, uid, coords_text, points_earned, user_tid, distance, ride_start_timestamp, ride_end_timestamp) VALUES (1, 1, '-123.0;-12.0#-123.0;-13.0#-123.0;-14.0#-123.0;-14.0#-123.0;-15.0', 100, 'TESTID', 100, 1234567890, 1234567899);
 
 
 INSERT INTO stations(station_name, lat, lng) VALUES   ('Odivelas Station', 38.793017, -9.173086),
