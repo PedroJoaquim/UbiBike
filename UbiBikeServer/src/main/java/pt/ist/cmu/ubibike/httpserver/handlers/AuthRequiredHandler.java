@@ -38,5 +38,5 @@ public abstract class AuthRequiredHandler extends BaseHandler{
     }
 
 
-    protected abstract void continueActionValidation(HttpExchange httpExchange);
+    protected abstract void continueActionValidation(HttpExchange httpExchange) throws Exception;
 }

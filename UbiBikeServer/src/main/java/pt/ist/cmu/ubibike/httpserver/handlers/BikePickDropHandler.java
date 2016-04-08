@@ -8,7 +8,7 @@ import com.sun.net.httpserver.HttpExchange;
 public class BikePickDropHandler extends AuthRequiredHandler {
 
     @Override
-    protected void continueActionValidation(HttpExchange httpExchange) {
+    protected void continueActionValidation(HttpExchange httpExchange) throws Exception {
 
     }
 

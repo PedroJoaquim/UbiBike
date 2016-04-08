@@ -197,6 +197,7 @@ public class DBObjectSelector {
         return s;
     }
 
+
     public static Station[] getAllStations(Connection conn) throws SQLException {
 
         List<Station> resultList = new ArrayList<Station>();
@@ -218,7 +219,7 @@ public class DBObjectSelector {
         return resultList.toArray(new Station[resultList.size()]);
     }
 
-    private static Bike[] getAvailableBikesFromStation(Connection conn, int sid) throws SQLException {
+    public static Bike[] getAvailableBikesFromStation(Connection conn, int sid) throws SQLException {
 
         List<Bike> resultList = new ArrayList<Bike>();
 
@@ -237,5 +238,22 @@ public class DBObjectSelector {
         return  resultList.toArray(new Bike[resultList.size()]);
     }
 
+    public static Booking[] getBookingsFromUID(Connection conn, int uid) throws SQLException {
 
+        List<Booking> resultList = new ArrayList<Booking>();
+
+        Statement stmt = conn.createStatement();
+        ResultSet result = stmt.executeQuery("SELECT * FROM bookings WHERE uid = " + uid);
+
+        while (result.next()){
+            resultList.add(new Booking(result.getInt("uid"), result.getInt("bid"), result.getLong("booking_timestamp"), result.getBoolean("active")));
+        }
+
+        try {
+            result.close();
+            stmt.close();
+        } catch (SQLException e) {/*ignore*/}
+
+        return resultList.toArray(new Booking[resultList.size()]);
+    }
 }

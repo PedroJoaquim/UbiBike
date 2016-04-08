@@ -7,9 +7,7 @@ import pt.ist.cmu.ubibike.httpserver.db.DBObjectSelector;
 import pt.ist.cmu.ubibike.httpserver.model.Station;
 
 
-/**
- * Created by Pedro Joaquim on 14-03-2016.
- */
+
 public class StationsInfoHandler extends AuthRequiredHandler {
 
     private Station[] result;
