@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.cmu.ubibike;
 
 import android.app.Application;
 
+import pt.ulisboa.tecnico.cmu.ubibike.connection.ServerCommunicationHandler;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.StorageManager;
 
@@ -13,6 +14,7 @@ public class ApplicationContext extends Application {
     private static ApplicationContext mInstance;
     private Data mData;
     private StorageManager mStorageManager;
+    private ServerCommunicationHandler mServerCommunicationHandler;
 
 
     public static ApplicationContext getInstance() {

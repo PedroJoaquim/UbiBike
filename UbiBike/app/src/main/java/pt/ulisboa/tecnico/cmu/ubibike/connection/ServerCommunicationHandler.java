@@ -29,8 +29,6 @@ public class ServerCommunicationHandler {
 
 
 
-
-
     /**
      * Getters & setters
      */

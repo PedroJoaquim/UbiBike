@@ -13,24 +13,47 @@ import java.util.HashMap;
  */
 public class Data {
 
+    private int uid;
+    private String sessionToken;
+
     private ArrayList<Chat> mConversations;
+
     private ArrayList<BikePickupStation> mBikeStationsNearby;
-    private HashMap<Integer, Trajectory> mTrajectories;
+    private ArrayList<Trajectory> mTrajectories;
     private LatLng mLastPosition;
+
+    private Date dateUpdated;
+
+
 
     public Data(){
         mConversations = new ArrayList<>();
-        mTrajectories = new HashMap<>();
+        mTrajectories = new ArrayList<>();
 
         //hardcoded data below
 
         mBikeStationsNearby = new ArrayList<>();
+        mBikeStationsNearby.add(new BikePickupStation("Odivelas Station", 10, 38.793017, -9.173086));
+        mBikeStationsNearby.add(new BikePickupStation("Ameixoeira", 10, 38.779865, -9.159804));
+        mBikeStationsNearby.add(new BikePickupStation("Campo Grande Station", 10, 38.759601, -9.157925));
+        mBikeStationsNearby.add(new BikePickupStation("Alvalade Station", 11, 38.753040, -9.143829));
+        mBikeStationsNearby.add(new BikePickupStation("Entrecampos Station", 10, 38.747692, -9.148506));
         mBikeStationsNearby.add(new BikePickupStation("Alameda Station", 10, 38.737073, -9.133582));
         mBikeStationsNearby.add(new BikePickupStation("Arco do Cego Station", 6, 38.735361, -9.142362));
-        mBikeStationsNearby.add(new BikePickupStation("Campo Grande Station", 20, 38.759571, -9.155870));
-        mBikeStationsNearby.add(new BikePickupStation("Alvalade Station", 11, 38.753040, -9.143829));
-        mBikeStationsNearby.add(new BikePickupStation("Amoreiras Station", 2, 38.724176, -9.161963));
-        mBikeStationsNearby.add(new BikePickupStation("Indendente Station", 13, 38.722102, -9.135514));
+        mBikeStationsNearby.add(new BikePickupStation("Parque Station", 10, 38.729628, -9.150012));
+        mBikeStationsNearby.add(new BikePickupStation("Avenida Station", 10, 38.719981, -9.145588));
+        mBikeStationsNearby.add(new BikePickupStation("Rossio Station", 10, 38.719981, -9.145588));
+        mBikeStationsNearby.add(new BikePickupStation("Indendente Station", 10, 38.722029, -9.135263));
+        mBikeStationsNearby.add(new BikePickupStation("Arroios Station", 10, 38.737073, -9.133582));
+        mBikeStationsNearby.add(new BikePickupStation("Chelas Station", 10, 38.755019, -9.114212));
+        mBikeStationsNearby.add(new BikePickupStation("Oriente Station", 10, 38.768527, -9.099648));
+        mBikeStationsNearby.add(new BikePickupStation("Moscavide Station", 10, 38.768527, -9.099648));
+        mBikeStationsNearby.add(new BikePickupStation("Laranjeiras", 10, 38.748300, -9.172612));
+        mBikeStationsNearby.add(new BikePickupStation("Colegio Militar Station", 10, 38.753195, -9.188162));
+        mBikeStationsNearby.add(new BikePickupStation("Pontinha Station", 10, 38.762259, -9.196830));
+        mBikeStationsNearby.add(new BikePickupStation("Cais do Sodré Station", 10, 38.705734, -9.144241));
+        mBikeStationsNearby.add(new BikePickupStation("Rossio Station", 10, 38.713863, -9.139069));
+        mBikeStationsNearby.add(new BikePickupStation("Martim Moniz Station", 10, 38.716798, -9.135628));
 
 
         ArrayList<LatLng> route = new ArrayList<>();
@@ -52,7 +75,7 @@ public class Data {
 
         Trajectory trajectory = new Trajectory(0, "Alameda Station", "Arco do Cego Station", route, 2398, start1, end1);
 
-        mTrajectories.put(0, trajectory);
+        mTrajectories.add(trajectory);
 
 
         ArrayList<LatLng> route2 = new ArrayList<>();
@@ -64,7 +87,7 @@ public class Data {
 
         Trajectory trajectory2 = new Trajectory(1, "Station1", "Station2", route2, 519, start2, end2);
 
-        mTrajectories.put(1, trajectory2);
+        mTrajectories.add(trajectory2);
 
 
         ArrayList<LatLng> route3 = new ArrayList<>();
@@ -76,7 +99,7 @@ public class Data {
 
         Trajectory trajectory3 = new Trajectory(2, "Station3", "Station4", route3, 600, start3, end3);
 
-        mTrajectories.put(2, trajectory3);
+        mTrajectories.add(trajectory3);
     }
 
 
@@ -124,7 +147,7 @@ public class Data {
      */
     public ArrayList<Trajectory> getAllTrajectories(){
 
-        ArrayList<Trajectory> trajectories = new ArrayList<>(mTrajectories.values());
+        ArrayList<Trajectory> trajectories = mTrajectories;
         Collections.sort(trajectories);
 
         return trajectories;
@@ -147,4 +170,28 @@ public class Data {
         return new LatLng(38.748101, -9.148148);    //hardcoded at Entrecampos
     }
 
+
+    public Date getLastUpdated() {
+        return dateUpdated;
+    }
+
+    public void setLastUpdated(Date dateUpdated) {
+        this.dateUpdated = dateUpdated;
+    }
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
+
+    public String getSessionToken() {
+        return sessionToken;
+    }
+
+    public void setSessionToken(String sessionToken) {
+        this.sessionToken = sessionToken;
+    }
 }
