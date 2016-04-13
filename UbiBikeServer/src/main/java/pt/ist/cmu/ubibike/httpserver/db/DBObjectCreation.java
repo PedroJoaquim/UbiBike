@@ -103,4 +103,16 @@ public class DBObjectCreation {
 
         try{stmt.close();} catch (SQLException e) {/*ignore*/}
     }
+
+    public static void addBikeToStation(Connection conn, int bid, int sid) throws SQLException {
+
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO bikes_stations(sid, bid) VALUES(?,?)");
+
+        stmt.setInt(1, sid);
+        stmt.setInt(2, bid);
+
+        stmt.executeUpdate();
+
+        try{stmt.close();} catch (SQLException e) {/*ignore*/}
+    }
 }

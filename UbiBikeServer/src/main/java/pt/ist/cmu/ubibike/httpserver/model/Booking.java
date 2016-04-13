@@ -3,12 +3,14 @@ package pt.ist.cmu.ubibike.httpserver.model;
 
 public class Booking {
 
+    private int bookingID;
     private int uid;
     private int bid;
     private boolean active;
     private long bookTimestamp;
 
-    public Booking(int uid, int bid, long bookTimestamp, boolean active) {
+    public Booking(int bookingID, int uid, int bid, long bookTimestamp, boolean active) {
+        this.bookingID = bookingID;
         this.uid = uid;
         this.bid = bid;
         this.active = active;
@@ -41,5 +43,13 @@ public class Booking {
 
     public void setBookTimestamp(long bookTimestamp) {
         this.bookTimestamp = bookTimestamp;
+    }
+
+    public int getBookingID() {
+        return bookingID;
+    }
+
+    public void setBookingID(int bookingID) {
+        this.bookingID = bookingID;
     }
 }

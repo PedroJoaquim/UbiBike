@@ -14,5 +14,8 @@ public class DBObjectRemove {
 
     }
 
-
+    public static void removeBookingFromUser(Connection conn, int uid) throws SQLException{
+        Statement stmt = conn.createStatement();
+        stmt.executeUpdate("DELETE FROM bookings WHERE uid = " + uid);
+    }
 }

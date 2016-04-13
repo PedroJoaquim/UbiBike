@@ -66,11 +66,12 @@ CREATE TABLE bikes_stations (
 
 DROP TABLE IF EXISTS bookings;
 CREATE TABLE bookings (
+  booking_id INT NOT NULL AUTO_INCREMENT,
   bid INT NOT NULL,
   uid INT NOT NULL,
   active BOOL NOT NULL DEFAULT FALSE,
   booking_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (bid)
+  PRIMARY KEY (booking_id, bid)
 );
 
 SET foreign_key_checks = 1;

@@ -238,15 +238,15 @@ public class DBObjectSelector {
         return  resultList.toArray(new Bike[resultList.size()]);
     }
 
-    public static Booking[] getBookingsFromUID(Connection conn, int uid) throws SQLException {
+    public static Bike[] getBikesFromStation(Connection conn, int sid) throws SQLException {
 
-        List<Booking> resultList = new ArrayList<Booking>();
+        List<Bike> resultList = new ArrayList<Bike>();
 
         Statement stmt = conn.createStatement();
-        ResultSet result = stmt.executeQuery("SELECT * FROM bookings WHERE uid = " + uid);
+        ResultSet result = stmt.executeQuery("SELECT bid FROM stations AS s, bikes_stations AS bs WHERE s.sid = " + sid + " AND bs.sid = s.sid");
 
-        while (result.next()){
-            resultList.add(new Booking(result.getInt("uid"), result.getInt("bid"), result.getLong("booking_timestamp"), result.getBoolean("active")));
+        while (result.next()) {
+            resultList.add(new Bike(result.getInt("bid")));
         }
 
         try {
@@ -254,6 +254,31 @@ public class DBObjectSelector {
             stmt.close();
         } catch (SQLException e) {/*ignore*/}
 
-        return resultList.toArray(new Booking[resultList.size()]);
+        return  resultList.toArray(new Bike[resultList.size()]);
+    }
+
+    public static Booking getBookingFromUID(Connection conn, int uid) throws SQLException {
+
+        Statement stmt = conn.createStatement();
+        ResultSet result = stmt.executeQuery("SELECT * FROM bookings WHERE uid = " + uid);
+
+        if (!result.next()) {
+
+            try {
+                result.close();
+                stmt.close();
+            } catch (SQLException e) {/*ignore*/}
+
+            return null;
+        }
+
+        Booking b = new Booking(result.getInt("booking_id"), result.getInt("uid"), result.getInt("bid"), result.getLong("booking_timestamp"), result.getBoolean("active"));
+
+        try {
+            result.close();
+            stmt.close();
+        } catch (SQLException e) {/*ignore*/}
+
+        return b;
     }
 }

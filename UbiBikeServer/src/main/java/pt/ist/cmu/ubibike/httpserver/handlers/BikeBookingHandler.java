@@ -15,14 +15,19 @@ import java.util.Random;
 public class BikeBookingHandler extends AuthRequiredHandler {
 
     private static final String STATION_SID_ATTR = "sid";
-
     private Bike[] availableBikes;
     private int bid;
+
+    public BikeBookingHandler() {
+        super();
+        this.setUseTransactions(true);
+    }
+
     @Override
     protected void continueActionValidation(HttpExchange httpExchange) throws Exception{
 
         //check that user does not already has a bike booked
-        if(DBObjectSelector.getBookingsFromUID(DBConnection.getConnection(), this.user.getUid()).length != 0){
+        if(DBObjectSelector.getBookingFromUID(DBConnection.getConnection(), this.user.getUid()) != null){
             throw new RuntimeException("User already has an active booking");
         }
 
@@ -43,7 +48,6 @@ public class BikeBookingHandler extends AuthRequiredHandler {
 
         Bike bike = availableBikes[new Random().nextInt(availableBikes.length)];
 
-        DBObjectRemove.removeBikeFromStation(DBConnection.getConnection(), bike.getBid());
         DBObjectCreation.insertBikeBooking(DBConnection.getConnection(), this.user.getUid(), bike.getBid());
 
         this.bid = bike.getBid();

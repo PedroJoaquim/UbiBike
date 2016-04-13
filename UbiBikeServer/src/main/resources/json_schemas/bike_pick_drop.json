@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "bick-pick-drop",
+  "description": "register bick pick drop",
+  "type": "object",
+
+  "properties": {
+
+    "bid": {
+      "description": "bike id",
+      "type": "integer"
+    },
+    "sid":{
+      "description": "station id",
+      "type": "integer"
+    },
+    "bike_pick":{
+      "type": "boolean"
+    }
+
+  },
+  "required": ["bid", "sid", "bike_pick"]
+}

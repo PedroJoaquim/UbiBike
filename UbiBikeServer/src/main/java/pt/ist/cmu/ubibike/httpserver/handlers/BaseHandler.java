@@ -2,8 +2,12 @@ package pt.ist.cmu.ubibike.httpserver.handlers;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import pt.ist.cmu.ubibike.httpserver.db.DBConnection;
 
 import java.io.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,14 +16,28 @@ public abstract class BaseHandler implements HttpHandler {
     private static final int BUFFER_SIZE = 248;
     protected Map<String, String> urlQueyParams;
     private static final String ERROR_MESSAGE = "Uknown internal server error";
+    private boolean useTransactions = false;
 
     public void handle(HttpExchange httpExchange) throws IOException {
 
+        Connection conn = DBConnection.getConnection();
+        Savepoint save = null;
+
         try{
+
+            if(useTransactions){
+                conn.setAutoCommit(false);
+                save = conn.setSavepoint();
+            }
+
             this.parseUrlQuery(httpExchange);
             this.validateAction(httpExchange);
             this.executeAction(httpExchange);
             this.writeAnswer(httpExchange, this.produceAnswer(httpExchange));
+
+            if(useTransactions){
+                conn.commit();
+            }
 
         }catch (Exception e){
             if(e.getMessage() == null){
@@ -32,7 +50,13 @@ public abstract class BaseHandler implements HttpHandler {
                 OutputStream os = httpExchange.getResponseBody();
                 writeToStream(os, e.getMessage().getBytes());
             }
-
+            if(useTransactions){
+                try {
+                    conn.rollback(save);
+                } catch (SQLException e1) {
+                    //ignore
+                }
+            }
         }
 
     }
@@ -106,6 +130,10 @@ public abstract class BaseHandler implements HttpHandler {
                 //ignore
             }
         }
+    }
+
+    protected void setUseTransactions(boolean useTransactions){
+        this.useTransactions = useTransactions;
     }
 
 
