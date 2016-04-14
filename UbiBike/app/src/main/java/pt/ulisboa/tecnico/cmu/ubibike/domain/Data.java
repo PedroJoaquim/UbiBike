@@ -3,10 +3,8 @@ package pt.ulisboa.tecnico.cmu.ubibike.domain;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 
 /**
  * Created by andriy on 12.03.2016.
@@ -14,11 +12,12 @@ import java.util.HashMap;
 public class Data {
 
     private int uid;
+    private String username;
     private String sessionToken;
 
     private ArrayList<Chat> mConversations;
 
-    private ArrayList<BikePickupStation> mBikeStationsNearby;
+    private ArrayList<BikePickupStation> mBikeStations;
     private ArrayList<Trajectory> mTrajectories;
     private LatLng mLastPosition;
 
@@ -32,28 +31,28 @@ public class Data {
 
         //hardcoded data below
 
-        mBikeStationsNearby = new ArrayList<>();
-        mBikeStationsNearby.add(new BikePickupStation("Odivelas Station", 10, 38.793017, -9.173086));
-        mBikeStationsNearby.add(new BikePickupStation("Ameixoeira", 10, 38.779865, -9.159804));
-        mBikeStationsNearby.add(new BikePickupStation("Campo Grande Station", 10, 38.759601, -9.157925));
-        mBikeStationsNearby.add(new BikePickupStation("Alvalade Station", 11, 38.753040, -9.143829));
-        mBikeStationsNearby.add(new BikePickupStation("Entrecampos Station", 10, 38.747692, -9.148506));
-        mBikeStationsNearby.add(new BikePickupStation("Alameda Station", 10, 38.737073, -9.133582));
-        mBikeStationsNearby.add(new BikePickupStation("Arco do Cego Station", 6, 38.735361, -9.142362));
-        mBikeStationsNearby.add(new BikePickupStation("Parque Station", 10, 38.729628, -9.150012));
-        mBikeStationsNearby.add(new BikePickupStation("Avenida Station", 10, 38.719981, -9.145588));
-        mBikeStationsNearby.add(new BikePickupStation("Rossio Station", 10, 38.719981, -9.145588));
-        mBikeStationsNearby.add(new BikePickupStation("Indendente Station", 10, 38.722029, -9.135263));
-        mBikeStationsNearby.add(new BikePickupStation("Arroios Station", 10, 38.737073, -9.133582));
-        mBikeStationsNearby.add(new BikePickupStation("Chelas Station", 10, 38.755019, -9.114212));
-        mBikeStationsNearby.add(new BikePickupStation("Oriente Station", 10, 38.768527, -9.099648));
-        mBikeStationsNearby.add(new BikePickupStation("Moscavide Station", 10, 38.768527, -9.099648));
-        mBikeStationsNearby.add(new BikePickupStation("Laranjeiras", 10, 38.748300, -9.172612));
-        mBikeStationsNearby.add(new BikePickupStation("Colegio Militar Station", 10, 38.753195, -9.188162));
-        mBikeStationsNearby.add(new BikePickupStation("Pontinha Station", 10, 38.762259, -9.196830));
-        mBikeStationsNearby.add(new BikePickupStation("Cais do Sodré Station", 10, 38.705734, -9.144241));
-        mBikeStationsNearby.add(new BikePickupStation("Rossio Station", 10, 38.713863, -9.139069));
-        mBikeStationsNearby.add(new BikePickupStation("Martim Moniz Station", 10, 38.716798, -9.135628));
+        mBikeStations = new ArrayList<>();
+        mBikeStations.add(new BikePickupStation("Odivelas Station", 10, 38.793017, -9.173086));
+        mBikeStations.add(new BikePickupStation("Ameixoeira", 10, 38.779865, -9.159804));
+        mBikeStations.add(new BikePickupStation("Campo Grande Station", 10, 38.759601, -9.157925));
+        mBikeStations.add(new BikePickupStation("Alvalade Station", 11, 38.753040, -9.143829));
+        mBikeStations.add(new BikePickupStation("Entrecampos Station", 10, 38.747692, -9.148506));
+        mBikeStations.add(new BikePickupStation("Alameda Station", 10, 38.737073, -9.133582));
+        mBikeStations.add(new BikePickupStation("Arco do Cego Station", 6, 38.735361, -9.142362));
+        mBikeStations.add(new BikePickupStation("Parque Station", 10, 38.729628, -9.150012));
+        mBikeStations.add(new BikePickupStation("Avenida Station", 10, 38.719981, -9.145588));
+        mBikeStations.add(new BikePickupStation("Rossio Station", 10, 38.719981, -9.145588));
+        mBikeStations.add(new BikePickupStation("Indendente Station", 10, 38.722029, -9.135263));
+        mBikeStations.add(new BikePickupStation("Arroios Station", 10, 38.737073, -9.133582));
+        mBikeStations.add(new BikePickupStation("Chelas Station", 10, 38.755019, -9.114212));
+        mBikeStations.add(new BikePickupStation("Oriente Station", 10, 38.768527, -9.099648));
+        mBikeStations.add(new BikePickupStation("Moscavide Station", 10, 38.768527, -9.099648));
+        mBikeStations.add(new BikePickupStation("Laranjeiras", 10, 38.748300, -9.172612));
+        mBikeStations.add(new BikePickupStation("Colegio Militar Station", 10, 38.753195, -9.188162));
+        mBikeStations.add(new BikePickupStation("Pontinha Station", 10, 38.762259, -9.196830));
+        mBikeStations.add(new BikePickupStation("Cais do Sodré Station", 10, 38.705734, -9.144241));
+        mBikeStations.add(new BikePickupStation("Rossio Station", 10, 38.713863, -9.139069));
+        mBikeStations.add(new BikePickupStation("Martim Moniz Station", 10, 38.716798, -9.135628));
 
 
         ArrayList<LatLng> route = new ArrayList<>();
@@ -114,12 +113,12 @@ public class Data {
 
 
     /**
-     * Gets bike stations  nearby with bikes available to pickup
+     * Gets bike stations with bikes available to pickup
      *
      * @return - list of stations
      */
-    public ArrayList<BikePickupStation> getBikeStationsNearby(){
-        return mBikeStationsNearby;
+    public ArrayList<BikePickupStation> getBikeStations(){
+        return mBikeStations;
     }
 
     /**
@@ -185,6 +184,14 @@ public class Data {
 
     public void setUid(int uid) {
         this.uid = uid;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getSessionToken() {

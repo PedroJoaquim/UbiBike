@@ -213,4 +213,22 @@ public class StorageManager extends SQLiteOpenHelper {
     }
 
 
+    /**
+     * Updates current DB's json to a given one
+     *
+     * @param clientID - client ID
+     * @param json - new json to store
+     * @param dateUpdated - update time
+     */
+    public void updateAppDataJsonOnDB(String clientID, JSONObject json, Date dateUpdated){
+
+        ContentValues contentValues = new ContentValues();
+
+        if(json != null) contentValues.put(COLUMN_DATA, json.toString());
+        contentValues.put(COLUMN_DATE_UPDATED, dateUpdated.getTime());
+
+        writableDatabase.update(APP_DATA_TABLE_NAME, contentValues, COLUMN_CLIENT_ID + "= \"" + clientID + "\"", null);
+    }
+
+
 }
