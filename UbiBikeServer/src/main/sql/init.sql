@@ -15,6 +15,8 @@ DROP TABLE IF EXISTS trajectories;
 CREATE TABLE trajectories (
   tid            INT AUTO_INCREMENT NOT NULL,
   uid            INT                NOT NULL,
+  start_sid      INT                NOT NULL,
+  end_sid        INT                NOT NULL,
   coords_text    VARCHAR(5000)      NOT NULL,
   points_earned  INT                NOT NULL,
   user_tid       VARCHAR(124)       NOT NULL UNIQUE,

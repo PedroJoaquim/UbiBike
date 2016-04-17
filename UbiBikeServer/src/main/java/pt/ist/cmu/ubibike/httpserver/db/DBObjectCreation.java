@@ -30,20 +30,22 @@ public class DBObjectCreation {
         return newId;
     }
 
-    public static int insertTrajectory(Connection conn, int uid, int pointsEarned, Coordinate[] coords, long rideStartTimestamp, long rideEndTimestamp, float distance, String userTID) throws SQLException {
+    public static int insertTrajectory(Connection conn, int uid, int startSid, int endSid, int pointsEarned, Coordinate[] coords, long rideStartTimestamp, long rideEndTimestamp, float distance, String userTID) throws SQLException {
 
         int newId;
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO trajectories(uid, coords_text, points_earned, user_tid, distance, ride_start_timestamp, ride_end_timestamp)" +
-                                                        "VALUES (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO trajectories(uid, start_sid, end_sid, oords_text, points_earned, user_tid, distance, ride_start_timestamp, ride_end_timestamp)" +
+                                                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 
 
         stmt.setInt(1, uid);
-        stmt.setString(2, CoordinatesParser.toStoreFormat(coords));
-        stmt.setInt(3, pointsEarned);
-        stmt.setString(4, userTID);
-        stmt.setFloat(5, distance);
-        stmt.setLong(6, rideStartTimestamp);
-        stmt.setLong(7, rideEndTimestamp);
+        stmt.setInt(2, startSid);
+        stmt.setInt(3, endSid);
+        stmt.setString(4, CoordinatesParser.toStoreFormat(coords));
+        stmt.setInt(5, pointsEarned);
+        stmt.setString(6, userTID);
+        stmt.setFloat(7, distance);
+        stmt.setLong(8, rideStartTimestamp);
+        stmt.setLong(9, rideEndTimestamp);
 
         stmt.executeUpdate();
 

@@ -7,6 +7,8 @@ public class Trajectory {
 
     private int tid;
     private int uid;
+    private int startSid;
+    private int endSid;
     private int pointsEarned;
     private Coordinate[] coords;
     private long rideStartTimestamp;
@@ -15,8 +17,10 @@ public class Trajectory {
     private String userTID;
 
 
-    public Trajectory(int tid, int uid, int pointsEarned, Coordinate[] coords, long rideStartTimestamp, long rideEndTimestamp, float distance, String userTID) {
+    public Trajectory(int tid, int startSid, int endSid, int uid, int pointsEarned, Coordinate[] coords, long rideStartTimestamp, long rideEndTimestamp, float distance, String userTID) {
         this.tid = tid;
+        this.startSid = startSid;
+        this.endSid = endSid;
         this.uid = uid;
         this.pointsEarned = pointsEarned;
         this.coords = coords;
@@ -106,5 +110,25 @@ public class Trajectory {
     @JsonSetter("user_tid")
     public void setUserTID(String userTID) {
         this.userTID = userTID;
+    }
+
+    @JsonGetter("start_sid")
+    public int getStartSid() {
+        return startSid;
+    }
+
+    @JsonSetter("start_sid")
+    public void setStartSid(int startSid) {
+        this.startSid = startSid;
+    }
+
+    @JsonGetter("end_sid")
+    public int getEndSid() {
+        return endSid;
+    }
+
+    @JsonSetter("end_sid")
+    public void setEndSid(int endSid) {
+        this.endSid = endSid;
     }
 }
