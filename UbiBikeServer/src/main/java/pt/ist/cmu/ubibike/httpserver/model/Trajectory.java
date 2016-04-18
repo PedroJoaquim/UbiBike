@@ -72,22 +72,22 @@ public class Trajectory {
         this.coords = coords;
     }
 
-    @JsonGetter("start_time")
+    @JsonGetter("start_timestamp")
     public long getRideStartTimestamp() {
         return rideStartTimestamp;
     }
 
-    @JsonSetter("start_time")
+    @JsonSetter("start_timestamp")
     public void setRideStartTimestamp(long rideStartTimestamp) {
         this.rideStartTimestamp = rideStartTimestamp;
     }
 
-    @JsonGetter("end_time")
+    @JsonGetter("end_timestamp")
     public long getRideEndTimestamp() {
         return rideEndTimestamp;
     }
 
-    @JsonSetter("end_time")
+    @JsonSetter("end_timestamp")
     public void setRideEndTimestamp(long rideEndTimestamp) {
         this.rideEndTimestamp = rideEndTimestamp;
     }

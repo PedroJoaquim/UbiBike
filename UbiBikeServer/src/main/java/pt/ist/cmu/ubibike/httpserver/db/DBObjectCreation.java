@@ -1,6 +1,7 @@
 package pt.ist.cmu.ubibike.httpserver.db;
 
 import pt.ist.cmu.ubibike.httpserver.model.Coordinate;
+import pt.ist.cmu.ubibike.httpserver.model.Trajectory;
 import pt.ist.cmu.ubibike.httpserver.util.CoordinatesParser;
 
 import java.sql.*;
@@ -30,22 +31,22 @@ public class DBObjectCreation {
         return newId;
     }
 
-    public static int insertTrajectory(Connection conn, int uid, int startSid, int endSid, int pointsEarned, Coordinate[] coords, long rideStartTimestamp, long rideEndTimestamp, float distance, String userTID) throws SQLException {
+    public static int insertTrajectory(Connection conn, Trajectory t) throws SQLException {
 
         int newId;
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO trajectories(uid, start_sid, end_sid, oords_text, points_earned, user_tid, distance, ride_start_timestamp, ride_end_timestamp)" +
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO trajectories(uid, start_sid, end_sid, coords_text, points_earned, user_tid, distance, ride_start_timestamp, ride_end_timestamp)" +
                                                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 
 
-        stmt.setInt(1, uid);
-        stmt.setInt(2, startSid);
-        stmt.setInt(3, endSid);
-        stmt.setString(4, CoordinatesParser.toStoreFormat(coords));
-        stmt.setInt(5, pointsEarned);
-        stmt.setString(6, userTID);
-        stmt.setFloat(7, distance);
-        stmt.setLong(8, rideStartTimestamp);
-        stmt.setLong(9, rideEndTimestamp);
+        stmt.setInt(1, t.getUid());
+        stmt.setInt(2, t.getStartSid());
+        stmt.setInt(3, t.getEndSid());
+        stmt.setString(4, CoordinatesParser.toStoreFormat(t.getCoords()));
+        stmt.setInt(5, t.getPointsEarned());
+        stmt.setString(6, t.getUserTID());
+        stmt.setFloat(7, t.getDistance());
+        stmt.setLong(8, t.getRideStartTimestamp());
+        stmt.setLong(9, t.getRideEndTimestamp());
 
         stmt.executeUpdate();
 

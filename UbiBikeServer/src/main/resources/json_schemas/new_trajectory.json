@@ -1,29 +1,47 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Trajectory",
-  "description": "Bike trajectory",
+  "title": "new trajectory",
+  "description": "register bick pick drop",
   "type": "object",
+
   "properties": {
-    "id": {
-      "description": "The unique identifier for a trajectory",
+
+    "user_tid": {
+      "description": "user trajectory id",
       "type": "string"
     },
-    "trajectory_coords": {
+    "start_sid":{
+      "description": "start station id",
+      "type": "integer"
+    },
+    "end_sid":{
+      "description": "end station id",
+      "type": "integer"
+    },
+    "coords": {
       "description": "the trajectory coords",
       "type": "array",
       "items":{
         "type":"object",
         "properties":{
           "lat":{"type":"number"},
-          "lgn":{"type":"number"}
+          "lng":{"type":"number"}
         },
         "minItems": 1
       }
     },
-    "points_earned":{
-      "type":"integer"
+    "start_timestamp":{
+      "description": "ride start timestamp",
+      "type": "integer"
+    },
+    "end_timestamp":{
+      "description": "ride end timestamp",
+      "type": "integer"
+    },
+    "distance":{
+      "description": "ride distance in meters",
+      "type": "number"
     }
   },
-
-  "required": ["id", "trajectory_coords", "points_earned"]
+  "required": ["user_tid", "start_sid", "end_sid", "coords", "start_timestamp", "end_timestamp", "distance" ]
 }
