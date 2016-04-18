@@ -20,10 +20,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.R;
@@ -47,6 +49,10 @@ public class MapFragment extends Fragment {
 
     private boolean mTrajectoryView;
     private boolean mShowTrajectoryInfo;
+
+    private HashMap<Marker, BikePickupStation> mMarkerStation = new HashMap<>();
+    private int mCurrentSelectedStation;
+
 
     private UbiBike getParentActivity(){
         return (UbiBike) getActivity();
@@ -85,6 +91,7 @@ public class MapFragment extends Fragment {
         FrameLayout nextTrajectory = (FrameLayout) mView.findViewById(R.id.next_trajectory_frame);
         FrameLayout previousTrajectory = (FrameLayout) mView.findViewById(R.id.prev_trajectory_frame);
         FrameLayout trajectoryInfo = (FrameLayout) mView.findViewById(R.id.trajectory_info_frame);
+        RelativeLayout bookBike = (RelativeLayout) mView.findViewById(R.id.book_bike);
 
         if(mTrajectoryView) {
 
@@ -115,6 +122,16 @@ public class MapFragment extends Fragment {
             nextTrajectory.setVisibility(View.INVISIBLE);
             previousTrajectory.setVisibility(View.INVISIBLE);
             trajectoryInfo.setVisibility(View.INVISIBLE);
+
+            bookBike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    ApplicationContext.getInstance().getServerCommunicationHandler().
+                            performBikeBookRequest(mCurrentSelectedStation);
+
+                }
+            });
         }
     }
 
@@ -280,7 +297,7 @@ public class MapFragment extends Fragment {
         getParentActivity().getSupportActionBar().setTitle("Stations nearby");
 
         ArrayList<BikePickupStation> bikeStations = ApplicationContext.getInstance()
-                .getData().getBikeStationsNearby();
+                .getData().getBikeStations();
 
         LatLng lastObtainedPosition = ApplicationContext.getInstance().getData().getLastPosition();
 
@@ -299,11 +316,14 @@ public class MapFragment extends Fragment {
             MarkerOptions stationMarker = new MarkerOptions()
                     .position(station.getStationPosition())
                     .title(station.getStationName())
-                    .snippet("Bikes Available: " + station.getBikesAvailable())
+                    .snippet("Bikes Available: " + station.getBikesAvailableQuantity())
                     .icon(BitmapDescriptorFactory
                             .fromResource(R.drawable.bike_station));
 
-            mGoogleMap.addMarker(stationMarker);
+
+            Marker marker = mGoogleMap.addMarker(stationMarker);
+
+            mMarkerStation.put(marker, station);
         }
 
         CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -311,6 +331,28 @@ public class MapFragment extends Fragment {
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
         mGoogleMap.moveCamera(cameraUpdate);
+
+
+        mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                BikePickupStation station = mMarkerStation.get(marker);
+
+                mCurrentSelectedStation = station.getSid();
+
+                RelativeLayout bookBike = (RelativeLayout) mView.findViewById(R.id.book_bike);
+
+                if(station.getBikesAvailableQuantity() > 0){
+                    bookBike.setVisibility(View.VISIBLE);
+                }
+                else{
+                    bookBike.setVisibility(View.GONE);
+                }
+
+                return false;
+            }
+        });
+
     }
 
 }

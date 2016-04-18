@@ -15,7 +15,7 @@ public class BikePickupStation {
     private double mPositionLongitude;
     private ArrayList<Integer> mBikesAvailable;
 
-    public BikePickupStation(String sid, String stationName, double positionLatitude, double positionLongitude, ArrayList<Integer> bikesAvailable) {
+    public BikePickupStation(int sid, String stationName, double positionLatitude, double positionLongitude, ArrayList<Integer> bikesAvailable) {
         mStationName = stationName;
         mBikesAvailable = bikesAvailable;
         mPositionLongitude = positionLongitude;

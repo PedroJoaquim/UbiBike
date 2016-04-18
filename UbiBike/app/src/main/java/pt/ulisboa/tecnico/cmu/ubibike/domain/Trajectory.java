@@ -28,7 +28,6 @@ public class Trajectory implements Comparable<Trajectory> {
     private double mDistance;
     private Date mStartTime;
     private Date mEndTime;
-    private Date mTravelTime;
     private int mPointsEarned;
 
     /**
@@ -162,6 +161,14 @@ public class Trajectory implements Comparable<Trajectory> {
      */
     public int getPointsEarned(){
         return mPointsEarned;
+    }
+
+
+    /**
+     * @return - Time when route has been started
+     */
+    public Date getStartTime() {
+        return mStartTime;
     }
 
     /**

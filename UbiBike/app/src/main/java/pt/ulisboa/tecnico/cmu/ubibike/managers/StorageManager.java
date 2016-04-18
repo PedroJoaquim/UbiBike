@@ -8,7 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import org.json.JSONObject;
 
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.Date;
+
+import javax.crypto.Cipher;
 
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.JsonParser;
@@ -32,7 +36,6 @@ public class StorageManager extends SQLiteOpenHelper {
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_CLIENT_ID = "client_id";
     private static final String COLUMN_DATA = "data";
-    private static final String COLUMN_DATE_UPDATED = "date_updated";
     private static final String COLUMN_PUBLIC_KEY = "public_key";
     private static final String COLUMN_PRIVATE_KEY = "private_key";
 
@@ -52,7 +55,6 @@ public class StorageManager extends SQLiteOpenHelper {
                         "(" + COLUMN_ID + " INTEGER PRIMARY KEY, "
                         + COLUMN_CLIENT_ID + " TEXT,"
                         + COLUMN_DATA + " TEXT, "
-                        + COLUMN_DATE_UPDATED + " INTEGER, "
                         + COLUMN_PUBLIC_KEY + " BLOB,"
                         + COLUMN_PRIVATE_KEY + " BLOB"
                         + ");"
@@ -72,7 +74,7 @@ public class StorageManager extends SQLiteOpenHelper {
      * @param clientID - client ID
      * @return - true in case is registered
      */
-    public boolean checkClientExistsOnDB(String clientID){
+    public boolean checkClientExistsOnDB(int clientID){
         boolean exists = true;
 
         String sqlQuery = "SELECT * FROM " + APP_DATA_TABLE_NAME + " WHERE " + COLUMN_CLIENT_ID + " = \"" + clientID + "\";";
@@ -85,7 +87,6 @@ public class StorageManager extends SQLiteOpenHelper {
 
             contentValues.put(COLUMN_CLIENT_ID, clientID);
             contentValues.putNull(COLUMN_DATA);
-            contentValues.putNull(COLUMN_DATE_UPDATED);
             contentValues.putNull(COLUMN_PUBLIC_KEY);
             contentValues.putNull(COLUMN_PRIVATE_KEY);
 
@@ -107,7 +108,7 @@ public class StorageManager extends SQLiteOpenHelper {
      * @param clientID - client ID
      * @return - true if app data exists
      */
-    public boolean checkAppDataExistsOnDB(String clientID){
+    public boolean checkAppDataExistsOnDB(int clientID){
         boolean exists = true;
 
         String sqlQuery = "SELECT * FROM " + APP_DATA_TABLE_NAME + " WHERE " + COLUMN_CLIENT_ID + " = \"" + clientID + "\";";
@@ -132,18 +133,15 @@ public class StorageManager extends SQLiteOpenHelper {
      * @param clientID - GooglePlus client id
      * @return - app data object
      */
-    public Data getAppDataFromDB(String clientID){
+    public Data getAppDataFromDB(int clientID){
 
-        Data appData = new Data(/*clientID TODO*/);
+        Data appData = null;
         Date dateUpdated;
 
         try {
 
             JSONObject json = getDataJsonFromDB(clientID);
-            JsonParser.parseGlobalDataFromJson(json, appData);
-
-            dateUpdated = getLastUpdatedTimeFromDB(clientID);
-            appData.setLastUpdated(dateUpdated);
+            appData = JsonParser.parseGlobalDataFromJson(json);
 
         } catch (Exception e) {
             //does not happen
@@ -160,7 +158,7 @@ public class StorageManager extends SQLiteOpenHelper {
      * @param clientID - client ID
      * @return - json
      */
-    public JSONObject getDataJsonFromDB(String clientID){
+    public JSONObject getDataJsonFromDB(int clientID){
 
         JSONObject json = null;
 
@@ -186,49 +184,85 @@ public class StorageManager extends SQLiteOpenHelper {
     }
 
 
+
     /**
-     * Gets last sync time from DB
+     * Updates current application's data json on DB
      *
-     * @param clientID - client ID
-     * @return - Date object or null in case no update was done
+     * @param clientID - user id
+     * @param appData - app data object
      */
-    public Date getLastUpdatedTimeFromDB(String clientID){
+    public void updateAppDataOnDB(int clientID, Data appData){
+
+        ContentValues contentValues = new ContentValues();
+
+        JSONObject json = JsonParser.buildGlobalJsonData(appData);
+
+        if(json != null) contentValues.put(COLUMN_DATA, json.toString());
+
+        writableDatabase.update(APP_DATA_TABLE_NAME, contentValues, COLUMN_CLIENT_ID + "= \"" + clientID + "\"", null);
+    }
+
+
+    /**
+     * Stores public & private key pair on DB
+     *
+     * @param clientID - user id
+     * @param publicKey - PublicKey object
+     * @param privateKey - PrivateKey object
+     */
+    public void storeClientKeyPairOnBD(int clientID, PublicKey publicKey, PrivateKey privateKey){
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(COLUMN_PUBLIC_KEY, publicKey.getEncoded());
+        contentValues.put(COLUMN_PRIVATE_KEY, privateKey.getEncoded());
+
+        writableDatabase.update(APP_DATA_TABLE_NAME, contentValues, COLUMN_CLIENT_ID + "= \"" + clientID + "\"", null);
+    }
+
+    /**
+     * Retrieves client's public key from DB
+     *
+     * @param clientID - client id
+     * @return - PublicKey object
+     */
+    public PublicKey getClientPublicKeyFromDB(int clientID){
 
         String sqlQuery = "SELECT * FROM " + APP_DATA_TABLE_NAME + " WHERE " + COLUMN_CLIENT_ID + " = \"" + clientID + "\";";
         Cursor cursor = readableDatabase.rawQuery(sqlQuery, null);
         cursor.moveToFirst();
 
-        long timestamp = -1;
-        if(!cursor.isNull(cursor.getColumnIndex(COLUMN_DATE_UPDATED)))
-            timestamp = cursor.getLong(cursor.getColumnIndex(COLUMN_DATE_UPDATED));
+        byte[] publicKeyBytes = cursor.getBlob(cursor.getColumnIndex(COLUMN_PUBLIC_KEY));
 
         if (!cursor.isClosed()) {
             cursor.close();
         }
 
-        if(timestamp != -1)
-            return new Date(timestamp);
-        else
-            return null;
+        return CipherManager.getPublicKeyFromBytes(publicKeyBytes);
     }
 
 
     /**
-     * Updates current DB's json to a given one
+     * Retrieves client's priate key from DB
      *
-     * @param clientID - client ID
-     * @param json - new json to store
-     * @param dateUpdated - update time
+     * @param clientID - client id
+     * @return - PrivateKey object
      */
-    public void updateAppDataJsonOnDB(String clientID, JSONObject json, Date dateUpdated){
+    public PrivateKey getClientPrivateKeyFromDB(int clientID){
 
-        ContentValues contentValues = new ContentValues();
+        String sqlQuery = "SELECT * FROM " + APP_DATA_TABLE_NAME + " WHERE " + COLUMN_CLIENT_ID + " = \"" + clientID + "\";";
+        Cursor cursor = readableDatabase.rawQuery(sqlQuery, null);
+        cursor.moveToFirst();
 
-        if(json != null) contentValues.put(COLUMN_DATA, json.toString());
-        contentValues.put(COLUMN_DATE_UPDATED, dateUpdated.getTime());
+        byte[] privateKeyBytes = cursor.getBlob(cursor.getColumnIndex(COLUMN_PRIVATE_KEY));
 
-        writableDatabase.update(APP_DATA_TABLE_NAME, contentValues, COLUMN_CLIENT_ID + "= \"" + clientID + "\"", null);
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+
+        return CipherManager.getPrivateKeyFromBytes(privateKeyBytes);
     }
+
 
 
 }

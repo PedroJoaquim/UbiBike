@@ -20,7 +20,7 @@ public class HttpRequests {
 
     private static final int BUFFER_SIZE = 4 * 1024;
 
-    public static String performHttpCall(String type, String requestURL, JSONObject json, String token) throws Exception{
+    public static String performHttpCall(String type, String requestURL, JSONObject json) throws Exception{
 
         String response = "";
 
@@ -32,7 +32,6 @@ public class HttpRequests {
         urlConnection.setRequestMethod(type);
         urlConnection.setDoInput(true);
         urlConnection.setDoOutput(type.equals("POST"));
-        urlConnection.setRequestProperty("Authorization", token);
 
         if(type.equals("POST")){
             urlConnection.setRequestProperty("Content-Type", "application/json");

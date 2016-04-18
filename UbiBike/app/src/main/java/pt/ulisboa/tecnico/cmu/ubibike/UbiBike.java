@@ -1,31 +1,59 @@
 package pt.ulisboa.tecnico.cmu.ubibike;
 
+import android.bluetooth.BluetoothAdapter;
+import android.content.pm.PackageInstaller;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
+import org.json.JSONObject;
+
+import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.HomeFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.LoginFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.MapFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.RegisterAccountFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.TrajectoryListFragment;
+import pt.ulisboa.tecnico.cmu.ubibike.managers.SessionManager;
+import pt.ulisboa.tecnico.cmu.ubibike.utils.JsonParser;
 
 public class UbiBike extends AppCompatActivity {
+
+    private SessionManager mSessionManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ubi_bike);
 
+        ApplicationContext.getInstance().setActivity(this);
+        mSessionManager = new SessionManager(this);
+
         setViewElements();
 
-       showHome();
+        //checkLogin();
+
+        showHome();
+
+    }
+
+    private void checkLogin() {
+
+        if(mSessionManager.isLoggedIn()){
+            showHome();
+        }
+        else{
+            showLogin();
+        }
 
     }
 
@@ -96,6 +124,16 @@ public class UbiBike extends AppCompatActivity {
         }
     }
 
+    /**
+     * Creates a session to user and shows Home screen
+     */
+    public void finishLogin(){
+        Data appData = ApplicationContext.getInstance().getData();
+        mSessionManager.createLoginSession(appData.getUid());
+
+        showHome();
+    }
+
 
     /**
      * Shows Home screen
@@ -136,6 +174,12 @@ public class UbiBike extends AppCompatActivity {
      * Shows past trajectories on list, most recent first
      */
     public void showPastTrajectoriesList(){
+
+        if(ApplicationContext.getInstance().getData().getAllTrajectories().isEmpty()){
+            Toast.makeText(UbiBike.this, "No trajectories registered yet.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Fragment fragment = new TrajectoryListFragment();
         replaceFragment(fragment, false, true);
     }
@@ -158,5 +202,6 @@ public class UbiBike extends AppCompatActivity {
 
         replaceFragment(fragment, explicitReplace, true);
     }
+
 
 }

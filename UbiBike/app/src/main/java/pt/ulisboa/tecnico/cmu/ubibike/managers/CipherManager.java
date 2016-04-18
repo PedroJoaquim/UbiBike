@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmu.ubibike.cipher;
+package pt.ulisboa.tecnico.cmu.ubibike.managers;
 
 import android.util.Base64;
 
@@ -43,7 +43,7 @@ public class CipherManager {
      * @param keyBytes - key bytes
      * @return - public key object
      */
-    public PublicKey getPublicKeyFromBytes(byte[] keyBytes){
+    public static  PublicKey getPublicKeyFromBytes(byte[] keyBytes){
 
         try {
 
@@ -67,7 +67,7 @@ public class CipherManager {
      * @param keyBytes - key bytes
      * @return - private key object
      */
-    public PrivateKey getPrivateKeyFromBytes(byte[] keyBytes) {
+    public static PrivateKey getPrivateKeyFromBytes(byte[] keyBytes) {
 
         try {
 
@@ -85,7 +85,7 @@ public class CipherManager {
     /**
      * Generates key pair
      */
-    public void generatePublicPrivateKeyPair(){
+    public static void generatePublicPrivateKeyPair(){
 
         try {
 
@@ -105,14 +105,14 @@ public class CipherManager {
     /**
      * @return - previously generated public key
      */
-    public PublicKey getPublicKey(){
+    public static PublicKey getPublicKey(){
         return publicKey;
     }
 
     /**
      * @return - previously generated private key
      */
-    public  PrivateKey getPrivateKey(){
+    public static PrivateKey getPrivateKey(){
         return privateKey;
     }
 }
