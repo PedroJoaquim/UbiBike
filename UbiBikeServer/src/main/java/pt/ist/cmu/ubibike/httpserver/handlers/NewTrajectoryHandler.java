@@ -10,10 +10,7 @@ import pt.ist.cmu.ubibike.httpserver.model.Trajectory;
 import pt.ist.cmu.ubibike.httpserver.util.JSONSchemaValidation;
 
 
-
-
 public class NewTrajectoryHandler extends AuthRequiredHandler {
-
 
     private String inputJSON;
     private int tid;

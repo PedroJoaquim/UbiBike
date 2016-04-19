@@ -28,7 +28,7 @@ public class PublicKeyToken {
 
     private String generateTimestamp() {
         DateTime dt = DateTime.now();
-        DateTime dt1 = dt.plusDays(1);
+        DateTime dt1 = dt.plusDays(7);
 
         return Long.toString(dt1.getMillis());
     }

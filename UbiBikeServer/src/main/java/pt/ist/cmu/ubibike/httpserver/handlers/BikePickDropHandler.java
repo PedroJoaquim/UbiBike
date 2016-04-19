@@ -9,9 +9,6 @@ import pt.ist.cmu.ubibike.httpserver.util.JSONSchemaValidation;
 
 import java.util.Arrays;
 
-/**
- * Created by Pedro Joaquim on 14-03-2016.
- */
 public class BikePickDropHandler extends AuthRequiredHandler {
 
     private static final String BIKE_PICK = "bike_pick";
