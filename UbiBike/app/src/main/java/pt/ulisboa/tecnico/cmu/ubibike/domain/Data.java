@@ -27,32 +27,11 @@ public class Data {
 
     private ArrayList<BikePickupStation> mBikeStations;
     private ArrayList<Trajectory> mTrajectories;
-    private ArrayList<Bike> mBikesBooked;
+    private Bike mBikeBooked;
     private LatLng mLastPosition;
     private int totalPointsEarned;
     private Date dateUpdated;
 
-
-    public Data(){  //hardcoded data below
-
-        uid = 0;
-        username = "test";
-        sessionToken = "token";
-        publicKeyToken = "token";
-        mConversations = new ArrayList<>();
-        mTrajectories = new ArrayList<>();
-        mLastPosition = new LatLng(38.793017, -9.173086);
-        dateUpdated = new Date();
-
-        ArrayList<Integer> bikes = new ArrayList<>();
-        bikes.add(1);
-        bikes.add(4);
-        bikes.add(2);
-
-        mBikeStations = new ArrayList<>();
-        mBikeStations.add(new BikePickupStation(0, "Odivelas Station", 38.793017, -9.173086, bikes));
-        mBikeStations.add(new BikePickupStation(1, "Ameixoeira", 38.779865, -9.159804, new ArrayList<Integer>()));
-    }
 
 
     public Data(int id, String usrn) {
@@ -61,7 +40,6 @@ public class Data {
         mConversations = new ArrayList<>();
         mBikeStations = new ArrayList<>();
         mTrajectories = new ArrayList<>();
-        mBikesBooked = new ArrayList<>();
         mLastPosition = new LatLng(0.0, 0.0); //TODO last position
         dateUpdated = new Date();
     }
@@ -146,18 +124,21 @@ public class Data {
      * @return - last GPS synced position
      */
     public LatLng getLastPosition() {
-        return new LatLng(38.748101, -9.148148);    //hardcoded at Entrecampos
+        return new LatLng(38.737681, -9.138382);    //TODO hardcoded
     }
 
     /**
-     * Adds booked bike
+     * Sets booked bike
      *
      * @param bike - Bike object to add to collection
      */
-    public void addBookedBike(Bike bike){
-        mBikesBooked.add(bike);
+    public void setBikeBooked(Bike bike){
+        mBikeBooked = bike;
     }
 
+    public Bike getBikeBooked(){
+        return mBikeBooked;
+    }
 
     public Date getLastUpdated() {
         return dateUpdated;
@@ -194,6 +175,8 @@ public class Data {
     public String getPublicKeyToken() {
         return publicKeyToken;
     }
+
+    public boolean hasPublicKeyToken(){ return publicKeyToken != null; }
 
     public void setPublicKeyToken(String publicKeyToken) {
         this.publicKeyToken = publicKeyToken;

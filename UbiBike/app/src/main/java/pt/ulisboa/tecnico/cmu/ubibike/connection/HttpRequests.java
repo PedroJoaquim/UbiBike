@@ -41,15 +41,23 @@ public class HttpRequests {
             out.close();
         }
 
-        int httpResponseCode = urlConnection.getResponseCode();
 
-        if (httpResponseCode == HttpsURLConnection.HTTP_OK) {
+        int httpResponseCode = urlConnection.getResponseCode();
+        String msg = urlConnection.getResponseMessage();
+
+        if (httpResponseCode == HttpsURLConnection.HTTP_OK){
             String line;
             BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             while ((line = br.readLine()) != null) {
                 response += line;
             }
-
+        }
+        else if(httpResponseCode == HttpURLConnection.HTTP_BAD_REQUEST){
+            String line;
+            BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getErrorStream()));
+            while ((line = br.readLine()) != null) {
+                response += line;
+            }
         }
         else if(httpResponseCode == HttpsURLConnection.HTTP_UNAUTHORIZED){
             urlConnection.disconnect();

@@ -32,7 +32,7 @@ public class JsonParser {
     private static final String LONGITUDE = "lng";
 
     private static final String BIKE_ID = "bid";
-    private static final String BIKE_STATIONS = "bike_stations";
+    private static final String BIKE_STATIONS = "stations";
     private static final String STATION_ID = "sid";
     private static final String START_STATION = "start_sid";
     private static final String END_STATION = "end_sid";
@@ -54,6 +54,8 @@ public class JsonParser {
     private static final String LAST_UPDATED = "last_updated";
 
     private static final String BIKE_PICK = "bike_pick";
+
+    public static final String ERROR = "error";
 
 
 
@@ -148,22 +150,6 @@ public class JsonParser {
 
     }
 
-    public static JSONObject buildBikeBookRequestJson(int sid){
-
-        try{
-            JSONObject json = new JSONObject();
-
-            json.put(STATION_ID, sid);
-
-            return json;
-        }
-        catch(Exception e){
-            return null;
-        }
-
-    }
-
-
 
     /************************************************************************************************************************
      ******************* Parsing received json responses and applying changes on given appData object ***********************
@@ -217,7 +203,7 @@ public class JsonParser {
 
         Bike bike = new Bike(bid, uuid, sid);
 
-        appData.addBookedBike(bike);
+        appData.setBikeBooked(bike);
     }
 
 
@@ -318,7 +304,12 @@ public class JsonParser {
             int uid = json.getInt(USER_ID);
             String username = json.getString(USERNAME);
             String sessionToken = json.getString(SESSION_TOKEN);
-            String publicKeyToken = json.getString(PUBLIC_KEY_TOKEN);
+
+            String publicKeyToken = null;
+            if(json.has(PUBLIC_KEY_TOKEN)){
+                publicKeyToken = json.getString(PUBLIC_KEY_TOKEN);
+            }
+
             ArrayList<BikePickupStation> bikePickupStations = parseStations(json);
             ArrayList<Trajectory> trajectories = parseTrajectories(json);
 
@@ -354,7 +345,7 @@ public class JsonParser {
             JSONArray stations = json.getJSONArray(BIKE_STATIONS);
 
             for(int i = 0; i < stations.length(); i++) {
-                JSONObject station = stations.getJSONObject(0);
+                JSONObject station = stations.getJSONObject(i);
 
                 int sid = station.getInt(STATION_ID);
                 String stationName = station.getString(STATION_NAME);
@@ -366,7 +357,7 @@ public class JsonParser {
                 ArrayList<Integer> bikesAvailable = new ArrayList<>();
 
                 for (int j = 0; j < bikes.length(); j++) {
-                    bikesAvailable.add(bikes.getJSONObject(i).getInt(BIKE_ID));
+                    bikesAvailable.add(bikes.getJSONObject(j).getInt(BIKE_ID));
                 }
 
                 bikePickupStations.add(new BikePickupStation(sid, stationName, positionLatitude,
@@ -437,4 +428,21 @@ public class JsonParser {
         return json.getInt(JsonParser.USER_ID);
     }
 
+
+    /**
+     * Checks whether or not given string is a valid json
+     */
+    public static boolean isJSONValid(String test) {
+        try {
+            new JSONObject(test);
+        } catch (JSONException ex) {
+
+            try {
+                new JSONArray(test);
+            } catch (JSONException ex1) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

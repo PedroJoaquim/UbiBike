@@ -35,9 +35,9 @@ public class ApplicationContext extends Application {
         mServerCommunicationHandler = new ServerCommunicationHandler();
 
 
-        mData = new Data();
+        //mData = new Data();
 
-        /*if (mSessionManager.isLoggedIn()) {
+        if (mSessionManager.isLoggedIn()) {
             mUid = mSessionManager.getLoggedUser();
 
             if (mStorageManager.checkClientExistsOnDB(mUid) && mStorageManager.checkAppDataExistsOnDB(mUid)) {
@@ -46,8 +46,7 @@ public class ApplicationContext extends Application {
                 mServerCommunicationHandler.setUid(mData.getUid());
                 mServerCommunicationHandler.setSessionToken(mData.getSessionToken());
             }
-        }*/
-
+        }
     }
 
     @Override
@@ -82,6 +81,7 @@ public class ApplicationContext extends Application {
 
     public void setData(Data appData) {
         mData = appData;
+        mUid = mData.getUid();
 
         mServerCommunicationHandler.setUid(mData.getUid());
         mServerCommunicationHandler.setSessionToken(mData.getSessionToken());

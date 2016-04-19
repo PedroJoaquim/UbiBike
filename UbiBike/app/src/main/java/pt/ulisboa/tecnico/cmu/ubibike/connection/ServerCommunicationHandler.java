@@ -28,13 +28,18 @@ public class ServerCommunicationHandler {
     private PublicKey publicKey;
     private PrivateKey privateKey;
 
-    private static String HOST_SERVER = "...";
-    private static String URL_LOGIN = "...";
-    private static String URL_REGISTER_ACCOUNT = "...";
-    private static String URL_PUBLIC_KEY_TOKEN = "...";
-    private static String URL_BIKE_PICK_DROP = "...";
-    private static String URL_TRAJECTORY_POST = "...";
-    private static String URL_BIKE_BOOK = "...";
+
+    private static String HOST_SERVER = "http://85.246.107.27:8000";
+    private static String URL_LOGIN = "/auth";                               //[POST] json_schema = authentication.json
+    private static String URL_REGISTER_ACCOUNT = "/registration";            //[POST] json_schema = register.json
+    private static String URL_PUBLIC_KEY_TOKEN = "/PublicKeyToken";          //[GET]  url com session_token & uid
+    private static String URL_BIKE_PICK_DROP = "/BikePickDrop";              //[POST] url com session_token & uid json_schema = bike_pick_drop.json
+    private static String URL_TRAJECTORY_POST = "/Trajectory";               //[POST] url com session_token & uid json_schema = new_trajectory.json
+    private static String URL_BIKE_BOOK = "/BikeBooking";                    //[GET] url com session_token & uid & sid
+    private static String URL_USER_INFO = "/User";                           //[GET] url com session_token & uid
+    private static String URL_STATIONS_INFO = "/Stations";                   //[GET] url com session_token & uid
+    private static String URL_BIKE_UNBOOKING = "/BikeUnbooking";             //[GET] url com session_token & uid
+    private static String URL_POINTS_TRANSACTION = "/PointsTransaction";     //TODO
 
     private static final int REQUEST_PUBLIC_KEY_TOKEN = 0;
     private static final int REQUEST_USER_INFO = 1;
@@ -43,16 +48,33 @@ public class ServerCommunicationHandler {
     private static final int REQUEST_TRAJECTORY_POST = 4;
     private static final int REQUEST_BIKE_BOOK = 5;
 
+    private static final boolean AUTH_REQUEST = true;
+    private static final boolean NON_AUTH_REQUEST = false;
+
+
+    private String buildUrl(String requestURL, boolean authRequest){
+        String url;
+
+        if(authRequest) {
+            url = HOST_SERVER + requestURL + "?uid=" + uid + "&session_token=" + sessionToken;
+        }
+        else{
+            url = HOST_SERVER + requestURL;
+        }
+
+        return url;
+    }
+
 
     public void performLoginRequest(String username, String password){
-        String url = HOST_SERVER + URL_LOGIN;
+        String url = buildUrl(URL_LOGIN, NON_AUTH_REQUEST);
 
         new LoginRequestTask(url, username, password).execute();
     }
 
 
     public void performRegisterRequest(String username, String password){
-        String url = HOST_SERVER + URL_REGISTER_ACCOUNT;
+        String url = buildUrl(URL_REGISTER_ACCOUNT, NON_AUTH_REQUEST);
 
 
         CipherManager.generatePublicPrivateKeyPair();
@@ -86,25 +108,25 @@ public class ServerCommunicationHandler {
 
 
     public void performPublicKeyTokenRequest(){
-        String url = HOST_SERVER + URL_PUBLIC_KEY_TOKEN + "?uid=" + uid + "&sessionToken=" + sessionToken;
+        String url = buildUrl(URL_PUBLIC_KEY_TOKEN, AUTH_REQUEST);
 
         performGenericRequest(url, REQUEST_PUBLIC_KEY_TOKEN, null);
     }
 
     public void performUserInfoRequest(){
-        String url = HOST_SERVER + URL_PUBLIC_KEY_TOKEN + "?uid=" + uid + "&sessionToken=" + sessionToken;
+        String url = buildUrl(URL_USER_INFO, AUTH_REQUEST);
 
         performGenericRequest(url, REQUEST_USER_INFO, null);
     }
 
     public void performStationsNearbyRequest(){
-        String url = HOST_SERVER + URL_PUBLIC_KEY_TOKEN + "?uid=" + uid + "&sessionToken=" + sessionToken;
+        String url = buildUrl(URL_STATIONS_INFO, AUTH_REQUEST);
 
         performGenericRequest(url, REQUEST_STATIONS_NEARBY, null);
     }
 
     public void performBikePickDropRequest(int bid, int sid, boolean bikePick){
-        String url = HOST_SERVER + URL_BIKE_PICK_DROP + "?uid=" + uid + "&sessionToken=" + sessionToken;
+        String url = buildUrl(URL_BIKE_PICK_DROP, AUTH_REQUEST);
 
         JSONObject json = JsonParser.buildBikePickDropRequestJson(bid, sid, bikePick);
 
@@ -115,7 +137,7 @@ public class ServerCommunicationHandler {
                                              ArrayList<LatLng> positions, int startTimestamp,
                                              int endTimestamp, double distance){
 
-        String url = HOST_SERVER + URL_TRAJECTORY_POST + "?uid=" + uid + "&sessionToken=" + sessionToken;
+        String url = buildUrl(URL_TRAJECTORY_POST, AUTH_REQUEST);
 
         JSONObject json = JsonParser.buildTrajectoryPostRequestJson(userTid, startSid, endSid, positions,
                 startTimestamp, endTimestamp, distance);
@@ -124,16 +146,10 @@ public class ServerCommunicationHandler {
     }
 
     public void performBikeBookRequest(int sid){
-        String url = HOST_SERVER + URL_TRAJECTORY_POST + "?uid=" + uid + "&sessionToken=" + sessionToken;
+        String url = buildUrl(URL_BIKE_BOOK, AUTH_REQUEST) + "&sid=" + sid;
 
-        JSONObject json = JsonParser.buildBikeBookRequestJson(sid);
-
-        performGenericRequest(url, REQUEST_BIKE_BOOK, json);
+        performGenericRequest(url, REQUEST_BIKE_BOOK, null);
     }
-
-
-
-
 
 
     public class LoginRequestTask extends AsyncTask<String, Void, String>{
@@ -151,32 +167,31 @@ public class ServerCommunicationHandler {
 
         @Override
         protected String doInBackground(String... params) {
-            String jsonStr = null;
+            String response = null;
 
             try {
 
                 JSONObject jsonRequest = JsonParser.buildLoginRequestJson(username, password);
 
-                jsonStr = HttpRequests.performHttpCall("POST", url, jsonRequest);
+                response = HttpRequests.performHttpCall("POST", url, jsonRequest);
+
+                if(response != null && !JsonParser.isJSONValid(response)){ // Request error message received
+                    JSONObject json = new JSONObject();
+                    json.put(JsonParser.ERROR, response);
+                    response = json.toString();
+                }
             }
             catch (Exception e) {
                 error = e;
             }
 
-            return jsonStr;
+            return response;
         }
 
         @Override
         protected void onPostExecute(String jsonStr) {
 
-            boolean failed = false;
-
-            if (jsonStr == null){
-                failed = true;
-            }
-            else if(jsonStr.equals("[]")){ //empty json
-
-
+            if (jsonStr == null || jsonStr.equals("[]") || jsonStr.equals("{}")){   //null or empty
                 return;
             }
             else {
@@ -184,6 +199,13 @@ public class ServerCommunicationHandler {
                 try {
 
                     JSONObject json = new JSONObject(jsonStr);
+
+                    if(json.has(JsonParser.ERROR)){
+                        String errorMsg = json.getString(JsonParser.ERROR);
+                        Toast.makeText(ApplicationContext.getInstance().getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     int userID = JsonParser.getUserIDFromJson(json);
 
                     Data appData;
@@ -202,15 +224,21 @@ public class ServerCommunicationHandler {
                     ApplicationContext.getInstance().setData(appData);
                     ApplicationContext.getInstance().getActivity().finishLogin();
 
+                    if(!appData.hasPublicKeyToken()){
+                        ApplicationContext.getInstance().getServerCommunicationHandler().
+                                performPublicKeyTokenRequest();
+                    }
+
+                    ApplicationContext.getInstance().getStorageManager().updateAppDataOnDB(userID, appData);
+
                 } catch (Exception e) {
-                    failed = true;
+                    String msg = "An error ocurred while logging in";
+                    Toast.makeText(ApplicationContext.getInstance().getActivity(), msg, Toast.LENGTH_SHORT).show();
+                    return;
                 }
             }
 
-            if(failed){
-                String msg = "An error ocurred requesting to log in";
-                Toast.makeText(ApplicationContext.getInstance().getActivity(), msg, Toast.LENGTH_SHORT).show();
-            }
+            Toast.makeText(ApplicationContext.getInstance().getActivity(), "Login successful.", Toast.LENGTH_SHORT).show();
 
         }
     }
@@ -232,32 +260,31 @@ public class ServerCommunicationHandler {
 
         @Override
         protected String doInBackground(String... params) {
-            String jsonStr = null;
+            String response = null;
 
             try {
 
                 JSONObject jsonRequest = JsonParser.buildRegisterRequestJson(username, password, base64publicKey);
 
-                jsonStr = HttpRequests.performHttpCall("POST", url, jsonRequest);
+                response = HttpRequests.performHttpCall("POST", url, jsonRequest);
+
+                if(response != null && !JsonParser.isJSONValid(response)){ // Request error message received
+                    JSONObject json = new JSONObject();
+                    json.put(JsonParser.ERROR, response);
+                    response = json.toString();
+                }
             }
             catch (Exception e) {
                 error = e;
             }
 
-            return jsonStr;
+            return response;
         }
 
         @Override
         protected void onPostExecute(String jsonStr) {
 
-            boolean failed = false;
-
-            if (jsonStr == null){
-                failed = true;
-            }
-            else if(jsonStr.equals("[]")){ //empty json
-
-
+            if (jsonStr == null || jsonStr.equals("[]") || jsonStr.equals("{}")){   //null or empty
                 return;
             }
             else {
@@ -265,6 +292,13 @@ public class ServerCommunicationHandler {
                 try {
 
                     JSONObject json = new JSONObject(jsonStr);
+
+                    if(json.has(JsonParser.ERROR)){
+                        String errorMsg = json.getString(JsonParser.ERROR);
+                        Toast.makeText(ApplicationContext.getInstance().getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     int userID = JsonParser.getUserIDFromJson(json);
 
                     Data appData;
@@ -283,15 +317,17 @@ public class ServerCommunicationHandler {
                     ApplicationContext.getInstance().setData(appData);
                     ApplicationContext.getInstance().getActivity().finishLogin();
 
+                    ApplicationContext.getInstance().getStorageManager().updateAppDataOnDB(userID, appData);
+
+
                 } catch (Exception e) {
-                    failed = true;
+                    String msg = "An error occurred registering the account.";
+                    Toast.makeText(ApplicationContext.getInstance().getActivity(), msg, Toast.LENGTH_SHORT).show();
+                    return;
                 }
             }
 
-            if(failed){
-                String msg = "An error occurred registering the account.";
-                Toast.makeText(ApplicationContext.getInstance().getActivity(), msg, Toast.LENGTH_SHORT).show();
-            }
+            Toast.makeText(ApplicationContext.getInstance().getActivity(), "Account registered.", Toast.LENGTH_SHORT).show();
 
         }
     }
@@ -314,31 +350,32 @@ public class ServerCommunicationHandler {
 
         @Override
         protected String doInBackground(String... params) {
-            String jsonStr = null;
+            String response = null;
 
             try {
 
 
-                jsonStr = HttpRequests.performHttpCall("GET", url, json);
+                response = HttpRequests.performHttpCall("GET", url, json);
+
+                if(response != null && !JsonParser.isJSONValid(response)){ // Request error message received
+                    JSONObject json = new JSONObject();
+                    json.put(JsonParser.ERROR, response);
+                    response = json.toString();
+                }
+
+
             }
             catch (Exception e) {
                 error = e;
             }
 
-            return jsonStr;
+            return response;
         }
 
         @Override
         protected void onPostExecute(String jsonStr) {
 
-            boolean failed = false;
-
-
-            if (jsonStr == null){
-                failed = true;
-            }
-            else if(jsonStr.isEmpty() || jsonStr.equals("[]") || jsonStr.equals("{}")){ //empty json
-
+            if (jsonStr == null || jsonStr.equals("[]") || jsonStr.equals("{}")){   //null or empty
                 return;
             }
             else {
@@ -347,19 +384,34 @@ public class ServerCommunicationHandler {
 
                     JSONObject json = new JSONObject(jsonStr);
 
+                    if(json.has(JsonParser.ERROR)){
+                        String errorMsg = json.getString(JsonParser.ERROR);
+                        Toast.makeText(ApplicationContext.getInstance().getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     Data appData = ApplicationContext.getInstance().getData();
 
                     parseMethod.invoke(null, new Object[]{json, appData});
 
                 } catch (Exception e) {
-                    failed = true;
+                    String msg = "Couldn't perform " + getRequestType(requestType) + " request.";
+                    Toast.makeText(ApplicationContext.getInstance().getActivity(), msg, Toast.LENGTH_SHORT).show();
+                    return;
                 }
             }
 
-            if(failed){
-                String msg = "Couldn't perform " + getRequestType(requestType) + " request";
-                Toast.makeText(ApplicationContext.getInstance().getActivity(), msg, Toast.LENGTH_SHORT).show();
+            Toast.makeText(ApplicationContext.getInstance().getActivity(),
+                    "Success at " + getRequestType(requestType) + " request.", Toast.LENGTH_SHORT).show();
+
+
+
+            switch(requestType){
+                case REQUEST_STATIONS_NEARBY: ApplicationContext.getInstance().getActivity().
+                        showBikeStationsNearbyOnMap(true);
+                        break;
             }
+
         }
     }
 
@@ -400,9 +452,6 @@ public class ServerCommunicationHandler {
         return request;
     }
 
-
-
-
     public void setUid(int uid) {
         this.uid = uid;
     }
@@ -411,4 +460,3 @@ public class ServerCommunicationHandler {
         this.sessionToken = sessionToken;
     }
 }
-

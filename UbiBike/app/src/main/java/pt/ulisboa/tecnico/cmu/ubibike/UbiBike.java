@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +23,7 @@ import pt.ulisboa.tecnico.cmu.ubibike.fragments.LoginFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.MapFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.RegisterAccountFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.TrajectoryListFragment;
+import pt.ulisboa.tecnico.cmu.ubibike.managers.MobileConnectionManager;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.SessionManager;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.JsonParser;
 
@@ -40,11 +42,11 @@ public class UbiBike extends AppCompatActivity {
 
         setViewElements();
 
-        //checkLogin();
-
-        showHome();
+        checkLogin();
 
     }
+
+
 
     private void checkLogin() {
 
@@ -66,6 +68,13 @@ public class UbiBike extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -74,10 +83,16 @@ public class UbiBike extends AppCompatActivity {
                 onBackPressed();
                 return true;
 
+            case R.id.action_logout:
+                mSessionManager.logoutUser();
+                showLogin();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
 
 
     private void setViewElements() {
@@ -140,17 +155,15 @@ public class UbiBike extends AppCompatActivity {
      */
     public void showHome(){
         Fragment fragment = new HomeFragment();
-        replaceFragment(fragment, false, false);
+        replaceFragment(fragment, true, false);
     }
 
     /**
      * Shows Login screen
      */
     public void showLogin(){
-        getSupportActionBar().hide();
-
         Fragment fragment = new LoginFragment();
-        replaceFragment(fragment, true, true);
+        replaceFragment(fragment, true, false);
     }
 
     /**
@@ -164,7 +177,13 @@ public class UbiBike extends AppCompatActivity {
     /**
      * Shows nearby bike stations on map
      */
-    public void showBikeStationsNearbyOnMap(){
+    public void showBikeStationsNearbyOnMap(boolean afterRequest){
+
+
+        if(!afterRequest && MobileConnectionManager.isOnline(this)){    //perform request
+            ApplicationContext.getInstance().getServerCommunicationHandler().performStationsNearbyRequest();
+            return;
+        }
 
         Fragment fragment = new MapFragment();
         replaceFragment(fragment, false, true);

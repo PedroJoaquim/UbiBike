@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -50,7 +52,7 @@ public class MapFragment extends Fragment {
     private boolean mTrajectoryView;
     private boolean mShowTrajectoryInfo;
 
-    private HashMap<Marker, BikePickupStation> mMarkerStation = new HashMap<>();
+    private HashMap<String, BikePickupStation> mMarkerStation = new HashMap<>(); //key = marker ID
     private int mCurrentSelectedStation;
 
 
@@ -65,6 +67,9 @@ public class MapFragment extends Fragment {
         getParentActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mView =  inflater.inflate(R.layout.map_fragment, null, false);
+
+        setHasOptionsMenu(false);
+        getParentActivity().invalidateOptionsMenu();
 
         if(getArguments() != null) { //check if we are on trajectory view
 
@@ -85,6 +90,16 @@ public class MapFragment extends Fragment {
 
         return mView;
     }
+
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        MenuItem item = menu.findItem(R.id.action_logout);
+        item.setVisible(true);
+    }
+
 
     private void setViewElements() {
 
@@ -307,7 +322,8 @@ public class MapFragment extends Fragment {
                 .icon(BitmapDescriptorFactory
                         .fromResource(R.drawable.current_position_marker));
 
-        mGoogleMap.addMarker(currentPositionMarker);
+        Marker pos = mGoogleMap.addMarker(currentPositionMarker);
+        String id = pos.getId();
 
 
         //adding stations to map
@@ -323,7 +339,7 @@ public class MapFragment extends Fragment {
 
             Marker marker = mGoogleMap.addMarker(stationMarker);
 
-            mMarkerStation.put(marker, station);
+            mMarkerStation.put(marker.getId(), station);
         }
 
         CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -336,7 +352,7 @@ public class MapFragment extends Fragment {
         mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                BikePickupStation station = mMarkerStation.get(marker);
+                BikePickupStation station = mMarkerStation.get(marker.getId());
 
                 mCurrentSelectedStation = station.getSid();
 

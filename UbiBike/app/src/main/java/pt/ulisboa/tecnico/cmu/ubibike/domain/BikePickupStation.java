@@ -9,13 +9,14 @@ import java.util.ArrayList;
  */
 public class BikePickupStation {
 
-    private int sid;
+    private int mSid;
     private String mStationName;
     private double mPositionLatitude;
     private double mPositionLongitude;
     private ArrayList<Integer> mBikesAvailable;
 
     public BikePickupStation(int sid, String stationName, double positionLatitude, double positionLongitude, ArrayList<Integer> bikesAvailable) {
+        mSid = sid;
         mStationName = stationName;
         mBikesAvailable = bikesAvailable;
         mPositionLongitude = positionLongitude;
@@ -23,7 +24,7 @@ public class BikePickupStation {
     }
 
     public int getSid() {
-        return sid;
+        return mSid;
     }
 
     public String getStationName() {
