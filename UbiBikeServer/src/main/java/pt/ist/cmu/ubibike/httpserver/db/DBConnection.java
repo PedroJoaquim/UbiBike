@@ -16,7 +16,11 @@ public class DBConnection {
 
     public static Connection getConnection() {
 
-        if (conn == null) {
+        try {
+            if (conn == null || conn.isValid(0) || conn.isClosed()) {
+                conn = loadConnection();
+            }
+        } catch (SQLException e) {
             conn = loadConnection();
         }
 
@@ -24,7 +28,7 @@ public class DBConnection {
     }
 
     private static Connection loadConnection() {
-        String host = "jdbc:mysql://" + DBConnection.host + ":3306/" + DBConnection.db;
+        String host = "jdbc:mysql://" + DBConnection.host + ":3306/" + DBConnection.db + "?autoReconnect=true";
 
         try {
             return DriverManager.getConnection(host, DBConnection.username, DBConnection.password);
