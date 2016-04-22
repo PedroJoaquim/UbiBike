@@ -354,7 +354,12 @@ public class MapFragment extends Fragment {
             public boolean onMarkerClick(Marker marker) {
                 BikePickupStation station = mMarkerStation.get(marker.getId());
 
+                if(station == null) { //selected marker is not a bike station
+                    return false;
+                }
+
                 mCurrentSelectedStation = station.getSid();
+
 
                 RelativeLayout bookBike = (RelativeLayout) mView.findViewById(R.id.book_bike);
 

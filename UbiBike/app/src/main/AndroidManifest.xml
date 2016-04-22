@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="pt.ulisboa.tecnico.cmu.ubibike" >
+    xmlns:tools="http://schemas.android.com/tools"
+    package="pt.ulisboa.tecnico.cmu.ubibike">
 
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
-    <!-- The following two permissions are not required to use Google Maps Android API v2, but are recommended. -->
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -20,10 +19,14 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
+        tools:replace = "android:icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:name="pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext">
+
+        <service
+            android:name="pt.inesc.termite.wifidirect.service.SimWifiP2pService" />
 
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
 
@@ -38,6 +41,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
     </application>
 
 </manifest>
