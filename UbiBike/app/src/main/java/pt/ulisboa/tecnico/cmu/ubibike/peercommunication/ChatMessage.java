@@ -1,11 +1,9 @@
-package pt.ulisboa.tecnico.cmu.ubibike.domain;
+package pt.ulisboa.tecnico.cmu.ubibike.peercommunication;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by andriy on 12.03.2016.
- */
+
 public class ChatMessage implements Comparable {
 
     private boolean mReceived;

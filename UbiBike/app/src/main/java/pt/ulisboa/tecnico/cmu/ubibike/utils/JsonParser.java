@@ -42,8 +42,8 @@ public class JsonParser {
     private static final String TRAJECTORIES = "trajectories";
     private static final String TRAJECTORY_ID = "tid";
     private static final String TRAJECTORY_USER_ID = "user_tid";
-    private static final String START_STATION_NAME = "start_station_name";
-    private static final String END_STATION_NAME = "end_station_name";
+    private static final String START_STATION_ID = "start_station_id";
+    private static final String END_STATION_ID = "end_station_id";
     private static final String COORDINATES = "coords";
     private static final String DISTANCE = "distance";
     private static final String POINTS_EARNED = "points_earned";
@@ -256,8 +256,8 @@ public class JsonParser {
                 JSONObject trj = new JSONObject();
 
                 trj.put(TRAJECTORY_ID, trajectory.getTrajectoryID());
-                trj.put(START_STATION_NAME, trajectory.getStartStationName());
-                trj.put(END_STATION_NAME, trajectory.getEndStationName());
+                trj.put(START_STATION_ID, trajectory.getStartStationID());
+                trj.put(END_STATION_ID, trajectory.getEndStationID());
 
                 JSONArray coords = new JSONArray();
                 for (LatLng coordinate : trajectory.getRoute()) {
@@ -404,13 +404,13 @@ public class JsonParser {
                     trajectoryPositions.add(new LatLng(positionLatitude, positionLongitude));
                 }
 
-                String startStation = ""; //TODO
-                String endStation = ""; //TODO
+                int startStationID = 0; //TODO
+                int endStationID = 0; //TODO
                 double distance = trajectory.getDouble(DISTANCE);
                 Date startTime = new Date(trajectory.getLong(START_TIME));
                 Date endTime = new Date(trajectory.getLong(END_TIME));
 
-                trajectories.add(new Trajectory(tid, startStation, endStation, trajectoryPositions, distance, startTime, endTime));
+                trajectories.add(new Trajectory(tid, startStationID, endStationID, trajectoryPositions, distance, startTime, endTime));
             }
 
             return trajectories;

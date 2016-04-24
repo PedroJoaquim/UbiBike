@@ -21,8 +21,8 @@ import pt.ulisboa.tecnico.cmu.ubibike.utils.SphericalUtil;
 public class Trajectory implements Comparable<Trajectory> {
 
     private int mTrajectoryID;
-    private String mStartStation;
-    private String mEndStation;
+    private int mStartStationID;
+    private int mEndStationID;
     private ArrayList<LatLng> mTrajectoryPositions;
     private LatLng mCameraPosition;
     private double mDistance;
@@ -34,13 +34,13 @@ public class Trajectory implements Comparable<Trajectory> {
      * Starting a new Trajectory
      *
      * @param routeID - id
-     * @param startStation - start station
+     * @param startStationID - start station ID
      * @param startLatitude - coordinate
      * @param startLongitude - coordinate
      */
-    public Trajectory(int routeID, String startStation, double startLatitude, double startLongitude) {
+    public Trajectory(int routeID, int startStationID, double startLatitude, double startLongitude) {
         mTrajectoryID = routeID;
-        mStartStation = startStation;
+        mStartStationID = startStationID;
         mTrajectoryPositions = new ArrayList<>();
         mTrajectoryPositions.add(new LatLng(startLatitude, startLongitude));
         mStartTime = new Date();
@@ -51,16 +51,16 @@ public class Trajectory implements Comparable<Trajectory> {
      * Rebuilding a past trajectory given its details
      *
      * @param routeID - id
-     * @param startStation - coordinate
-     * @param endStation - coordinate
+     * @param startStationID - start station ID
+     * @param endStationID - end station ID
      * @param route - list of positions
      * @param startTime - start time
      * @param endTime - end time
      */
-    public Trajectory(int routeID, String startStation, String endStation, ArrayList<LatLng> route, double distance, Date startTime, Date endTime) {
+    public Trajectory(int routeID, int startStationID, int endStationID, ArrayList<LatLng> route, double distance, Date startTime, Date endTime) {
         mTrajectoryID = routeID;
-        mStartStation = startStation;
-        mEndStation = endStation;
+        mStartStationID = startStationID;
+        mEndStationID = endStationID;
         mTrajectoryPositions = route;
         mDistance = distance;
         mStartTime = startTime;
@@ -85,7 +85,7 @@ public class Trajectory implements Comparable<Trajectory> {
      * @param latitude - coordinates
      * @param longitude - coordinates
      */
-    public void addRoutePosition(double latitude, double longitude, boolean finishPosition){
+    public void addRoutePosition(double latitude, double longitude){
 
         LatLng newPosition = new LatLng(latitude, longitude);
 
@@ -94,20 +94,29 @@ public class Trajectory implements Comparable<Trajectory> {
 
         mTrajectoryPositions.add(newPosition);
 
-        if(finishPosition){
-            LatLng startPosition = mTrajectoryPositions.get(0);
-            LatLng endPosition = mTrajectoryPositions.get(mTrajectoryPositions.size() - 1);
-            mCameraPosition = SphericalUtil.interpolate(startPosition, endPosition, 0.5);
-        }
+        LatLng oldPosition = mTrajectoryPositions.get(mTrajectoryPositions.size() - 1);
+        double traveledDistance = SphericalUtil.computeDistanceBetween(oldPosition, newPosition);
+
+        mDistance += traveledDistance;
     }
 
     /**
-     * Sets finish station name
-     *
-     * @param stationName - name to set
+     * Finishes current trajectory
      */
-    public void setEndStationName(String stationName){
-        mEndStation = stationName;
+    public void finishRoute(){
+        LatLng startPosition = mTrajectoryPositions.get(0);
+        LatLng endPosition = mTrajectoryPositions.get(mTrajectoryPositions.size() - 1);
+        mCameraPosition = SphericalUtil.interpolate(startPosition, endPosition, 0.5);
+        mEndTime = new Date();
+    }
+
+    /**
+     * Sets finish station id
+     *
+     * @param id -  end station id
+     */
+    public void setEndStationID(int id){
+        mEndStationID = id;
     }
 
 
@@ -122,17 +131,26 @@ public class Trajectory implements Comparable<Trajectory> {
 
 
     /**
-     * @return - route start station name
+     * Gets last route registered position
+     *
+     * @return
      */
-    public String getStartStationName() {
-        return mStartStation;
+    public LatLng getLastPosition(){
+        return mTrajectoryPositions.get(mTrajectoryPositions.size() - 1);
+    }
+
+    /**
+     * @return - route start station id
+     */
+    public int getStartStationID() {
+        return mStartStationID;
     }
 
     /**
      * @return - route end station name
      */
-    public String getEndStationName() {
-        return mEndStation;
+    public int getEndStationID() {
+        return mEndStationID;
     }
 
     /**
@@ -177,6 +195,8 @@ public class Trajectory implements Comparable<Trajectory> {
     public Date getEndTime(){
         return mEndTime;
     }
+
+
 
     /**
      * @return - Travel time in hours:minutes:seconds format

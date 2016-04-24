@@ -56,6 +56,7 @@ public class HomeFragment extends Fragment {
         Button login = (Button) v.findViewById(R.id.login_button);
         Button trajectories = (Button) v.findViewById(R.id.trajectories_button);
         Button stationsNearby = (Button) v.findViewById(R.id.stations_nearby_button);
+        Button stop = (Button) v.findViewById(R.id.stop);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +76,13 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 getParentActivity().showBikeStationsNearbyOnMap(false);
+            }
+        });
+
+        stop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getParentActivity().stopTrajectoryTracking();
             }
         });
 

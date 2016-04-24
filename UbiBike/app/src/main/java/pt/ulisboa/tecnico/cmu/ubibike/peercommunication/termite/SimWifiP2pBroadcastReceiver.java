@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmu.ubibike.termite;
+package pt.ulisboa.tecnico.cmu.ubibike.peercommunication.termite;
 
 import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
 import pt.inesc.termite.wifidirect.SimWifiP2pInfo;

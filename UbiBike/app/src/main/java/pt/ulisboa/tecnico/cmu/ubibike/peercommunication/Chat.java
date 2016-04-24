@@ -1,26 +1,18 @@
-package pt.ulisboa.tecnico.cmu.ubibike.domain;
+package pt.ulisboa.tecnico.cmu.ubibike.peercommunication;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 
-/**
- * Created by andriy on 12.03.2016.
- */
-public class Chat {
 
-    private String mClientID;
-    private String mClientUsername;
+public class Chat {
 
     private ChatMessage mLastReceivedMessage = null;
     private List<ChatMessage> mReceivedMessages = new ArrayList<>();
     private List<ChatMessage> mAllMessages = new ArrayList<>();
 
-    public Chat(String clientID, String clientUsername){
-        mClientID = clientID;
-        mClientUsername = clientUsername;
-    }
+
 
     public void addNewMessage(ChatMessage message){
 

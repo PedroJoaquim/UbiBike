@@ -1,17 +1,11 @@
 package pt.ulisboa.tecnico.cmu.ubibike.domain;
 
-import android.util.Log;
-
 import com.google.android.gms.maps.model.LatLng;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
-
-import pt.ulisboa.tecnico.cmu.ubibike.utils.JsonParser;
+import java.util.HashMap;
 
 /**
  * Created by andriy on 12.03.2016.
@@ -23,40 +17,49 @@ public class Data {
     private String sessionToken;
     private String publicKeyToken;
 
-    private ArrayList<Chat> mConversations;
+    //private ArrayList<Chat> mConversations;
 
-    private ArrayList<BikePickupStation> mBikeStations;
+    private HashMap<Integer, BikePickupStation> mBikeStations;
     private ArrayList<Trajectory> mTrajectories;
+    private Trajectory mLastTrackedTrajectory;
     private Bike mBikeBooked;
+    private int mCurrentBikeBookingStation;
     private LatLng mLastPosition;
-    private int totalPointsEarned;
     private Date dateUpdated;
+
 
 
 
     public Data(int id, String usrn) {
         uid = id;
         username = usrn;
-        mConversations = new ArrayList<>();
-        mBikeStations = new ArrayList<>();
+        //mConversations = new ArrayList<>();
+        mBikeStations = new HashMap<>();
         mTrajectories = new ArrayList<>();
         mLastPosition = new LatLng(0.0, 0.0); //TODO last position
         dateUpdated = new Date();
     }
 
-    public Data(int uid, String username, String sessionToken, String publicKeyToken, ArrayList<Chat> mConversations,
+    public Data(int uid, String username, String sessionToken, String publicKeyToken, ArrayList<String/*TODO change*/> mConversations,
                 ArrayList<BikePickupStation> mBikeStations, ArrayList<Trajectory> mTrajectories,
                 LatLng mLastPosition, Date dateUpdated) {
+
+        HashMap<Integer, BikePickupStation> stations = new HashMap<>();
+
+        for(BikePickupStation station : mBikeStations){
+            stations.put(station.getSid(), station);
+        }
 
         this.uid = uid;
         this.username = username;
         this.sessionToken = sessionToken;
         this.publicKeyToken = publicKeyToken;
-        this.mConversations = mConversations;
-        this.mBikeStations = mBikeStations;
+        //this.mConversations = mConversations;
+        this.mBikeStations = stations;
         this.mTrajectories = mTrajectories;
         this.mLastPosition = mLastPosition;
         this.dateUpdated = dateUpdated;
+        //this.peersNearby = new HashMap<>();
     }
 
 
@@ -65,9 +68,9 @@ public class Data {
      *
      * @return - list of chats
      */
-    public ArrayList<Chat> getConversations() {
+    /*public ArrayList<Chat> getConversations() {
         return mConversations;
-    }
+    }*/
 
 
     /**
@@ -76,7 +79,17 @@ public class Data {
      * @return - list of stations
      */
     public ArrayList<BikePickupStation> getBikeStations() {
-        return mBikeStations;
+        return new ArrayList<>(mBikeStations.values());
+    }
+
+    /**
+     * Gets bike stations with a given ID
+     *
+     * @param sid - station ID
+     * @return - BikePickupStation object
+     */
+    public BikePickupStation getBikePickupStationById(int sid){
+        return mBikeStations.get(sid);
     }
 
     /**
@@ -186,8 +199,22 @@ public class Data {
         mTrajectories = trajectories;
     }
 
+    public Trajectory getLastTrackedTrajectory() {
+        return mLastTrackedTrajectory;
+    }
+
+    public void setLastTrackedTrajectory(Trajectory mLastTrackedTrajectory) {
+        this.mLastTrackedTrajectory = mLastTrackedTrajectory;
+    }
+
     public void setBikeStations(ArrayList<BikePickupStation> bikeStations) {
-        mBikeStations = bikeStations;
+        HashMap<Integer, BikePickupStation> stations = new HashMap<>();
+
+        for(BikePickupStation station : bikeStations){
+            stations.put(station.getSid(), station);
+        }
+
+        mBikeStations = stations;
     }
 
     public int getTotalPointsEarned(){

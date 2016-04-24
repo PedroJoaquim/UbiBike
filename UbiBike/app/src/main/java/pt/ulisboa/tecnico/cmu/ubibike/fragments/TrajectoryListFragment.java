@@ -64,7 +64,7 @@ public class TrajectoryListFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        getParentActivity().showTrajectoryOnMap(mTrajectories.get(position).getTrajectoryID(), false);
+        getParentActivity().showTrajectoryOnMap(mTrajectories.get(position).getTrajectoryID(), false, false);
     }
 
 }
