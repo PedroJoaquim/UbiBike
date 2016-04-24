@@ -82,7 +82,7 @@ public class HomeFragment extends Fragment {
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getParentActivity().stopTrajectoryTracking();
+                getParentActivity().requestStopTrajectoryTracking();
             }
         });
 

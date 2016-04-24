@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/popup"
+    android:background="@drawable/popup_shape"
+    android:padding="10dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="No Internet Connection"
+        android:id="@+id/popup_title_textView"
+        android:layout_alignParentTop="true"
+        android:textColor="@color/black"
+        android:layout_toRightOf="@+id/popup_image"
+        android:layout_marginLeft="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Last update: "
+        android:id="@+id/popup_content_textView"
+        android:layout_below="@+id/popup_title_textView"
+        android:layout_alignLeft="@+id/popup_title_textView"
+        android:layout_alignStart="@+id/popup_title_textView"
+        android:textColor="@color/grey"
+        android:layout_marginTop="5dp" />
+
+    <ImageView
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:id="@+id/popup_image"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="false"
+        android:src="@drawable/ic_cloud_off_black_48dp"
+        android:padding="5dp" />
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:id="@+id/popup_dismiss"
+        android:src="@drawable/dismiss"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>

@@ -1,12 +1,15 @@
 package pt.ulisboa.tecnico.cmu.ubibike;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.media.Image;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.Messenger;
 import android.support.v4.app.Fragment;
@@ -16,13 +19,25 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+
+import org.w3c.dom.Text;
 
 import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
 import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
@@ -52,6 +67,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.UnknownHostException;
+import java.util.Date;
 
 public class UbiBike extends AppCompatActivity /*implements PeerListListener, GroupInfoListener*/ {
 
@@ -67,6 +83,13 @@ public class UbiBike extends AppCompatActivity /*implements PeerListListener, Gr
     private boolean mBound = false;
     private SimWifiP2pBroadcastReceiver mReceiver;
 
+    private NetworkChangeReceiver mNetworkChangeReceiver;
+    private boolean mNetworkChangeReceiverRegistered = false;
+    private boolean mInternetConnected;
+
+    private PopupWindow mPopupWindow;
+    private LayoutInflater mLayoutInflater;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +97,8 @@ public class UbiBike extends AppCompatActivity /*implements PeerListListener, Gr
 
         ApplicationContext.getInstance().setActivity(this);
         mSessionManager = new SessionManager(this);
+
+        mNetworkChangeReceiver = new NetworkChangeReceiver();
 
         setViewElements();
 
@@ -129,12 +154,22 @@ public class UbiBike extends AppCompatActivity /*implements PeerListListener, Gr
         getSupportActionBar().show();
         getSupportActionBar().setTitle("UbiBike");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        if (!mNetworkChangeReceiverRegistered) {
+            registerReceiver(mNetworkChangeReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+            mNetworkChangeReceiverRegistered = true;
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 //        unregisterReceiver(mReceiver);
+
+        if (mNetworkChangeReceiverRegistered) {
+            unregisterReceiver(mNetworkChangeReceiver);
+            mNetworkChangeReceiverRegistered = false;
+        }
     }
 
     @Override
@@ -328,240 +363,70 @@ public class UbiBike extends AppCompatActivity /*implements PeerListListener, Gr
 
 
 
-//
-//    private OnClickListener listenerWifiOffButton = new OnClickListener() {
-//        public void onClick(View v){
-//            if (mBound) {
-//                unbindService(mConnection);
-//                mBound = false;
-//                //guiUpdateInitState();
-//            }
-//        }
-//    };
-//
-//    private OnClickListener listenerInRangeButton = new OnClickListener() {
-//        public void onClick(View v){
-//            if (mBound) {
-//                mManager.requestPeers(mChannel, UbiBike.this);
-//            } else {
-//                Toast.makeText(v.getContext(), "Service not bound",
-//                        Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    };
-//
-//    private OnClickListener listenerInGroupButton = new OnClickListener() {
-//        public void onClick(View v){
-//            if (mBound) {
-//                mManager.requestGroupInfo(mChannel, UbiBike.this);
-//            } else {
-//                Toast.makeText(v.getContext(), "Service not bound",
-//                        Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    };
-//
-//    private OnClickListener listenerConnectButton = new OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//            findViewById(R.id.idConnectButton).setEnabled(false);
-//            new OutgoingCommTask().executeOnExecutor(
-//                    AsyncTask.THREAD_POOL_EXECUTOR,
-//                    mTextInput.getText().toString());
-//        }
-//    };
-//
-//    private OnClickListener listenerSendButton = new OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//            findViewById(R.id.idSendButton).setEnabled(false);
-//
-//            new SendCommTask().executeOnExecutor(
-//                    AsyncTask.THREAD_POOL_EXECUTOR,
-//                    mTextInput.getText().toString());
-//        }
-//    };
-//
-//    private OnClickListener listenerDisconnectButton = new OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//            findViewById(R.id.idDisconnectButton).setEnabled(false);
-//            if (mCliSocket != null) {
-//                try {
-//                    mCliSocket.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            mCliSocket = null;
-//            guiUpdateDisconnectedState();
-//        }
-//    };
-//
-//    private ServiceConnection mConnection = new ServiceConnection() {
-//        // callbacks for service binding, passed to bindService()
-//
-//        @Override
-//        public void onServiceConnected(ComponentName className, IBinder service) {
-//            mService = new Messenger(service);
-//            mManager = new SimWifiP2pManager(mService);
-//            mChannel = mManager.initialize(getApplication(), getMainLooper(), null);
-//            mBound = true;
-//        }
-//
-//        @Override
-//        public void onServiceDisconnected(ComponentName arg0) {
-//            mService = null;
-//            mManager = null;
-//            mChannel = null;
-//            mBound = false;
-//        }
-//    };
-//
-//
-//    /*
-//	 * Asynctasks implementing message exchange
-//	 */
-//
-//    public class IncommingCommTask extends AsyncTask<Void, String, Void> {
-//
-//        @Override
-//        protected Void doInBackground(Void... params) {
-//
-//            Log.d(TAG, "IncommingCommTask started (" + this.hashCode() + ").");
-//
-//            try {
-//                mSrvSocket = new SimWifiP2pSocketServer(
-//                        Integer.parseInt(getString(R.string.port)));
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            while (!Thread.currentThread().isInterrupted()) {
-//                try {
-//                    SimWifiP2pSocket sock = mSrvSocket.accept();
-//                    try {
-//                        BufferedReader sockIn = new BufferedReader(
-//                                new InputStreamReader(sock.getInputStream()));
-//                        String st = sockIn.readLine();
-//                        publishProgress(st);
-//                        sock.getOutputStream().write(("\n").getBytes());
-//                    } catch (IOException e) {
-//                        Log.d("Error reading socket:", e.getMessage());
-//                    } finally {
-//                        sock.close();
-//                    }
-//                } catch (IOException e) {
-//                    Log.d("Error socket:", e.getMessage());
-//                    break;
-//                    //e.printStackTrace();
-//                }
-//            }
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onProgressUpdate(String... values) {
-//            mTextOutput.append(values[0] + "\n");
-//        }
-//    }
-//
-//    public class OutgoingCommTask extends AsyncTask<String, Void, String> {
-//
-//        @Override
-//        protected void onPreExecute() {
-//            mTextOutput.setText("Connecting...");
-//        }
-//
-//        @Override
-//        protected String doInBackground(String... params) {
-//            try {
-//                mCliSocket = new SimWifiP2pSocket(params[0],
-//                        Integer.parseInt(getString(R.string.port)));
-//            } catch (UnknownHostException e) {
-//                return "Unknown Host:" + e.getMessage();
-//            } catch (IOException e) {
-//                return "IO error:" + e.getMessage();
-//            }
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String result) {
-//            if (result != null) {
-//                guiUpdateDisconnectedState();
-//                mTextOutput.setText(result);
-//            } else {
-//                findViewById(R.id.idDisconnectButton).setEnabled(true);
-//                findViewById(R.id.idConnectButton).setEnabled(false);
-//                findViewById(R.id.idSendButton).setEnabled(true);
-//                mTextInput.setHint("");
-//                mTextInput.setText("");
-//                mTextOutput.setText("");
-//            }
-//        }
-//    }
-//
-//    public class SendCommTask extends AsyncTask<String, String, Void> {
-//
-//        @Override
-//        protected Void doInBackground(String... msg) {
-//            try {
-//                mCliSocket.getOutputStream().write((msg[0] + "\n").getBytes());
-//                BufferedReader sockIn = new BufferedReader(
-//                        new InputStreamReader(mCliSocket.getInputStream()));
-//                sockIn.readLine();
-//                mCliSocket.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            mCliSocket = null;
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void result) {
-//            mTextInput.setText("");
-//            //guiUpdateDisconnectedState();
-//        }
-//    }
-//
-//
-//    /**
-//     * Termite listeners
-//     */
-//    @Override
-//    public void onPeersAvailable(SimWifiP2pDeviceList peers) {
-//
-//        for(SimWifiP2pDevice peer : peers.getDeviceList()){
-//            ApplicationContext.getInstance().getData().addPeerNearby(peer);
-//        }
-//
-//    }
-//
-//    @Override
-//    public void onGroupInfoAvailable(SimWifiP2pDeviceList devices, SimWifiP2pInfo groupInfo) {
-//
-//        groupInfo.askIsClient();
-//
-//        // compile list of network members
-//        StringBuilder peersStr = new StringBuilder();
-//        for (String deviceName : groupInfo.getDevicesInNetwork()) {
-//            SimWifiP2pDevice device = devices.getByName(deviceName);
-//            String devstr = "" + deviceName + " (" +
-//                    ((device == null)?"??":device.getVirtIp()) + ")\n";
-//            peersStr.append(devstr);
-//        }
-//
-//        // display list of network members
-//        new AlertDialog.Builder(this)
-//                .setTitle("Devices in WiFi Network")
-//                .setMessage(peersStr.toString())
-//                .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int which) {
-//                    }
-//                })
-//                .show();
-//
-//    }
+
+    public void showPopupWindow() {
+        mLayoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = mLayoutInflater.inflate(R.layout.popup, null);
+
+        mPopupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+
+        String lastSyncStr = "Last sync: " + ApplicationContext.getInstance().getData().
+                                                                getLastUpdatedRelativeString();
+
+        TextView text = (TextView) popupView.findViewById(R.id.popup_content_textView);
+        text.setText(lastSyncStr);
+        ImageView btnDismiss = (ImageView) popupView.findViewById(R.id.popup_dismiss);
+        btnDismiss.setOnClickListener(new Button.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                mPopupWindow.dismiss();
+            }
+        });
+
+
+
+        new Handler().postDelayed(new Runnable() {
+
+            public void run() {
+                View parent = findViewById(R.id.main);
+                mPopupWindow.showAtLocation(parent, Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 200);
+            }
+
+        }, 200L);
+    }
+
+
+
+    /**
+     * BroadcastReceiver to update UI when internet is connected/disconnected
+     */
+    private class NetworkChangeReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+
+            mInternetConnected = MobileConnectionManager.isOnline(context);
+            updateUINetworkStateChanged();
+        }
+    }
+
+    /**
+     * Changes online/offline state
+     */
+    private void updateUINetworkStateChanged() {
+
+        if (mInternetConnected) {
+            if(mPopupWindow != null){
+                mPopupWindow.dismiss();
+            }
+        }
+        else{
+            showPopupWindow();
+        }
+
+    }
 
 }

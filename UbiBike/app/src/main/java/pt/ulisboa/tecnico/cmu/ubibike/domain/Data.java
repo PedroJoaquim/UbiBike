@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.cmu.ubibike.domain;
 
+import android.text.format.DateUtils;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
@@ -155,6 +157,10 @@ public class Data {
 
     public Date getLastUpdated() {
         return dateUpdated;
+    }
+
+    public String getLastUpdatedRelativeString(){
+        return DateUtils.getRelativeTimeSpanString(dateUpdated.getTime()).toString();
     }
 
     public void setLastUpdated(Date dateUpdated) {
