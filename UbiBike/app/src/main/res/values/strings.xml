@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">UbiBike</string>
 
+    <string name="port">10001</string>s
+
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="update_stations">Update Stations</string>
     <string name="logout">Logout</string>
+    <string name="upload_trajectory">Upload Trajectory</string>
 </resources>
