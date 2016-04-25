@@ -29,8 +29,13 @@ public class Data {
     private int mCurrentBikeBookingStation;
     private LatLng mLastPosition;
     private Date dateUpdated;
+    private long mTotalPoints;
+    private double mTotalDistance;
+    private double mTotalHours;
+    private int mTotalRides;
+    private double mLongestDistance;
 
-
+    private Trajectory mLongestRide;
 
     public Data(int id, String usrn) {
         uid = id;
@@ -41,6 +46,11 @@ public class Data {
         mTrajectories = new ArrayList<>();
         mLastPosition = new LatLng(0.0, 0.0); //TODO last position
         dateUpdated = new Date();
+        mTotalPoints = 0;
+        mTotalDistance = 0.0;
+        mTotalHours = 0.0;
+        mTotalRides = 0;
+        mLongestDistance = 0.0;
     }
 
     public Data(int uid, String username, String sessionToken, String publicKeyToken,
@@ -62,6 +72,17 @@ public class Data {
         this.mTrajectories = mTrajectories;
         this.mLastPosition = mLastPosition;
         this.dateUpdated = dateUpdated;
+        for(Trajectory t : mTrajectories) {
+            this.mTotalPoints += t.getPointsEarned();
+            this.mTotalDistance += t.getTravelledDistance();
+            this.mTotalHours += (t.getEndTime().getHours() - t.getStartTime().getHours());
+            this.mTotalRides += 1;
+            if(mLongestDistance < t.getTravelledDistance()) {
+                mLongestDistance = t.getTravelledDistance();
+                mLongestRide = t;
+            }
+        }
+
     }
 
 
@@ -241,4 +262,25 @@ public class Data {
 
         return total;
     }
+
+    public long getTotalPoints() {
+        return mTotalPoints;
+    }
+
+    public double getTotalDistance() {
+        return mTotalDistance;
+    }
+
+    public double getTotalHours() {
+        return mTotalHours;
+    }
+
+    public int getTotalRides() {
+        return mTotalRides;
+    }
+
+    public Trajectory getLongestRide() {
+        return mLongestRide;
+    }
+
 }
