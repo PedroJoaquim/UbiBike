@@ -321,7 +321,7 @@ public class JsonParser {
             LatLng lastPosition = new LatLng(positionLatitude, positionLongitude);
             Date lastUpdated = new Date(json.getLong(LAST_UPDATED));
 
-            return new Data(uid, username, sessionToken, publicKeyToken, null /*TODO chat*/,  bikePickupStations,
+            return new Data(uid, username, sessionToken, publicKeyToken, bikePickupStations,
                     trajectories, lastPosition, lastUpdated);
 
         }

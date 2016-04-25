@@ -374,8 +374,16 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         mPopupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
 
-        String lastSyncStr = "Last sync: " + ApplicationContext.getInstance().getData().
-                                                                getLastUpdatedRelativeString();
+        String lastSyncStr;
+
+
+        if(ApplicationContext.getInstance().getData() != null){
+            lastSyncStr = "Last sync: " + ApplicationContext.getInstance().getData().getLastUpdatedRelativeString();
+        }
+        else{
+            lastSyncStr = "";
+        }
+
 
         TextView text = (TextView) popupView.findViewById(R.id.popup_content_textView);
         text.setText(lastSyncStr);
@@ -395,6 +403,11 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
 
             public void run() {
                 View parent = findViewById(R.id.main);
+
+                if(mPopupWindow != null){
+                    mPopupWindow.dismiss();
+                }
+
                 mPopupWindow.showAtLocation(parent, Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 200);
             }
         }, 200L);
@@ -444,7 +457,7 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
     @Override
     public void onGroupInfoAvailable(SimWifiP2pDeviceList devices, SimWifiP2pInfo groupInfo) {
 
-        //TODO how to 
+        //TODO how to
 
     }
 

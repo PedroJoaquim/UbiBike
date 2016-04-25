@@ -41,10 +41,5 @@ public class Chat {
         return mAllMessages.get(mAllMessages.size() - 1);
     }
 
-    public void setAllMessagesRead(){
-
-        for (ChatMessage msg: mAllMessages)
-            msg.setRead(true);
-    }
 }
 
