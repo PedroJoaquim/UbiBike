@@ -2,7 +2,169 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="pt.ulisboa.tecnico.cmu.ubibike.fragments.UserProfileFragment"
-    android:padding="15dp">
+    android:padding="15dp"
+    android:background="@color/toolbar_color">
 
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView" >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:background="@color/toolbar_color">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="My stats"
+                android:id="@+id/my_stats_title"
+                android:background="#e8af52"
+                android:padding="15dp"
+                android:textStyle="bold"
+                android:textColor="#ffffff"
+                android:textAlignment="center" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Points"
+                android:id="@+id/points_subtitle"
+                android:background="#e91e8989"
+                android:padding="15dp"
+                android:textColor="#ffffff"
+                android:layout_marginTop="10dp" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Total Points:"
+                android:id="@+id/total_points"
+                android:padding="15dp"
+                android:background="#676C89"
+                android:textColor="#ffffff" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Total shared points:"
+                android:id="@+id/total_shared_points"
+                android:padding="15dp"
+                android:background="#676C89"
+                android:textColor="#ffffff" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Rank:"
+                android:id="@+id/rank"
+                android:padding="15dp"
+                android:background="#676C89"
+                android:textColor="#ffffff" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Rides"
+                android:id="@+id/rides_subtitle"
+                android:background="#e91e8989"
+                android:padding="15dp"
+                android:textColor="#ffffff"
+                android:layout_marginTop="10dp" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Total rides:"
+                android:id="@+id/total_rides"
+                android:padding="15dp"
+                android:background="#676C89"
+                android:textColor="#ffffff" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Total distance:"
+                android:id="@+id/total_distance"
+                android:padding="15dp"
+                android:background="#676C89"
+                android:textColor="#ffffff" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Total hours:"
+                android:id="@+id/total_hours"
+                android:padding="15dp"
+                android:background="#676C89"
+                android:textColor="#ffffff" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Longest ride"
+                android:id="@+id/longest_ride_subtitle"
+                android:background="#e91e8989"
+                android:padding="15dp"
+                android:textColor="#ffffff"
+                android:layout_marginTop="10dp" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Distance:"
+                android:id="@+id/longest_ride_distance"
+                android:padding="15dp"
+                android:background="#676C89"
+                android:textColor="#ffffff" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Duration:"
+                android:id="@+id/longest_ride_duration"
+                android:padding="15dp"
+                android:background="#676C89"
+                android:textColor="#ffffff" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Points Earned:"
+                android:id="@+id/longest_ride_points"
+                android:padding="15dp"
+                android:background="#676C89"
+                android:textColor="#ffffff" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Average speed:"
+                android:id="@+id/longest_ride_average_speed"
+                android:padding="15dp"
+                android:background="#676C89"
+                android:textColor="#ffffff" />
+
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

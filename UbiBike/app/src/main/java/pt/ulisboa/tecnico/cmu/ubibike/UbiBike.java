@@ -58,6 +58,7 @@ import pt.ulisboa.tecnico.cmu.ubibike.fragments.LoginFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.MapFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.RegisterAccountFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.TrajectoryListFragment;
+import pt.ulisboa.tecnico.cmu.ubibike.fragments.UserProfileFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.MobileConnectionManager;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.SessionManager;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.CommunicationTasks;
@@ -293,6 +294,11 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
 
         Fragment fragment = new MapFragment();
         replaceFragment(fragment, false, true);
+    }
+
+    public void showUserProfile() {
+        Fragment fragment = new UserProfileFragment();
+        replaceFragment(fragment,true, false);
     }
 
     /**
