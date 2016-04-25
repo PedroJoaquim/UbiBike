@@ -13,7 +13,6 @@ public class Chat {
     private List<ChatMessage> mAllMessages = new ArrayList<>();
 
 
-
     public void addNewMessage(ChatMessage message){
 
         if(message.isReceived()){

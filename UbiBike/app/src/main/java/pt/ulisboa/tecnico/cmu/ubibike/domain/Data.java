@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.GroupChatsNearby;
+
 /**
  * Created by andriy on 12.03.2016.
  */
@@ -19,8 +21,7 @@ public class Data {
     private String sessionToken;
     private String publicKeyToken;
 
-    //private ArrayList<Chat> mConversations;
-
+    private GroupChatsNearby mGroupChatsNearby;
     private HashMap<Integer, BikePickupStation> mBikeStations;
     private ArrayList<Trajectory> mTrajectories;
     private Trajectory mLastTrackedTrajectory;
@@ -31,18 +32,18 @@ public class Data {
 
 
 
-
     public Data(int id, String usrn) {
         uid = id;
         username = usrn;
-        //mConversations = new ArrayList<>();
+
+        mGroupChatsNearby =  new GroupChatsNearby();
         mBikeStations = new HashMap<>();
         mTrajectories = new ArrayList<>();
         mLastPosition = new LatLng(0.0, 0.0); //TODO last position
         dateUpdated = new Date();
     }
 
-    public Data(int uid, String username, String sessionToken, String publicKeyToken, ArrayList<String/*TODO change*/> mConversations,
+    public Data(int uid, String username, String sessionToken, String publicKeyToken,
                 ArrayList<BikePickupStation> mBikeStations, ArrayList<Trajectory> mTrajectories,
                 LatLng mLastPosition, Date dateUpdated) {
 
@@ -56,12 +57,11 @@ public class Data {
         this.username = username;
         this.sessionToken = sessionToken;
         this.publicKeyToken = publicKeyToken;
-        //this.mConversations = mConversations;
+
         this.mBikeStations = stations;
         this.mTrajectories = mTrajectories;
         this.mLastPosition = mLastPosition;
         this.dateUpdated = dateUpdated;
-        //this.peersNearby = new HashMap<>();
     }
 
 
@@ -221,6 +221,15 @@ public class Data {
         }
 
         mBikeStations = stations;
+    }
+
+
+    public GroupChatsNearby getGroupChatsNearby() {
+        return mGroupChatsNearby;
+    }
+
+    public void setGroupChatsNearby(GroupChatsNearby mGroupChatsNearby) {
+        this.mGroupChatsNearby = mGroupChatsNearby;
     }
 
     public int getTotalPointsEarned(){

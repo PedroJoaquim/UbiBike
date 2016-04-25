@@ -60,6 +60,7 @@ import pt.ulisboa.tecnico.cmu.ubibike.fragments.RegisterAccountFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.TrajectoryListFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.MobileConnectionManager;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.SessionManager;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.CommunicationTasks;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.termite.SimWifiP2pBroadcastReceiver;
 import pt.ulisboa.tecnico.cmu.ubibike.services.TrajectoryTracker;
 
@@ -67,18 +68,18 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Date;
 
-public class UbiBike extends AppCompatActivity /*implements PeerListListener, GroupInfoListener*/ {
+public class UbiBike extends AppCompatActivity implements PeerListListener, GroupInfoListener {
 
     private SessionManager mSessionManager;
 
     public static final String TAG = "UbiBike";
 
+    private CommunicationTasks mCommunicationTasks;
     private SimWifiP2pManager mManager = null;
     private SimWifiP2pManager.Channel mChannel = null;
-    private SimWifiP2pSocketServer mSrvSocket = null;
-    private SimWifiP2pSocket mCliSocket = null;
     private Messenger mService = null;
     private boolean mBound = false;
     private SimWifiP2pBroadcastReceiver mReceiver;
@@ -99,6 +100,8 @@ public class UbiBike extends AppCompatActivity /*implements PeerListListener, Gr
         mSessionManager = new SessionManager(this);
 
         mNetworkChangeReceiver = new NetworkChangeReceiver();
+
+        mCommunicationTasks = new CommunicationTasks();
 
         setViewElements();
 
@@ -394,7 +397,6 @@ public class UbiBike extends AppCompatActivity /*implements PeerListListener, Gr
                 View parent = findViewById(R.id.main);
                 mPopupWindow.showAtLocation(parent, Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 200);
             }
-
         }, 200L);
     }
 
@@ -409,24 +411,128 @@ public class UbiBike extends AppCompatActivity /*implements PeerListListener, Gr
         public void onReceive(final Context context, final Intent intent) {
 
             mInternetConnected = MobileConnectionManager.isOnline(context);
-            updateUINetworkStateChanged();
-        }
-    }
 
-    /**
-     * Changes online/offline state
-     */
-    private void updateUINetworkStateChanged() {
-
-        if (mInternetConnected) {
-            if(mPopupWindow != null){
-                mPopupWindow.dismiss();
+            if (mInternetConnected) {
+                if(mPopupWindow != null){
+                    mPopupWindow.dismiss();
+                }
+            }
+            else{
+                showPopupWindow();
             }
         }
-        else{
-            showPopupWindow();
+    }
+
+
+    /**
+     * Termite listeners
+     */
+    @Override
+    public void onPeersAvailable(SimWifiP2pDeviceList peers) {
+
+        for(SimWifiP2pDevice peer : peers.getDeviceList()){
+            boolean newPeer = ApplicationContext.getInstance().getData().getGroupChatsNearby().addDeviceNearbyIfNotExists(peer.deviceName, peer.virtDeviceAddress);
+
+            //establishing connection to new peer
+            if(newPeer){
+                //TODO
+            }
         }
 
     }
+
+    @Override
+    public void onGroupInfoAvailable(SimWifiP2pDeviceList devices, SimWifiP2pInfo groupInfo) {
+
+        //TODO how to 
+
+    }
+
+
+    public void wifiP2pTurnOn(){
+
+        Intent intent = new Intent(this, SimWifiP2pService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        mBound = true;
+
+        // spawn the chat server background task
+        mCommunicationTasks.new IncomingCommunicationTask().executeOnExecutor(
+                AsyncTask.THREAD_POOL_EXECUTOR);
+
+    }
+
+    public void wifiP2pTurnOff(){
+            if (mBound) {
+                unbindService(mConnection);
+                mBound = false;
+            }
+    }
+
+    public void wifiP2pConnectToPeer(String deviceName){
+
+        mCommunicationTasks.new OutgoingCommunicationTask().executeOnExecutor(
+                AsyncTask.THREAD_POOL_EXECUTOR, deviceName);
+    }
+
+    public void wifiP2pSendMessageToPeer(String deviceName, String message){
+
+        mCommunicationTasks.new TransferDataTask().executeOnExecutor(
+                AsyncTask.THREAD_POOL_EXECUTOR, deviceName, message);
+
+    }
+
+
+    public void wifiP2pRequestGroupsInfo(){
+        if (mBound) {
+            mManager.requestGroupInfo(mChannel, UbiBike.this);
+        } else {
+            Toast.makeText(this, "Service not bound",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void wifiP2pRequestPeersInfo(){
+        if (mBound) {
+            mManager.requestPeers(mChannel, UbiBike.this);
+        } else {
+            Toast.makeText(this, "Service not bound",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void wifiP2pDisconnectAllPeers(){
+
+        ArrayList<SimWifiP2pSocket> sockets = ApplicationContext.getInstance().getData().
+                getGroupChatsNearby().getAllDeviceClientSockets();
+
+        for(SimWifiP2pSocket socket : sockets){
+            try {
+                socket.close();
+            } catch (IOException e) {
+                //ignore
+            }
+        }
+    }
+
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        // callbacks for service binding, passed to bindService()
+
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            mService = new Messenger(service);
+            mManager = new SimWifiP2pManager(mService);
+            mChannel = mManager.initialize(getApplication(), getMainLooper(), null);
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mService = null;
+            mManager = null;
+            mChannel = null;
+            mBound = false;
+        }
+    };
 
 }
