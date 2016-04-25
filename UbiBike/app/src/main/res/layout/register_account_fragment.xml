@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="pt.ulisboa.tecnico.cmu.ubibike.fragments.RegisterAccountFragment"
-    android:background="@drawable/background">
+    android:background="@color/toolbar_color">
 
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -87,6 +87,29 @@
 
     </RelativeLayout>
 
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="UbiBike"
+        android:id="@+id/textView6"
+        android:layout_above="@+id/relativeLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="83dp"
+        android:textColor="#ffffff"
+        android:textSize="60dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView5"
+        android:src="@drawable/bike"
+        android:baselineAlignBottom="false"
+        android:adjustViewBounds="false"
+        android:layout_alignParentLeft="false"
+        android:paddingTop="125dp"
+        android:layout_above="@+id/relativeLayout" />
 
     <Button
         android:id="@+id/create_account_Button"

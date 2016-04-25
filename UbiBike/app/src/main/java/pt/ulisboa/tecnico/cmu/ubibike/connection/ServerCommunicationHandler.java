@@ -29,7 +29,7 @@ public class ServerCommunicationHandler {
     private PrivateKey privateKey;
 
 
-    private static String HOST_SERVER = "http://85.246.107.17:8000";
+    private static String HOST_SERVER = "http://85.246.107.17:8085";
     private static String URL_LOGIN = "/auth";                               //[POST] json_schema = authentication.json
     private static String URL_REGISTER_ACCOUNT = "/registration";            //[POST] json_schema = register.json
     private static String URL_PUBLIC_KEY_TOKEN = "/PublicKeyToken";          //[GET]  url com session_token & uid
@@ -192,6 +192,7 @@ public class ServerCommunicationHandler {
         protected void onPostExecute(String jsonStr) {
 
             if (jsonStr == null || jsonStr.equals("[]") || jsonStr.equals("{}")){   //null or empty
+                ApplicationContext.getInstance().getActivity().finishLogin();
                 return;
             }
             else {
@@ -241,6 +242,7 @@ public class ServerCommunicationHandler {
             Toast.makeText(ApplicationContext.getInstance().getActivity(), "Login successful.", Toast.LENGTH_SHORT).show();
 
         }
+
     }
 
     public class RegisterAccountRequestTask extends AsyncTask<String, Void, String>{

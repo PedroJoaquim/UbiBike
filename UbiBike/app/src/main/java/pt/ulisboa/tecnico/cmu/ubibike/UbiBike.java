@@ -298,7 +298,7 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
 
     public void showUserProfile() {
         Fragment fragment = new UserProfileFragment();
-        replaceFragment(fragment,true, false);
+        replaceFragment(fragment, false, true);
     }
 
     /**
