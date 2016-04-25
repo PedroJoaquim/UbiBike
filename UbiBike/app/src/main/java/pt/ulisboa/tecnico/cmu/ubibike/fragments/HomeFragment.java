@@ -9,6 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import pt.ulisboa.tecnico.cmu.ubibike.R;
 import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
@@ -53,17 +55,8 @@ public class HomeFragment extends Fragment {
         setHasOptionsMenu(true);
         getParentActivity().invalidateOptionsMenu();
 
-        Button login = (Button) v.findViewById(R.id.login_button);
-        Button trajectories = (Button) v.findViewById(R.id.trajectories_button);
-        Button stationsNearby = (Button) v.findViewById(R.id.stations_nearby_button);
-        Button stop = (Button) v.findViewById(R.id.stop);
-
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getParentActivity().showLogin();
-            }
-        });
+        ImageButton trajectories = (ImageButton) v.findViewById(R.id.trajectories_icon);
+        ImageButton stationsNearby = (ImageButton) v.findViewById(R.id.bike_stations_icon);
 
         trajectories.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,13 +69,6 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 getParentActivity().showBikeStationsNearbyOnMap(false);
-            }
-        });
-
-        stop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getParentActivity().requestStopTrajectoryTracking();
             }
         });
 

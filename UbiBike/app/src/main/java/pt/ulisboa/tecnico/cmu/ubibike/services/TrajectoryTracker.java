@@ -168,8 +168,8 @@ public class TrajectoryTracker extends Service implements LocationListener {
             Bundle extras = mIntent.getExtras();
             int trajectoryID = extras.getInt(TRAJECTORY_ID);
             int startStationID = extras.getInt(START_STATION_ID);
-            float startLatitude = extras.getFloat(START_STATION_LATITUDE);
-            float startLongitude = extras.getFloat(START_STATION_LONGITUDE);
+            double startLatitude = extras.getDouble(START_STATION_LATITUDE);
+            double startLongitude = extras.getDouble(START_STATION_LONGITUDE);
 
             Trajectory trajectory = new Trajectory(trajectoryID, startStationID, startLatitude, startLongitude);
 
