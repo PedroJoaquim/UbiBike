@@ -173,6 +173,8 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         if (mNetworkChangeReceiverRegistered) {
             unregisterReceiver(mNetworkChangeReceiver);
             mNetworkChangeReceiverRegistered = false;
+
+            if(mPopupWindow != null) mPopupWindow.dismiss();
         }
     }
 
@@ -253,9 +255,14 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         Data appData = ApplicationContext.getInstance().getData();
         mSessionManager.createLoginSession(appData.getUid());
 
+        ApplicationContext.getInstance().getStorageManager().
+                registerLoginCredentialsOnDB(appData.getUid(),
+                                            appData.getUsername(),
+                                            ApplicationContext.getInstance().getPassword());
+
+
         showHome();
     }
-
 
     /**
      * Shows Home screen

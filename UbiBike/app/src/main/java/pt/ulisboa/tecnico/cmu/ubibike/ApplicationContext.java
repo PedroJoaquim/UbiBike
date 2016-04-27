@@ -15,6 +15,7 @@ public class ApplicationContext extends Application {
     private UbiBike mActivity;
 
     private int mUid;
+    private String mPassword;
     private Data mData;
     private SessionManager mSessionManager;
     private StorageManager mStorageManager;
@@ -34,8 +35,6 @@ public class ApplicationContext extends Application {
         mStorageManager = new StorageManager(this);
         mServerCommunicationHandler = new ServerCommunicationHandler();
 
-
-        //mData = new Data();
 
         if (mSessionManager.isLoggedIn()) {
             mUid = mSessionManager.getLoggedUser();
@@ -97,5 +96,13 @@ public class ApplicationContext extends Application {
 
     public ServerCommunicationHandler getServerCommunicationHandler() {
         return mServerCommunicationHandler;
+    }
+
+    public String getPassword() {
+        return mPassword;
+    }
+
+    public void setPassword(String mPassword) {
+        this.mPassword = mPassword;
     }
 }

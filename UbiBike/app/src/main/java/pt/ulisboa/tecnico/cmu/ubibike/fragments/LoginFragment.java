@@ -15,6 +15,9 @@ import android.widget.Toast;
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.R;
 import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
+import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
+import pt.ulisboa.tecnico.cmu.ubibike.managers.MobileConnectionManager;
+import pt.ulisboa.tecnico.cmu.ubibike.utils.Password;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.Validator;
 
 
@@ -74,18 +77,51 @@ public class LoginFragment extends Fragment {
                 String usrName = username.getText().toString();
                 String pssWd = password.getText().toString();
 
-                if(!Validator.isUsernameValid(usrName)){
+                if (!Validator.isUsernameValid(usrName)) {
                     Toast.makeText(getActivity(), "Username should be..." /*TODO msg*/, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if(!Validator.isPasswordValid(pssWd)){
+                if (!Validator.isPasswordValid(pssWd)) {
                     Toast.makeText(getActivity(), "Password should be..." /*TODO msg*/, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                ApplicationContext.getInstance().getServerCommunicationHandler().
-                        performLoginRequest(usrName, pssWd);
+
+                if (MobileConnectionManager.isOnline(getActivity())) {
+
+                    ApplicationContext.getInstance().getServerCommunicationHandler().
+                            performLoginRequest(usrName, pssWd);
+                } else {
+
+                    Boolean passwordValid = ApplicationContext.getInstance().getStorageManager().
+                            checkIsExpectedPassword(usrName, pssWd);
+
+                    if (passwordValid == null) {
+                        Toast.makeText(getActivity(), "No login record found for current user", Toast.LENGTH_SHORT).show();
+                    } else if (passwordValid) {
+
+                        int clientID = ApplicationContext.getInstance().getStorageManager().
+                                getClientIDGivenUsernameFromDB(usrName);
+
+
+                        Data appData = ApplicationContext.getInstance().getStorageManager().
+                                                                        getAppDataFromDB(clientID);
+
+                        ApplicationContext.getInstance().getServerCommunicationHandler().
+                                                                            setUid(appData.getUid());
+                        ApplicationContext.getInstance().getServerCommunicationHandler().
+                                                            setSessionToken(appData.getSessionToken());
+
+                        getParentActivity().finishLogin();
+
+
+                    } else {
+                        Toast.makeText(getActivity(), "Invalid credentials", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                ApplicationContext.getInstance().setPassword(pssWd);
 
             }
         });
