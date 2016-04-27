@@ -29,11 +29,10 @@ public class Data {
     private int mCurrentBikeBookingStation;
     private LatLng mLastPosition;
     private Date dateUpdated;
+
     private long mTotalPoints;
     private double mTotalDistance;
-    private double mTotalHours;
-    private int mTotalRides;
-    private double mLongestDistance;
+    private long mTotalTime;
 
     private Trajectory mLongestRide;
 
@@ -48,9 +47,7 @@ public class Data {
         dateUpdated = new Date();
         mTotalPoints = 0;
         mTotalDistance = 0.0;
-        mTotalHours = 0.0;
-        mTotalRides = 0;
-        mLongestDistance = 0.0;
+        mTotalTime = 0;
     }
 
     public Data(int uid, String username, String sessionToken, String publicKeyToken,
@@ -72,13 +69,12 @@ public class Data {
         this.mTrajectories = mTrajectories;
         this.mLastPosition = mLastPosition;
         this.dateUpdated = dateUpdated;
+
         for(Trajectory t : mTrajectories) {
             this.mTotalPoints += t.getPointsEarned();
             this.mTotalDistance += t.getTravelledDistance();
-            this.mTotalHours += (t.getEndTime().getHours() - t.getStartTime().getHours());
-            this.mTotalRides += 1;
-            if(mLongestDistance < t.getTravelledDistance()) {
-                mLongestDistance = t.getTravelledDistance();
+            this.mTotalTime += (t.getEndTime().getTime() - t.getStartTime().getTime());
+            if(mLongestRide.getTravelledDistance() < t.getTravelledDistance()) {
                 mLongestRide = t;
             }
         }
@@ -123,6 +119,24 @@ public class Data {
      */
     public Trajectory getTrajectory(int trajectoryID) {
         return mTrajectories.get(new Integer(trajectoryID));
+    }
+
+
+    /**
+     * Adds a given trajectory to collection
+     *
+     * @param newTrajectory - Trajectory to add
+     */
+    public void addTrajectory(Trajectory newTrajectory){
+        mTrajectories.add(newTrajectory);
+
+        if(newTrajectory.getTravelledDistance() > mLongestRide.getTravelledDistance()){
+            mLongestRide = newTrajectory;
+        }
+
+        mTotalDistance += newTrajectory.getTravelledDistance();
+        mTotalPoints += newTrajectory.getPointsEarned();
+        mTotalTime += (newTrajectory.getEndTime().getTime() - newTrajectory.getStartTime().getTime());
     }
 
     /**
@@ -253,16 +267,6 @@ public class Data {
         this.mGroupChatsNearby = mGroupChatsNearby;
     }
 
-    public int getTotalPointsEarned(){
-        int total = 0;
-
-        for(Trajectory trj: mTrajectories){
-            total += trj.getPointsEarned();
-        }
-
-        return total;
-    }
-
     public long getTotalPoints() {
         return mTotalPoints;
     }
@@ -272,11 +276,11 @@ public class Data {
     }
 
     public double getTotalHours() {
-        return mTotalHours;
+        return mTotalTime;
     }
 
     public int getTotalRides() {
-        return mTotalRides;
+        return mTrajectories.size();
     }
 
     public Trajectory getLongestRide() {

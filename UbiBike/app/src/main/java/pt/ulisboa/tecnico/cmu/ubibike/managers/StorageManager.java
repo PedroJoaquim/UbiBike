@@ -16,6 +16,7 @@ import javax.crypto.Cipher;
 
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.JsonParser;
+import pt.ulisboa.tecnico.cmu.ubibike.utils.Password;
 
 
 /**
@@ -35,6 +36,9 @@ public class StorageManager extends SQLiteOpenHelper {
 
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_CLIENT_ID = "client_id";
+    private static final String COLUMN_USERNAME = "username";
+    private static final String COLUMN_PASSWORD = "password";
+    private static final String COLUMN_SALT = "salt";
     private static final String COLUMN_DATA = "data";
     private static final String COLUMN_PUBLIC_KEY = "public_key";
     private static final String COLUMN_PRIVATE_KEY = "private_key";
@@ -53,6 +57,9 @@ public class StorageManager extends SQLiteOpenHelper {
 
         db.execSQL("CREATE TABLE " + APP_DATA_TABLE_NAME +
                         "(" + COLUMN_ID + " INTEGER PRIMARY KEY, "
+                        + COLUMN_USERNAME + " TEXT,"
+                        + COLUMN_PASSWORD + " BLOB,"
+                        + COLUMN_SALT + " BLOB,"
                         + COLUMN_CLIENT_ID + " TEXT,"
                         + COLUMN_DATA + " TEXT, "
                         + COLUMN_PUBLIC_KEY + " BLOB,"
@@ -86,6 +93,9 @@ public class StorageManager extends SQLiteOpenHelper {
             ContentValues contentValues = new ContentValues();
 
             contentValues.put(COLUMN_CLIENT_ID, clientID);
+            contentValues.putNull(COLUMN_USERNAME);
+            contentValues.putNull(COLUMN_PASSWORD);
+            contentValues.putNull(COLUMN_SALT);
             contentValues.putNull(COLUMN_DATA);
             contentValues.putNull(COLUMN_PUBLIC_KEY);
             contentValues.putNull(COLUMN_PRIVATE_KEY);
@@ -262,6 +272,98 @@ public class StorageManager extends SQLiteOpenHelper {
 
         return CipherManager.getPrivateKeyFromBytes(privateKeyBytes);
     }
+
+
+    /**
+     * Registers client's login credentials on DB
+     *
+     * @param clientID - client id
+     * @param username - username
+     * @param plainPassword - password in plaintext
+     */
+    public void registerLoginCredentialsOnDB(int clientID, String username, String plainPassword){
+
+        byte[] salt = Password.getNextSalt();
+        byte[] hashedPassword = Password.hash(plainPassword.toCharArray(), salt);
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(COLUMN_USERNAME, username);
+        contentValues.put(COLUMN_PASSWORD, hashedPassword);
+        contentValues.put(COLUMN_SALT, salt);
+
+        writableDatabase.update(APP_DATA_TABLE_NAME, contentValues, COLUMN_CLIENT_ID + "= \"" + clientID + "\"", null);
+
+    }
+
+
+    /**
+     * Get client id from given username
+     *
+     * @param username - client username
+     * @return - client id  or null in case client with username provided doesnt exists
+     */
+    public Integer getClientIDGivenUsernameFromDB(String username) {
+
+        Integer result = null;
+
+        String sqlQuery = "SELECT * FROM " + APP_DATA_TABLE_NAME + " WHERE " + COLUMN_USERNAME + " = \"" + username + "\";";
+        Cursor cursor = readableDatabase.rawQuery(sqlQuery, null);
+
+        if (cursor.getCount() != 0) {
+
+            cursor.moveToFirst();
+
+            result = cursor.getInt(cursor.getColumnIndex(COLUMN_CLIENT_ID));
+        }
+
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+
+        return result;
+    }
+
+
+
+
+    /**
+     *  Checks whether or not given password is correct
+     *
+     * @param username - provided username
+     * @param password - provided password
+     * @return - true / false regarding password correctness or null in case of no login record from the past with given user
+     */
+    public Boolean checkIsExpectedPassword(String username, String password){
+
+        Boolean result = null;
+
+        String sqlQuery = "SELECT * FROM " + APP_DATA_TABLE_NAME + " WHERE " + COLUMN_USERNAME + " = \"" + username + "\";";
+        Cursor cursor = readableDatabase.rawQuery(sqlQuery, null);
+
+        if(cursor.getCount() != 0) {
+
+            cursor.moveToFirst();
+
+            byte[] hashedPassword = cursor.getBlob(cursor.getColumnIndex(COLUMN_PRIVATE_KEY));
+            byte[] salt = cursor.getBlob(cursor.getColumnIndex(COLUMN_SALT));
+
+            if (hashedPassword != null) {
+                result = Password.isExpectedPassword(password.toCharArray(), salt, hashedPassword);
+            }
+
+        }
+
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+
+        return result;
+    }
+
+
+
+
 
 
 
