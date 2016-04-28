@@ -5,12 +5,10 @@ public class Bike {
 
     private int bid;
     private String uuid;    //in our case the WIFI Direct peers device id
-    private int sid;
 
     public Bike(int bid, String uuid, int sid) {
         this.bid = bid;
         this.uuid = uuid;
-        this.sid = sid;
     }
 
     public int getBid() {
@@ -27,13 +25,5 @@ public class Bike {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
-    }
-
-    public int getSid() {
-        return sid;
-    }
-
-    public void setSid(int sid) {
-        this.sid = sid;
     }
 }

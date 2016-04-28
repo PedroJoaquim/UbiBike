@@ -3,11 +3,9 @@ package pt.ulisboa.tecnico.cmu.ubibike;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
@@ -15,29 +13,20 @@ import android.os.Messenger;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
-import org.w3c.dom.Text;
 
 import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
 import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
@@ -50,7 +39,6 @@ import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
 
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketManager;
-import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketServer;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Trajectory;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.HomeFragment;
@@ -65,12 +53,8 @@ import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.CommunicationTasks;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.termite.SimWifiP2pBroadcastReceiver;
 import pt.ulisboa.tecnico.cmu.ubibike.services.TrajectoryTracker;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class UbiBike extends AppCompatActivity implements PeerListListener, GroupInfoListener {
 
@@ -116,13 +100,8 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
 
         if(savedInstanceState == null){
             Intent i = new Intent(this, TrajectoryTracker.class);
-            i.putExtra(TrajectoryTracker.TRAJECTORY_ID, 0);
-            i.putExtra(TrajectoryTracker.START_STATION_ID, 0);
-            i.putExtra(TrajectoryTracker.START_STATION_LATITUDE, 0.0);
-            i.putExtra(TrajectoryTracker.START_STATION_LONGITUDE, 0.0);
             startService(i);
         }
-
     }
 
 
@@ -339,33 +318,27 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         replaceFragment(fragment, explicitReplace, true);
     }
 
-    public void startTrajectoryTracking(){
-
-        int maxTrajectoryID = 0;
-
-        for(Trajectory t : ApplicationContext.getInstance().getData().getAllTrajectories()){
-            maxTrajectoryID = (maxTrajectoryID < t.getTrajectoryID()) ? t.getTrajectoryID() : maxTrajectoryID;
-        }
-        maxTrajectoryID++;
-
-
-
-        Intent i = new Intent(this, TrajectoryTracker.class);
-        i.putExtra(TrajectoryTracker.TRAJECTORY_ID, maxTrajectoryID);
-        i.putExtra(TrajectoryTracker.START_STATION_ID, 0);
-        i.putExtra(TrajectoryTracker.START_STATION_LATITUDE, 0.0);
-        i.putExtra(TrajectoryTracker.START_STATION_LONGITUDE, 0.0);
-        startService(i);
-    }
 
     /**
-     * Broadcasts an intent to stop the trajectory tracking
+     * Broadcasts an intent to stop the trajectory tracking service
      */
     public void requestStopTrajectoryTracking(){
         Intent sIntent = new Intent();
-        sIntent.setAction(TrajectoryTracker.StopTrajectoryTrackingReceiver.ACTION_STOP);
+        sIntent.setAction(TrajectoryTracker.StopTrajectoryTrackingReceiver.STOP);
         sendBroadcast(sIntent);
     }
+
+    /**
+     * Broadcasts an intent to notify about user being near to booked bike
+     * So that tracking services knows about it
+     */
+    public void notifyNearBookedBike(boolean bikeNearby){
+        Intent sIntent = new Intent();
+        sIntent.putExtra(TrajectoryTracker.NearBookedBikeReceiver.NEAR_BOOKED_BIKE, bikeNearby);
+        sIntent.setAction(TrajectoryTracker.NearBookedBikeReceiver.NEAR_BOOKED_BIKE);
+        sendBroadcast(sIntent);
+    }
+
 
 
     /**
@@ -378,9 +351,10 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
     }
 
 
-
-
-    public void showPopupWindow() {
+    /**
+     * Shows popup about inexistence of internet connection
+     */
+    public void showNoInternetConnectionPopupWindow() {
         mLayoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = mLayoutInflater.inflate(R.layout.popup, null);
 
@@ -411,13 +385,13 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         });
 
 
-
+        //delay a bit to avoid showing popup before activity actually starts
         new Handler().postDelayed(new Runnable() {
 
             public void run() {
                 View parent = findViewById(R.id.main);
 
-                if(mPopupWindow != null){
+                if (mPopupWindow != null) {
                     mPopupWindow.dismiss();
                 }
 
@@ -444,7 +418,7 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
                 }
             }
             else{
-                showPopupWindow();
+                showNoInternetConnectionPopupWindow();
             }
         }
     }

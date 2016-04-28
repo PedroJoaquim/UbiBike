@@ -1,7 +1,6 @@
 package pt.ulisboa.tecnico.cmu.ubibike.services;
 
 import android.Manifest;
-import android.app.IntentService;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
@@ -15,44 +14,41 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import org.json.JSONObject;
 
-import java.util.logging.Handler;
+import java.util.ArrayList;
 
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
+import pt.ulisboa.tecnico.cmu.ubibike.domain.Bike;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.BikePickupStation;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Trajectory;
-import pt.ulisboa.tecnico.cmu.ubibike.utils.JsonParser;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.SphericalUtil;
 
 public class TrajectoryTracker extends Service implements LocationListener {
 
 
-    public static final String TRACKING_FINISH_INTENT_FILTER= "TRACKING_FINISH_FILTER";
-    public static final String TRAJECTORY_INFO_JSON = "trajectory_info_json";
-    public static final String TRAJECTORY_ID = "trajectory_id";
-    public static final String START_STATION_ID = "start_station_id";
-    public static final String START_STATION_LATITUDE = "start_station_latitude";
-    public static final String START_STATION_LONGITUDE= "start_station_longitude";
-
     private static final long TRACKING_TIME_INTERVAL = 1000;    //in milisseconds
     private static final float TRACKING_MINIMUM_DISTANCE = 5;   //in meters
 
-    private Intent mIntent;
-
-    private Location mLastPosition;
-    private StopTrajectoryTrackingReceiver mStopTrackingReceiver;
-    private boolean mStopTracking = false;
     private boolean mPositionChanged;
-    private boolean mInformationReceived = false;
+    private Location mLastPosition;
 
+    private boolean mNearStation = false;
+    private BikePickupStation mStation;
 
+    private boolean mNearBike = false;
+
+    private boolean mNewTrajectory = false;
+    private boolean mTrackingEnabled = false;
+    private boolean mFinishTracking = false;
+    private boolean mStopTracking = false;
+    private StopTrajectoryTrackingReceiver mStopTrackingReceiver;
+
+    private Trajectory mTrajectory;
 
     @Override
     public void onCreate() {
@@ -78,7 +74,7 @@ public class TrajectoryTracker extends Service implements LocationListener {
 
 
         //registering receiver
-        IntentFilter filter = new IntentFilter(StopTrajectoryTrackingReceiver.ACTION_STOP);
+        IntentFilter filter = new IntentFilter(StopTrajectoryTrackingReceiver.STOP);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         mStopTrackingReceiver = new StopTrajectoryTrackingReceiver();
         registerReceiver(mStopTrackingReceiver, filter);
@@ -99,12 +95,11 @@ public class TrajectoryTracker extends Service implements LocationListener {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        mIntent = intent;
-
         MyRunnable mainBackgroundRunnable = new MyRunnable();
         Thread thread = new Thread(mainBackgroundRunnable);
         thread.start();
-        Toast.makeText(TrajectoryTracker.this, "Thread started", Toast.LENGTH_SHORT).show();
+
+        Toast.makeText(TrajectoryTracker.this, "Tracking thread started", Toast.LENGTH_SHORT).show();
 
         return START_NOT_STICKY;
     }
@@ -114,12 +109,76 @@ public class TrajectoryTracker extends Service implements LocationListener {
     public void onLocationChanged(Location location) {
         Log.d("UbiBike", "NewLocation");
 
+
+        ApplicationContext.getInstance().getData().
+                setLastPosition(location.getLatitude(), location.getLongitude());
+
+        //was user near station on previous position
+        boolean prevPositionNearStation = mNearStation;
+
         if(mLastPosition != location){
             mLastPosition = location;
             mPositionChanged = true;
         }
         else{
             mPositionChanged = false;
+        }
+
+        if(mPositionChanged){
+
+            ArrayList<BikePickupStation> stations = ApplicationContext.getInstance().getData().getBikeStations();
+
+            //checking if user is near some station
+            for(BikePickupStation station : stations){
+
+                LatLng currentPosition = new LatLng(mLastPosition.getLatitude(), mLastPosition.getLongitude());
+                double distance = SphericalUtil.computeDistanceBetween(currentPosition, station.getStationPosition());
+
+                //in range of 5 meters, why not
+                if(distance < 5.0){
+                    mNearStation = true;
+                    mStation = station;
+                    break;
+                }
+            }
+        }
+
+        //START TRACKING - user moved away from station on bike (wasnt already being tracked)
+        //BIKE PICK UP
+        if(prevPositionNearStation && !mNearStation && mNearBike && !mTrackingEnabled){
+            mTrackingEnabled = true;
+            mNewTrajectory = true;
+
+            int bookedBikeID = ApplicationContext.getInstance().getData().getBikeBooked().getBid();
+
+            //telling server
+            ApplicationContext.getInstance().getServerCommunicationHandler().
+                    performBikePickDropRequest(bookedBikeID, mStation.getSid(), true);
+
+        }
+        //PAUSE TRACKING - user is away from station and got off his bike
+        else if(!prevPositionNearStation && !mNearStation && !mNearBike){
+            mTrackingEnabled = false;
+        }
+        //RESUME TRACKING - user is away from station and on his bike
+        else if(!prevPositionNearStation && !mNearStation && mNearBike){
+            mTrackingEnabled = true;
+        }
+        //PAUSE TRACKING - user near station but off his bike
+        else if(prevPositionNearStation && mNearStation && !mNearBike){
+            mTrackingEnabled = false;
+        }
+        //FINISH TRACKING - user parked the bike and left the station
+        //BIKE DROP
+        else if(prevPositionNearStation && !mNearStation && !mNearBike){
+            mTrackingEnabled = false;
+            mFinishTracking = true;
+
+            int bookedBikeID = ApplicationContext.getInstance().getData().getBikeBooked().getBid();
+
+            //telling server
+            ApplicationContext.getInstance().getServerCommunicationHandler().
+                    performBikePickDropRequest(bookedBikeID, mStation.getSid(), false);
         }
     }
 
@@ -139,108 +198,84 @@ public class TrajectoryTracker extends Service implements LocationListener {
     }
 
 
+    private class MyRunnable implements Runnable {
 
+        public void run() {
+
+            //main tracking loop
+            while(!mStopTracking){
+
+                if(mTrackingEnabled) {
+
+                    //new trajectory to register
+                    if (mNewTrajectory) {
+                        int trajectoryID = ApplicationContext.getInstance().getData().getNextTrajectoryID();
+                        int startStationID = mStation.getSid();
+                        double startLatitude = mStation.getPositionLatitude();
+                        double startLongitude = mStation.getPositionLongitude();
+
+                        mTrajectory = new Trajectory(trajectoryID, startStationID, startLatitude, startLongitude);
+                        mNewTrajectory = false;
+
+                        Log.d("UbiBike", "[Trajectory " + mTrajectory.getTrajectoryID() + "]" + "Starting registering new trajectory.");
+                    }
+
+                    mTrajectory.addRoutePosition(mLastPosition.getLatitude(), mLastPosition.getLongitude());
+
+                    Log.d("UbiBike", "[Trajectory " + mTrajectory.getTrajectoryID() + "]" + "Position added");
+
+                    mPositionChanged = false;
+                }
+                //finish current trajectory tracking
+                else if(mFinishTracking) {
+                    mTrajectory.finishRoute();
+
+                    mTrajectory.setEndStationID(mStation.getSid());
+
+                    Log.d("UbiBike", "[Trajectory " + mTrajectory.getTrajectoryID() + "]" + "Tracking finished");
+
+                    ApplicationContext.getInstance().getData().setLastTrackedTrajectory(mTrajectory);
+
+                    mFinishTracking = false;
+
+                }
+
+                //Sleep a little bit to avoid constant looping
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            stopSelf();
+        }
+    };
+
+
+    /**
+     * Receiver to catch Intent that signals when user is near bike previously booked
+     */
+    public class NearBookedBikeReceiver extends BroadcastReceiver {
+
+        public static final String NEAR_BOOKED_BIKE = "near_booked_bike";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mNearBike = intent.getBooleanExtra(NEAR_BOOKED_BIKE, false);
+        }
+    }
+
+    /**
+     * Receiver to catch Intent that signals service to terminate
+     */
     public class StopTrajectoryTrackingReceiver extends BroadcastReceiver {
 
-        public static final String ACTION_STOP = "stop";
+        public static final String STOP = "stop_tracking_service";
 
         @Override
         public void onReceive(Context context, Intent intent) {
             mStopTracking = true;
         }
     }
-
-    public class InformationReceivedReceiver extends BroadcastReceiver {
-
-        public static final String ACTION_RECEIVED = "received";
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            mInformationReceived = true;
-        }
-    }
-
-
-    private class MyRunnable implements Runnable {
-
-        public void run() {
-
-            Bundle extras = mIntent.getExtras();
-            int trajectoryID = extras.getInt(TRAJECTORY_ID);
-            int startStationID = extras.getInt(START_STATION_ID);
-            double startLatitude = extras.getDouble(START_STATION_LATITUDE);
-            double startLongitude = extras.getDouble(START_STATION_LONGITUDE);
-
-            Trajectory trajectory = new Trajectory(trajectoryID, startStationID, startLatitude, startLongitude);
-
-            //main tracking loop
-            while(!mStopTracking){
-
-                if(mPositionChanged) {
-
-                    trajectory.addRoutePosition(mLastPosition.getLatitude(), mLastPosition.getLongitude());
-
-                    Log.d("UbiBike", "Trajectory position added [" + trajectory.getRoute().size() + "]");
-
-                    mPositionChanged = false;
-
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-
-
-            trajectory.finishRoute();
-
-
-            //finding which station is the nearest station to register as "end station"
-            //the closer the station to last registered position
-            //the lower is the value: abs(pos.latitude - station.latitude) + abs(pos.longitude - station.longitude)
-            double min_lat_long_sum = 0.0;
-            int closer_sid = -1;
-            LatLng last_pos = trajectory.getLastPosition();
-
-            for(BikePickupStation station : ApplicationContext.getInstance().getData().getBikeStations()){
-
-                double abs_lat = Math.abs(last_pos.latitude - station.getStationPosition().latitude);
-                double abs_long = Math.abs(last_pos.longitude - station.getStationPosition().longitude);
-                double current_lat_long_sum = abs_lat + abs_long;
-
-                if(closer_sid == -1){
-                    closer_sid = station.getSid();
-                    min_lat_long_sum = current_lat_long_sum;
-                    continue;
-                }
-                else if(current_lat_long_sum < min_lat_long_sum){
-                    min_lat_long_sum = current_lat_long_sum;
-                    closer_sid = station.getSid();
-                }
-            }
-
-            trajectory.setEndStationID(closer_sid);
-
-            JSONObject json = JsonParser.buildTrajectoryPostRequestJson(
-                    trajectory.getTrajectoryID(),
-                    trajectory.getStartStationID(),
-                    trajectory.getEndStationID(),
-                    trajectory.getRoute(),
-                    (int) trajectory.getStartTime().getTime(),
-                    (int) trajectory.getEndTime().getTime(),
-                    trajectory.getTravelledDistance());
-
-            Log.d("UbiBike", json.toString());
-
-
-            Log.d("UbiBike", "Thread stopped");
-
-            ApplicationContext.getInstance().getData().setLastTrackedTrajectory(trajectory);
-
-            stopSelf();
-
-        }
-    };
 }

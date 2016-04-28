@@ -26,7 +26,6 @@ public class Data {
     private ArrayList<Trajectory> mTrajectories;
     private Trajectory mLastTrackedTrajectory;
     private Bike mBikeBooked;
-    private int mCurrentBikeBookingStation;
     private LatLng mLastPosition;
     private Date dateUpdated;
 
@@ -81,15 +80,6 @@ public class Data {
 
     }
 
-
-    /**
-     * Gets all conversations
-     *
-     * @return - list of chats
-     */
-    /*public ArrayList<Chat> getConversations() {
-        return mConversations;
-    }*/
 
 
     /**
@@ -256,6 +246,16 @@ public class Data {
         }
 
         mBikeStations = stations;
+    }
+
+    public int getNextTrajectoryID(){
+        int maxId = 0;
+
+        for(Trajectory t : mTrajectories){
+            maxId = (t.getTrajectoryID() > maxId) ? t.getTrajectoryID() : maxId;
+        }
+
+        return ++maxId;
     }
 
 
