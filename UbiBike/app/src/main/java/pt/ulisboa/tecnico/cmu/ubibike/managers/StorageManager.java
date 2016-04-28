@@ -345,7 +345,7 @@ public class StorageManager extends SQLiteOpenHelper {
 
             cursor.moveToFirst();
 
-            byte[] hashedPassword = cursor.getBlob(cursor.getColumnIndex(COLUMN_PRIVATE_KEY));
+            byte[] hashedPassword = cursor.getBlob(cursor.getColumnIndex(COLUMN_PASSWORD));
             byte[] salt = cursor.getBlob(cursor.getColumnIndex(COLUMN_SALT));
 
             if (hashedPassword != null) {

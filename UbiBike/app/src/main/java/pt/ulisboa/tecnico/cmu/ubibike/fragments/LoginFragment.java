@@ -108,10 +108,14 @@ public class LoginFragment extends Fragment {
                         Data appData = ApplicationContext.getInstance().getStorageManager().
                                                                         getAppDataFromDB(clientID);
 
+                        ApplicationContext.getInstance().setData(appData);
+
                         ApplicationContext.getInstance().getServerCommunicationHandler().
                                                                             setUid(appData.getUid());
                         ApplicationContext.getInstance().getServerCommunicationHandler().
                                                             setSessionToken(appData.getSessionToken());
+
+                        ApplicationContext.getInstance().setPassword(pssWd);
 
                         getParentActivity().finishLogin();
 
@@ -121,7 +125,7 @@ public class LoginFragment extends Fragment {
                     }
                 }
 
-                ApplicationContext.getInstance().setPassword(pssWd);
+
 
             }
         });
