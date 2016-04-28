@@ -93,7 +93,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="UbiBike"
-        android:id="@+id/textView6"
+        android:id="@+id/msg_sender_textView"
         android:layout_above="@+id/relativeLayout"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="83dp"

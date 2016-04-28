@@ -7,15 +7,13 @@ import java.util.Date;
 public class ChatMessage implements Comparable {
 
     private boolean mReceived;
-    private String mSenderDeviceName;
-    private String mReceiverDeviceName;
+    private String mSenderUsername;
     private String mContent;
     private Date mDate;
 
-    public ChatMessage(boolean received, String senderDeviceName, String receiverDeviceName, String content) {
+    public ChatMessage(boolean received, String senderUsername, String content) {
         mReceived = received;
-        mSenderDeviceName = senderDeviceName;
-        mReceiverDeviceName = receiverDeviceName;
+        mSenderUsername = senderUsername;
         mContent = content;
         mDate = new Date();
     }
@@ -59,12 +57,8 @@ public class ChatMessage implements Comparable {
         return mContent;
     }
 
-    public String getReceiverDeviceName() {
-        return mReceiverDeviceName;
-    }
-
-    public String getSenderDeviceName() {
-        return mSenderDeviceName;
+    public String getSenderUsername() {
+        return mSenderUsername;
     }
 
     public Date getDate() {

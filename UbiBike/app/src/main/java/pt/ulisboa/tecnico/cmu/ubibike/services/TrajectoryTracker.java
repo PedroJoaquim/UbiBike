@@ -23,7 +23,6 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
-import pt.ulisboa.tecnico.cmu.ubibike.domain.Bike;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.BikePickupStation;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Trajectory;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.SphericalUtil;

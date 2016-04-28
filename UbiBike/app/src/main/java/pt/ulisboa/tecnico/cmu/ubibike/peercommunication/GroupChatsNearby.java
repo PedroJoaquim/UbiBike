@@ -42,6 +42,15 @@ public class GroupChatsNearby {
         mGroupChats.remove(groupOwner);
     }
 
+    public GroupChat getGroupChatByGroupOwner(String groupOwner){
+        return mGroupChats.get(groupOwner);
+    }
+
+    public HashMap<String, GroupChat> getGroupChats(){
+        return mGroupChats;
+    }
+
+
     public SimWifiP2pSocketServer getDeviceServerSocket() {
         return mDeviceServerSocket;
     }

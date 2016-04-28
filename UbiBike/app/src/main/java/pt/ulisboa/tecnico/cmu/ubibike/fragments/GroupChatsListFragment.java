@@ -1,7 +1,7 @@
 package pt.ulisboa.tecnico.cmu.ubibike.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
+import android.app.ListFragment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,34 +12,30 @@ import java.util.ArrayList;
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.R;
 import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
-import pt.ulisboa.tecnico.cmu.ubibike.adapters.TrajectoryArrayAdapter;
-import pt.ulisboa.tecnico.cmu.ubibike.domain.Trajectory;
+import pt.ulisboa.tecnico.cmu.ubibike.adapters.GroupChatArrayAdapter;
 
+public class GroupChatsListFragment extends ListFragment {
 
-public class TrajectoryListFragment extends ListFragment {
+    private static final String TITLE = "Group chats nearby";
 
-    private static final String TITLE = "Trajectories";
+    private ArrayList<String> mGroupChatOwners;
 
-    private ArrayList<Trajectory> mTrajectories;
-
-    public TrajectoryListFragment() {
+    public GroupChatsListFragment() {
     }
 
     private UbiBike getParentActivity(){
         return (UbiBike) getActivity();
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mTrajectories = ApplicationContext.getInstance()
-                                                .getData().getAllTrajectories();
+        mGroupChatOwners = new ArrayList<>(ApplicationContext.getInstance().getData().
+                getGroupChatsNearby().getGroupChats().keySet());
 
-        setHasOptionsMenu(false);
-        getParentActivity().invalidateOptionsMenu();
-
-        TrajectoryArrayAdapter adapter = new TrajectoryArrayAdapter(getActivity(), mTrajectories);
+        GroupChatArrayAdapter adapter = new GroupChatArrayAdapter(getActivity(), mGroupChatOwners);
 
         setListAdapter(adapter);
     }
@@ -60,10 +56,12 @@ public class TrajectoryListFragment extends ListFragment {
         item.setVisible(true);
     }
 
+
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        getParentActivity().showTrajectoryOnMap(mTrajectories.get(position).getTrajectoryID(), false, false);
+        getParentActivity().showGroupChat(mGroupChatOwners.get(position));
     }
+
 }

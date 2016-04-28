@@ -41,6 +41,7 @@ import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketManager;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Trajectory;
+import pt.ulisboa.tecnico.cmu.ubibike.fragments.ChatFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.HomeFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.LoginFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.MapFragment;
@@ -316,6 +317,22 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         fragment.setArguments(arguments);
 
         replaceFragment(fragment, explicitReplace, true);
+    }
+
+
+    /**
+     * Shows a group chat hosted by the groupOwner provided
+     *
+     * @param groupOwner - p2p group owner
+     */
+    public void showGroupChat(String groupOwner){
+        Fragment fragment = new ChatFragment();
+
+        Bundle arguments = new Bundle();
+        arguments.putString(ChatFragment.KEY_GROUP_OWNER, groupOwner);
+        fragment.setArguments(arguments);
+
+        replaceFragment(fragment, false, true);
     }
 
 
