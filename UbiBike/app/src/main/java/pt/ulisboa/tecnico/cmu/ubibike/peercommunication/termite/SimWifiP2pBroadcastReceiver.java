@@ -7,11 +7,17 @@ import pt.inesc.termite.wifidirect.SimWifiP2pInfo;
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Bike;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.CommunicationTasks;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.GroupChat;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.widget.Toast;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
     private UbiBike mActivity;
@@ -45,7 +51,32 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
 
             checkBookedBikeInRange(devices);
 
-            //TODO
+            Set<String> devicesBeforeUpdate = ApplicationContext.getInstance().
+                                                getNearbyPeerCommunication().getNearDevicesSet();
+
+            Set<String> devicesAfterUpdate = new HashSet<>();
+
+            for(SimWifiP2pDevice device : devices.getDeviceList()){
+                devicesAfterUpdate.add(device.deviceName);
+            }
+
+            Set<String>  newDevices = new HashSet(devicesAfterUpdate);
+            newDevices.removeAll(devicesBeforeUpdate);
+
+            for(String newDevice : newDevices){
+
+                String newDeviceVirtAddr = devices.getByName(newDevice).virtDeviceAddress;
+
+                ApplicationContext.getInstance().
+                        getNearbyPeerCommunication().addDeviceNearby(newDevice, newDeviceVirtAddr);
+
+               /* ApplicationContext.getInstance().getActivity().getCommunicationTasks().new OutgoingCommunicationTask.executeOnExecutor(
+                        AsyncTask.THREAD_POOL_EXECUTOR, newDevice);*/
+
+                //TODO continue here
+
+            }
+
 
 
         } else if (SimWifiP2pBroadcast.WIFI_P2P_NETWORK_MEMBERSHIP_CHANGED_ACTION.equals(action)) {
@@ -55,6 +86,11 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
 
             SimWifiP2pInfo ginfo = (SimWifiP2pInfo) intent.getSerializableExtra(
                     SimWifiP2pBroadcast.EXTRA_GROUP_INFO);
+
+
+            ApplicationContext.getInstance().getNearbyPeerCommunication().
+
+
 
 
         } else if (SimWifiP2pBroadcast.WIFI_P2P_GROUP_OWNERSHIP_CHANGED_ACTION.equals(action)) {

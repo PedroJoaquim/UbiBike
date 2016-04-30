@@ -1,42 +1,53 @@
 package pt.ulisboa.tecnico.cmu.ubibike.peercommunication;
 
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class GroupChat {
 
     private String mOwner;
-    private HashMap<String, String> mMembers;
-    private Chat mChat;
+    private Set<String> mMembers;
+
+
+    private ChatMessage mLastReceivedMessage = null;
+    private List<ChatMessage> mReceivedMessages = new ArrayList<>();
+    private List<ChatMessage> mAllMessages = new ArrayList<>();
+
 
     public GroupChat() {
-        mMembers = new HashMap<>();
-        mChat = new Chat();
+        mMembers = new HashSet<>();
     }
 
-    public void addMember(String deviceName, String virtualAddress){
-        mMembers.put(deviceName, virtualAddress);
-    }
+    public void addNewMessage(ChatMessage message){
 
-    public void removeMember(String deviceName){
-        mMembers.remove(deviceName);
-    }
+        if(message.isReceived()){
+            mReceivedMessages.add(message);
+            mLastReceivedMessage = message;
+            Collections.sort(mReceivedMessages);
+        }
 
-    public Chat getChat() {
-        return mChat;
+        mAllMessages.add(message);
+        Collections.sort(mAllMessages);
     }
 
     public List<ChatMessage> getAllMessages(){
-        return mChat.getAllMessages();
+        return mAllMessages;
     }
 
     public List<ChatMessage> getReceivedMessages(){
-        return mChat.getReceivedMessages();
+        return mReceivedMessages;
     }
 
-    public ChatMessage getLastReceivedMessage(){
-        return mChat.getLastReceivedMessage();
+    public ChatMessage getLastMessage(){
+        return mAllMessages.get(mAllMessages.size() - 1);
     }
 
+    public ChatMessage getLastReceivedMessage() {
+        return mLastReceivedMessage;
+    }
 }

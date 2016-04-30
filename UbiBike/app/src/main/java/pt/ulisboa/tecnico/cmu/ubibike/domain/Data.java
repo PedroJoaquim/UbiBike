@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 
-import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.GroupChatsNearby;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.NearbyPeerCommunication;
 
 /**
  * Created by andriy on 12.03.2016.
@@ -21,7 +21,6 @@ public class Data {
     private String sessionToken;
     private String publicKeyToken;
 
-    private GroupChatsNearby mGroupChatsNearby;
     private HashMap<Integer, BikePickupStation> mBikeStations;
     private ArrayList<Trajectory> mTrajectories;
     private Trajectory mLastTrackedTrajectory;
@@ -40,7 +39,6 @@ public class Data {
         uid = id;
         username = usrn;
 
-        mGroupChatsNearby =  new GroupChatsNearby();
         mBikeStations = new HashMap<>();
         mTrajectories = new ArrayList<>();
         mLastPosition = new LatLng(0.0, 0.0); //TODO last position
@@ -259,12 +257,12 @@ public class Data {
     }
 
 
-    public GroupChatsNearby getGroupChatsNearby() {
-        return mGroupChatsNearby;
+    public NearbyPeerCommunication getNearbyPeerCommunication() {
+        return mNearbyPeerCommunication;
     }
 
-    public void setGroupChatsNearby(GroupChatsNearby mGroupChatsNearby) {
-        this.mGroupChatsNearby = mGroupChatsNearby;
+    public void setGroupChatsNearby(NearbyPeerCommunication mNearbyPeerCommunication) {
+        this.mNearbyPeerCommunication = mNearbyPeerCommunication;
     }
 
     public long getTotalPoints() {

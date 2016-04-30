@@ -447,21 +447,14 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
     @Override
     public void onPeersAvailable(SimWifiP2pDeviceList peers) {
 
-        for(SimWifiP2pDevice peer : peers.getDeviceList()){
-            boolean newPeer = ApplicationContext.getInstance().getData().getGroupChatsNearby().addDeviceNearbyIfNotExists(peer.deviceName, peer.virtDeviceAddress);
-
-            //establishing connection to new peer
-            if(newPeer){
-                //TODO
-            }
-        }
+        //TODO
 
     }
 
     @Override
     public void onGroupInfoAvailable(SimWifiP2pDeviceList devices, SimWifiP2pInfo groupInfo) {
 
-        //TODO how to
+        //TODO
 
     }
 
@@ -558,5 +551,9 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
      */
     public SessionManager getSessionManager(){
         return mSessionManager;
+    }
+
+    public CommunicationTasks getCommunicationTasks(){
+        return mCommunicationTasks;
     }
 }

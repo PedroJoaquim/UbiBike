@@ -33,7 +33,7 @@ public class CommunicationTasks {
 
                 serverSocket = new SimWifiP2pSocketServer(PORT);
 
-                ApplicationContext.getInstance().getData().getGroupChatsNearby().setDeviceServerSocket(serverSocket);
+                ApplicationContext.getInstance().getNearbyPeerCommunication().setDeviceServerSocket(serverSocket);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -75,13 +75,13 @@ public class CommunicationTasks {
         protected String doInBackground(String... params) {
             try {
 
-                String virtualAddress = ApplicationContext.getInstance().getData().
-                        getGroupChatsNearby().getDeviceNearbyVirtualAddress(params[0]);
+                String virtualAddress = ApplicationContext.getInstance().
+                        getNearbyPeerCommunication().getDeviceNearbyVirtualAddress(params[0]);
 
                 SimWifiP2pSocket clientSocket = new SimWifiP2pSocket(virtualAddress, PORT);
 
-                ApplicationContext.getInstance().getData().
-                        getGroupChatsNearby().addNearDeviceClientSocket(params[0], clientSocket);
+                ApplicationContext.getInstance().
+                        getNearbyPeerCommunication().addNearDeviceClientSocket(params[0], clientSocket);
 
             } catch (UnknownHostException e) {
                 return "Unknown Host:" + e.getMessage();
@@ -98,8 +98,8 @@ public class CommunicationTasks {
         protected Void doInBackground(String... param) {
             try {
 
-                SimWifiP2pSocket clientSocket = ApplicationContext.getInstance().getData().
-                        getGroupChatsNearby().getNearDeviceClientSocket(param[0]);
+                SimWifiP2pSocket clientSocket = ApplicationContext.getInstance().
+                        getNearbyPeerCommunication().getNearDeviceClientSocket(param[0]);
 
                 clientSocket.getOutputStream().write((param[1] + "\n").getBytes());
                 BufferedReader sockIn = new BufferedReader(

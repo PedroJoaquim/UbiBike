@@ -9,6 +9,7 @@ import pt.ulisboa.tecnico.cmu.ubibike.connection.ServerCommunicationHandler;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.SessionManager;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.StorageManager;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.NearbyPeerCommunication;
 
 
 public class ApplicationContext extends Application {
@@ -27,6 +28,8 @@ public class ApplicationContext extends Application {
     private ServerCommunicationHandler mServerCommunicationHandler;
     private ArrayList<PendingRequest> mPendingRequests;
 
+    private NearbyPeerCommunication mNearbyPeerCommunication;
+
 
 
     public static ApplicationContext getInstance() {
@@ -43,6 +46,8 @@ public class ApplicationContext extends Application {
 
         mServerCommunicationHandler = new ServerCommunicationHandler();
         mPendingRequests = new ArrayList<>();
+
+        mNearbyPeerCommunication = new NearbyPeerCommunication();
 
         if (mSessionManager.isLoggedIn()) {
             mUid = mSessionManager.getLoggedUser();
@@ -104,6 +109,10 @@ public class ApplicationContext extends Application {
 
     public ServerCommunicationHandler getServerCommunicationHandler() {
         return mServerCommunicationHandler;
+    }
+
+    public NearbyPeerCommunication getNearbyPeerCommunication() {
+        return mNearbyPeerCommunication;
     }
 
     public String getPassword() {
