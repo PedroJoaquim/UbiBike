@@ -56,6 +56,7 @@ import pt.ulisboa.tecnico.cmu.ubibike.services.TrajectoryTracker;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class UbiBike extends AppCompatActivity implements PeerListListener, GroupInfoListener {
 
@@ -156,12 +157,6 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
 
             if(mPopupWindow != null) mPopupWindow.dismiss();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
     }
 
     @Override
@@ -271,14 +266,7 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
     /**
      * Shows nearby bike stations on map
      */
-    public void showBikeStationsNearbyOnMap(boolean afterRequest){
-
-
-        if(!afterRequest && MobileConnectionManager.isOnline(this)){    //perform request
-            ApplicationContext.getInstance().getServerCommunicationHandler().performStationsNearbyRequest();
-            return;
-        }
-
+    public void showBikeStationsNearbyOnMap(){
         Fragment fragment = new MapFragment();
         replaceFragment(fragment, false, true);
     }
@@ -430,8 +418,16 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
             mInternetConnected = MobileConnectionManager.isOnline(context);
 
             if (mInternetConnected) {
+
                 if(mPopupWindow != null){
                     mPopupWindow.dismiss();
+                }
+
+                long timeFromLastUpdate = new Date().getTime() - ApplicationContext.getInstance().
+                                                                getData().getLastUpdated().getTime();
+
+                if(timeFromLastUpdate > 1000 * 60 * 60){    //TODO how often update?
+                    ApplicationContext.getInstance().getServerCommunicationHandler().performStationsNearbyRequest();
                 }
             }
             else{
@@ -552,4 +548,11 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         }
     };
 
+
+    /**
+     * Get SessionManager
+     */
+    public SessionManager getSessionManager(){
+        return mSessionManager;
+    }
 }

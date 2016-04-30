@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,14 +38,25 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
-        MenuItem item = menu.findItem(R.id.action_logout);
-        item.setVisible(true);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_home, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
 
+        switch (item.getItemId()) {
+
+            case R.id.action_logout:
+                getParentActivity().getSessionManager().logoutUser();
+                getParentActivity().showLogin();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,7 +82,7 @@ public class HomeFragment extends Fragment {
         stationsNearby.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getParentActivity().showBikeStationsNearbyOnMap(false);
+                getParentActivity().showBikeStationsNearbyOnMap();
             }
         });
 

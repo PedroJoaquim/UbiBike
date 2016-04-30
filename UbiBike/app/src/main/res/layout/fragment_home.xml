@@ -1,6 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="pt.ulisboa.tecnico.cmu.ubibike.fragments.HomeFragment"
     android:padding="15dp"
     android:background="@color/toolbar_color">
@@ -22,7 +24,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <ImageButton
+            <android.support.v7.widget.AppCompatImageButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/user_icon"
@@ -30,9 +32,9 @@
                 android:layout_weight="1"
                 android:scaleType="fitCenter"
                 android:adjustViewBounds="true"
-                android:backgroundTint="#e8af52" />
+                app:backgroundTint="#e8af52" />
 
-            <ImageButton
+            <android.support.v7.widget.AppCompatImageButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/bike_stations_icon"
@@ -41,7 +43,7 @@
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
                 android:clickable="true"
-                android:backgroundTint="#676C89" />
+                app:backgroundTint="#676C89" />
 
         </TableRow>
 
@@ -50,7 +52,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <ImageButton
+            <android.support.v7.widget.AppCompatImageButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/trajectories_icon"
@@ -63,9 +65,9 @@
                 android:adjustViewBounds="true"
                 android:clickable="false"
                 android:scaleType="fitCenter"
-                android:backgroundTint="#F44062" />
+                app:backgroundTint="#F44062" />
 
-            <ImageButton
+            <android.support.v7.widget.AppCompatImageButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/groups"
@@ -73,7 +75,7 @@
                 android:layout_weight="1"
                 android:scaleType="fitCenter"
                 android:adjustViewBounds="true"
-                android:backgroundTint="#e91e8989" />
+                app:backgroundTint="#e91e8989" />
 
         </TableRow>
 

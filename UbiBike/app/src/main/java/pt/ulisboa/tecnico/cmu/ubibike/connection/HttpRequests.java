@@ -18,8 +18,6 @@ import pt.ulisboa.tecnico.cmu.ubibike.exceptions.HttpFailedRequestException;
  */
 public class HttpRequests {
 
-    private static final int BUFFER_SIZE = 4 * 1024;
-
     public static String performHttpCall(String type, String requestURL, JSONObject json) throws Exception{
 
         String response = "";

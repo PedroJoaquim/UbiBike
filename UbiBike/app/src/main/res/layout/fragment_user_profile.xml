@@ -24,18 +24,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="My stats"
-                android:id="@+id/my_stats_title"
-                android:background="#e8af52"
-                android:padding="15dp"
-                android:textStyle="bold"
-                android:textColor="#ffffff"
-                android:textAlignment="center" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Points"
                 android:id="@+id/points_subtitle"
                 android:background="#e91e8989"

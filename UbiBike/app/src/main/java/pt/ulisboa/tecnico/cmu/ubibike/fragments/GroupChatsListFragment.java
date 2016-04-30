@@ -48,14 +48,6 @@ public class GroupChatsListFragment extends ListFragment {
         getParentActivity().getSupportActionBar().setTitle(TITLE);
     }
 
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
-        MenuItem item = menu.findItem(R.id.action_logout);
-        item.setVisible(true);
-    }
-
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {

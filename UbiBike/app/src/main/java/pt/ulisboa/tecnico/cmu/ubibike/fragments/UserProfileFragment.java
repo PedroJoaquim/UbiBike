@@ -6,6 +6,8 @@ import android.os.Bundle;
 //import android.app.Fragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -20,15 +22,21 @@ import java.util.Arrays;
 
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.R;
+import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.Validator;
 
 
 public class UserProfileFragment extends Fragment {
 
+    public static final String TITLE = "Profile";
 
     public UserProfileFragment() {
         // Required empty public constructor
+    }
+
+    private UbiBike getParentActivity(){
+        return (UbiBike) getActivity();
     }
 
 
@@ -38,10 +46,30 @@ public class UserProfileFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_user_profile, container, false);
 
+        setHasOptionsMenu(false);
+        getParentActivity().invalidateOptionsMenu();
+
         setViewElements(view);
 
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getParentActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getParentActivity().getSupportActionBar().setTitle(TITLE);
+    }
+
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        MenuItem item = menu.findItem(R.id.action_logout);
+        item.setVisible(false);
     }
 
     private void setViewElements(View view){

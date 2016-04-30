@@ -405,14 +405,6 @@ public class ServerCommunicationHandler {
             Toast.makeText(ApplicationContext.getInstance().getActivity(),
                     "Success at " + getRequestType(requestType) + " request.", Toast.LENGTH_SHORT).show();
 
-
-
-            switch(requestType){
-                case REQUEST_STATIONS_NEARBY: ApplicationContext.getInstance().getActivity().
-                        showBikeStationsNearbyOnMap(true);
-                        break;
-            }
-
         }
     }
 
