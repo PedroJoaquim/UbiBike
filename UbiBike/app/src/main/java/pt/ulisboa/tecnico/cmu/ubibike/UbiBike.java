@@ -99,6 +99,7 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
 
         registerBroadcastReceiver();
 
+        ApplicationContext.getInstance().getServerCommunicationHandler().performStationsNearbyRequest();
 
         if(savedInstanceState == null){
             Intent i = new Intent(this, TrajectoryTracker.class);
@@ -416,6 +417,7 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         public void onReceive(final Context context, final Intent intent) {
 
             mInternetConnected = MobileConnectionManager.isOnline(context);
+            ApplicationContext.getInstance().setInternetConnected(mInternetConnected);
 
             if (mInternetConnected) {
 
@@ -429,6 +431,8 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
                 if(timeFromLastUpdate > 1000 * 60 * 60){    //TODO how often update?
                     ApplicationContext.getInstance().getServerCommunicationHandler().performStationsNearbyRequest();
                 }
+
+                ApplicationContext.getInstance().getServerCommunicationHandler().executeNextPendingRequest();
             }
             else{
                 showNoInternetConnectionPopupWindow();

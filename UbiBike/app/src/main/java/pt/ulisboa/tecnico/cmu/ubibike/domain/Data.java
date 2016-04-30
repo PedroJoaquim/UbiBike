@@ -35,6 +35,7 @@ public class Data {
 
     private Trajectory mLongestRide;
 
+
     public Data(int id, String usrn) {
         uid = id;
         username = usrn;

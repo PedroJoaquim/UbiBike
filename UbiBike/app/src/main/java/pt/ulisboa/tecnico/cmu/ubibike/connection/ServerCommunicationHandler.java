@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.CipherManager;
+import pt.ulisboa.tecnico.cmu.ubibike.managers.MobileConnectionManager;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.StorageManager;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.JsonParser;
 
@@ -92,37 +93,77 @@ public class ServerCommunicationHandler {
      *
      * @param url - request url
      * @param requestType - request type
+     * @param store - store for future rerun?   (false in case of pending request re-execution to
+     *                                                                      avoid duplicate storing)
+     * @param pendingRequestID - pending request ID in case of request re-execution, null otherwise
      */
-    public void performGenericRequest(String url, int requestType, JSONObject json){
+    public void performGenericRequest(String url, int requestType, JSONObject json, boolean store, Integer pendingRequestID ){
         try {
 
             String methodName = getResponseParseMethodName(requestType);
             Method parseMethod = JsonParser.class.getMethod(methodName, new Class[]{ JSONObject.class, Data.class });
 
-            new GenericRequestTask(url, parseMethod, requestType, json).execute();
+            if(ApplicationContext.getInstance().isInternetConnected()) {
+                new GenericRequestTask(url, parseMethod, requestType, json, pendingRequestID).execute();
+            }
+            else{
+                storePendingRequest(url, requestType, json);
+            }
 
         } catch (NoSuchMethodException e) {
-            new GenericRequestTask(url, null, requestType, json).execute();
+            new GenericRequestTask(url, null, requestType, json, null).execute();
         }
     }
+
+    /**
+     * Stores request for future re-execution
+     *
+     * @param url - request url
+     * @param requestType - type
+     * @param json - json to be sent in request or null
+     */
+    public void storePendingRequest(String url, int requestType, JSONObject json){
+        int id = ApplicationContext.getInstance().getNextPendingRequestID();
+        PendingRequest pReq = new PendingRequest(id, url, requestType, json);
+        ApplicationContext.getInstance().addPendingRequest(pReq);
+
+        String msg = "Pending request [id=" + pReq.getID() + "] stored.";
+        Toast.makeText(ApplicationContext.getInstance().getActivity(), msg , Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Gets next pending request and re-executes it
+     */
+    public void executeNextPendingRequest(){
+        PendingRequest pReq = ApplicationContext.getInstance().getPendingRequest();
+
+        //if pReq == null, there are no more pending requests to execute
+        if(pReq != null) {
+            performGenericRequest(pReq.getUrl(), pReq.getRequestType(), pReq.getJson(), false, pReq.getID());
+
+            String msg = "Pending request [id=" + pReq.getID() + "] execution attempt.";
+            Toast.makeText(ApplicationContext.getInstance().getActivity(), msg , Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
 
     public void performPublicKeyTokenRequest(){
         String url = buildUrl(URL_PUBLIC_KEY_TOKEN, AUTH_REQUEST);
 
-        performGenericRequest(url, REQUEST_PUBLIC_KEY_TOKEN, null);
+        performGenericRequest(url, REQUEST_PUBLIC_KEY_TOKEN, null, true, null);
     }
 
     public void performUserInfoRequest(){
         String url = buildUrl(URL_USER_INFO, AUTH_REQUEST);
 
-        performGenericRequest(url, REQUEST_USER_INFO, null);
+        performGenericRequest(url, REQUEST_USER_INFO, null, true, null);
     }
 
     public void performStationsNearbyRequest(){
         String url = buildUrl(URL_STATIONS_INFO, AUTH_REQUEST);
 
-        performGenericRequest(url, REQUEST_STATIONS_NEARBY, null);
+        performGenericRequest(url, REQUEST_STATIONS_NEARBY, null, true, null);
     }
 
     public void performBikePickDropRequest(int bid, int sid, boolean bikePick){
@@ -130,7 +171,7 @@ public class ServerCommunicationHandler {
 
         JSONObject json = JsonParser.buildBikePickDropRequestJson(bid, sid, bikePick);
 
-        performGenericRequest(url, REQUEST_BIKE_PICK_DROP, json);
+        performGenericRequest(url, REQUEST_BIKE_PICK_DROP, json, true, null);
     }
 
     public void performTrajectoryPostRequest(int userTid, int startSid, int endSid,
@@ -142,13 +183,13 @@ public class ServerCommunicationHandler {
         JSONObject json = JsonParser.buildTrajectoryPostRequestJson(userTid, startSid, endSid, positions,
                 startTimestamp, endTimestamp, distance);
 
-        performGenericRequest(url, REQUEST_TRAJECTORY_POST, json);
+        performGenericRequest(url, REQUEST_TRAJECTORY_POST, json, true, null);
     }
 
-    public void performBikeBookRequest(int sid){
+    public void performBikeBookRequest(int sid) {
         String url = buildUrl(URL_BIKE_BOOK, AUTH_REQUEST) + "&sid=" + sid;
 
-        performGenericRequest(url, REQUEST_BIKE_BOOK, null);
+        performGenericRequest(url, REQUEST_BIKE_BOOK, null, true, null);
     }
 
 
@@ -339,13 +380,15 @@ public class ServerCommunicationHandler {
         private Method parseMethod;
         private int requestType;
         private JSONObject json;
+        private Integer pendentRequestID;
         private Exception error;
 
-        public GenericRequestTask(String url, Method parseMethod, int requestType, JSONObject json) {
+        public GenericRequestTask(String url, Method parseMethod, int requestType, JSONObject json, Integer pReqID) {
             this.url = url;
             this.parseMethod = parseMethod;
             this.requestType = requestType;
             this.json = json;
+            this.pendentRequestID = pReqID;
 
         }
 
@@ -405,6 +448,15 @@ public class ServerCommunicationHandler {
             Toast.makeText(ApplicationContext.getInstance().getActivity(),
                     "Success at " + getRequestType(requestType) + " request.", Toast.LENGTH_SHORT).show();
 
+            //check if current finished request is a pending request re-execution
+            //if so, remove it from pending request collection
+            if(pendentRequestID != null) {
+                ApplicationContext.getInstance().removePendingRequest(pendentRequestID);
+                executeNextPendingRequest();
+
+                String msg = "Pending request [id=" + pendentRequestID + "] executed with success.";
+                Toast.makeText(ApplicationContext.getInstance().getActivity(), msg , Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

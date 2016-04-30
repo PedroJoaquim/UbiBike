@@ -2,6 +2,9 @@ package pt.ulisboa.tecnico.cmu.ubibike;
 
 import android.app.Application;
 
+import java.util.ArrayList;
+
+import pt.ulisboa.tecnico.cmu.ubibike.connection.PendingRequest;
 import pt.ulisboa.tecnico.cmu.ubibike.connection.ServerCommunicationHandler;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.SessionManager;
@@ -13,13 +16,17 @@ public class ApplicationContext extends Application {
     private static ApplicationContext mInstance;
 
     private UbiBike mActivity;
+    private boolean mInternetConnected;
 
     private int mUid;
     private String mPassword;
     private Data mData;
     private SessionManager mSessionManager;
     private StorageManager mStorageManager;
+
     private ServerCommunicationHandler mServerCommunicationHandler;
+    private ArrayList<PendingRequest> mPendingRequests;
+
 
 
     public static ApplicationContext getInstance() {
@@ -33,8 +40,9 @@ public class ApplicationContext extends Application {
         mInstance = this;
         mSessionManager = new SessionManager(this);
         mStorageManager = new StorageManager(this);
-        mServerCommunicationHandler = new ServerCommunicationHandler();
 
+        mServerCommunicationHandler = new ServerCommunicationHandler();
+        mPendingRequests = new ArrayList<>();
 
         if (mSessionManager.isLoggedIn()) {
             mUid = mSessionManager.getLoggedUser();
@@ -104,5 +112,46 @@ public class ApplicationContext extends Application {
 
     public void setPassword(String mPassword) {
         this.mPassword = mPassword;
+    }
+
+    public boolean isInternetConnected() {
+        return mInternetConnected;
+    }
+
+    public void setInternetConnected(boolean mInternetConnected) {
+        this.mInternetConnected = mInternetConnected;
+    }
+
+
+
+    public void addPendingRequest(PendingRequest request){
+        mPendingRequests.add(request);
+    }
+
+    public int getNextPendingRequestID(){
+        if(mPendingRequests.isEmpty()){
+            return 0;
+        }
+        else{
+            return mPendingRequests.get(mPendingRequests.size()-1).getID() + 1;
+        }
+    }
+    public PendingRequest getPendingRequest(){
+        if(mPendingRequests.isEmpty()) {
+            return null;
+        }
+        else {
+            return mPendingRequests.get(0);
+        }
+    }
+
+    public void removePendingRequest(int id){
+
+        for(int i = 0; i < mPendingRequests.size()-1; i++){
+            if(mPendingRequests.get(i).getID() == id){
+                mPendingRequests.remove(i);
+                return;
+            }
+        }
     }
 }
