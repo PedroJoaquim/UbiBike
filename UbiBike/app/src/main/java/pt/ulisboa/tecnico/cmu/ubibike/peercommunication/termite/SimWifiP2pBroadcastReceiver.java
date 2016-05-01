@@ -7,8 +7,6 @@ import pt.inesc.termite.wifidirect.SimWifiP2pInfo;
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Bike;
-import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.CommunicationTasks;
-import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.GroupChat;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -49,6 +47,7 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
             SimWifiP2pDeviceList devices = (SimWifiP2pDeviceList) intent.getSerializableExtra(
                                                             SimWifiP2pBroadcast.EXTRA_DEVICE_LIST);
 
+
             checkBookedBikeInRange(devices);
 
             Set<String> devicesBeforeUpdate = ApplicationContext.getInstance().
@@ -60,9 +59,13 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
                 devicesAfterUpdate.add(device.deviceName);
             }
 
+            //getting new devices
             Set<String>  newDevices = new HashSet(devicesAfterUpdate);
             newDevices.removeAll(devicesBeforeUpdate);
 
+            //register new devices,
+            //establish socket connection with each of them and
+            //send my username so that they know
             for(String newDevice : newDevices){
 
                 String newDeviceVirtAddr = devices.getByName(newDevice).virtDeviceAddress;
@@ -70,13 +73,39 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
                 ApplicationContext.getInstance().
                         getNearbyPeerCommunication().addDeviceNearby(newDevice, newDeviceVirtAddr);
 
-               /* ApplicationContext.getInstance().getActivity().getCommunicationTasks().new OutgoingCommunicationTask.executeOnExecutor(
-                        AsyncTask.THREAD_POOL_EXECUTOR, newDevice);*/
+                ApplicationContext.getInstance().getActivity().getCommunicationTasks().
+                        new OutgoingCommunicationTask().
+                        executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, newDevice);
 
-                //TODO continue here
 
+                String myDeviceName = ApplicationContext.getInstance().
+                                                        getNearbyPeerCommunication().getDeviceName();
+
+                //if I know my device name, send my username to other
+                //otherwise delay this announcemet
+                if(myDeviceName != null) {
+                    String msg = "[" + myDeviceName + "]" + ApplicationContext.getInstance().getData().
+                            getUsername();
+
+                    ApplicationContext.getInstance().getActivity().getCommunicationTasks().
+                            new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                            newDevice, msg);
+                }
             }
 
+
+
+            //getting devices that are not in range anymore
+            Set<String> notInRangeDevices = new HashSet<>(devicesBeforeUpdate);
+            notInRangeDevices.removeAll(devicesAfterUpdate);
+
+            //removing them
+            for(String notInRangeDevice : notInRangeDevices){
+
+                ApplicationContext.getInstance().getNearbyPeerCommunication().
+                        removeDeviceNearby(notInRangeDevice);
+
+            }
 
 
         } else if (SimWifiP2pBroadcast.WIFI_P2P_NETWORK_MEMBERSHIP_CHANGED_ACTION.equals(action)) {
@@ -88,16 +117,53 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
                     SimWifiP2pBroadcast.EXTRA_GROUP_INFO);
 
 
+            String myDeviceName = ApplicationContext.getInstance()
+                                                    .getNearbyPeerCommunication().getDeviceName();
+
+            if(myDeviceName == null){
+                ApplicationContext.getInstance().
+                                 getNearbyPeerCommunication().setDeviceName(ginfo.getDeviceName());
+
+
+                Set<String> nearDevices = ApplicationContext.getInstance().
+                                                    getNearbyPeerCommunication().getNearDevicesSet();
+
+                for(String device : nearDevices){
+                    String msg = "[username] " + myDeviceName + " " +
+                               ApplicationContext.getInstance().getData().getUsername();
+
+                    ApplicationContext.getInstance().getActivity().getCommunicationTasks().
+                            new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                            device, msg);
+                }
+            }
+
             ApplicationContext.getInstance().getNearbyPeerCommunication().
+                    getGroupChat().setMembers(ginfo.getDevicesInNetwork());
+
+            if(ginfo.askIsGO()){
+                ApplicationContext.getInstance().getNearbyPeerCommunication().
+                        getGroupChat().setOwner(ginfo.getDeviceName());
 
 
+                //announce group members that I'm the group owner
+                for(String groupMember : ginfo.getDevicesInNetwork()){
+                    String msg = "[groupowner] " + myDeviceName;
 
+                    ApplicationContext.getInstance().getActivity().getCommunicationTasks().
+                            new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                            groupMember, msg);
+                }
+
+            }
 
         } else if (SimWifiP2pBroadcast.WIFI_P2P_GROUP_OWNERSHIP_CHANGED_ACTION.equals(action)) {
 
             SimWifiP2pInfo ginfo = (SimWifiP2pInfo) intent.getSerializableExtra(
                     SimWifiP2pBroadcast.EXTRA_GROUP_INFO);
 
+
+            //TODO what about this?
 
         }
     }

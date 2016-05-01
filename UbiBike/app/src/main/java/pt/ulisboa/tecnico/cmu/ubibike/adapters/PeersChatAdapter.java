@@ -16,11 +16,11 @@ import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Trajectory;
 
 
-public class GroupChatArrayAdapter extends ArrayAdapter<String> {
+public class PeersChatAdapter extends ArrayAdapter<String> {
 
     private final Context context;
 
-    public GroupChatArrayAdapter(Context context, ArrayList<String> values) {
+    public PeersChatAdapter(Context context, ArrayList<String> values) {
         super(context, -1, values);
         this.context = context;
     }
@@ -32,13 +32,11 @@ public class GroupChatArrayAdapter extends ArrayAdapter<String> {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        final View rowView = inflater.inflate(R.layout.trajectories_list_row, parent, false);
+        final View rowView = inflater.inflate(R.layout.peers_list_row, parent, false);
 
-        TextView hosted_by = (TextView) rowView.findViewById(R.id.hosted_by_textView);
+        TextView username = (TextView) rowView.findViewById(R.id.username_textView);
 
-        String groupOwner = getItem(position);
-
-        hosted_by.setText(groupOwner);
+        username.setText(getItem(position));
 
         return rowView;
     }

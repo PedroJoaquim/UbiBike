@@ -10,11 +10,26 @@ import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketServer;
 
 public class NearbyPeerCommunication {
 
+    private String mDeviceName;
     private SimWifiP2pSocketServer mDeviceServerSocket;
 
-    private HashMap<String, Device> mNearDevices;
+    private HashMap<String, Device> mNearDevices;   //key = device name
     private GroupChat mGroupChat;
+    private HashMap<String, Chat> mIndividualChats; //key = username
 
+
+    public NearbyPeerCommunication() {
+        mNearDevices = new HashMap<>();
+        mIndividualChats = new HashMap<>();
+    }
+
+    public String getDeviceName() {
+        return mDeviceName;
+    }
+
+    public void setDeviceName(String deviceName) {
+        mDeviceName = deviceName;
+    }
 
     public void addDeviceNearby(String deviceName, String virtualAddress){
         mNearDevices.put(deviceName, new Device(deviceName, virtualAddress));
@@ -32,8 +47,16 @@ public class NearbyPeerCommunication {
         return mGroupChat;
     }
 
-    public void setGroupChat(GroupChat mGroupChat) {
-        this.mGroupChat = mGroupChat;
+    public void addIndividualChat(String username){
+        mIndividualChats.put(username, new Chat(username));
+    }
+
+    public boolean doesIndividualChatExist(String username){
+        return mIndividualChats.containsKey(username);
+    }
+
+    public Chat getIndividualChat(String username){
+        return mIndividualChats.get(username);
     }
 
     public SimWifiP2pSocketServer getDeviceServerSocket() {
@@ -52,15 +75,6 @@ public class NearbyPeerCommunication {
         return mNearDevices.get(deviceName).getClientSocket();
     }
 
-    public ArrayList<SimWifiP2pSocket> getNearDevicesClientSockets(){
-        ArrayList<SimWifiP2pSocket> sockets = new ArrayList<>();
-
-        for(Device d : mNearDevices.values()){
-            sockets.add(d.getClientSocket());
-        }
-
-        return sockets;
-    }
 
     public void addNearDeviceClientSocket(String deviceName, SimWifiP2pSocket clientSocket){
         mNearDevices.get(deviceName).setClientSockets(clientSocket);

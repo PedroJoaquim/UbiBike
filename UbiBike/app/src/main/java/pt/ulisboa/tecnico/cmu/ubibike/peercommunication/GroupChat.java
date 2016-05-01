@@ -13,41 +13,36 @@ public class GroupChat {
     private String mOwner;
     private Set<String> mMembers;
 
-
-    private ChatMessage mLastReceivedMessage = null;
-    private List<ChatMessage> mReceivedMessages = new ArrayList<>();
-    private List<ChatMessage> mAllMessages = new ArrayList<>();
+    private Chat mChat;
 
 
     public GroupChat() {
         mMembers = new HashSet<>();
+        mChat = new Chat();
     }
 
-    public void addNewMessage(ChatMessage message){
-
-        if(message.isReceived()){
-            mReceivedMessages.add(message);
-            mLastReceivedMessage = message;
-            Collections.sort(mReceivedMessages);
-        }
-
-        mAllMessages.add(message);
-        Collections.sort(mAllMessages);
+    public String getOwner() {
+        return mOwner;
     }
 
-    public List<ChatMessage> getAllMessages(){
-        return mAllMessages;
+    public void setOwner(String owner) {
+        mOwner = owner;
     }
 
-    public List<ChatMessage> getReceivedMessages(){
-        return mReceivedMessages;
+    public Set<String> getMembers() {
+        return mMembers;
     }
 
-    public ChatMessage getLastMessage(){
-        return mAllMessages.get(mAllMessages.size() - 1);
+    public void setMembers(Set<String> members) {
+        mMembers.addAll(members);
     }
 
-    public ChatMessage getLastReceivedMessage() {
-        return mLastReceivedMessage;
+    public boolean isEmpty(){
+        return mMembers.isEmpty();
     }
+
+    public Chat getChat(){
+        return mChat;
+    }
+
 }

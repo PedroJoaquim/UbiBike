@@ -15,6 +15,7 @@ import java.util.List;
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.R;
 import pt.ulisboa.tecnico.cmu.ubibike.adapters.MessageListAdapter;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.Chat;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.ChatMessage;
 
 public class ChatFragment extends ListFragment {
@@ -32,10 +33,8 @@ public class ChatFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        String groupOwner = getArguments().getString(KEY_GROUP_OWNER);
-        mChat = ApplicationContext.getInstance().getData().
-                             getGroupChatsNearby().getGroupChatByGroupOwner(groupOwner).getChat();
+        
+        mChat = ApplicationContext.getInstance().getNearbyPeerCommunication().getGroupChat().getChat();
 
         mMessages = mChat.getAllMessages();
 
