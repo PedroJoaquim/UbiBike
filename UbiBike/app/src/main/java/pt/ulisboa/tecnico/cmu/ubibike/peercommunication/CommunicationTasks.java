@@ -17,7 +17,7 @@ public class CommunicationTasks {
 
     public static final String TAG = "UbiBike";
 
-    private static final int PORT = 1001;
+    private static final int PORT = 8000;
 
     public class IncomingCommunicationTask extends AsyncTask<Void, String, Void> {
 

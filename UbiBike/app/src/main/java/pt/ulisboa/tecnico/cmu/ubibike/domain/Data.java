@@ -257,14 +257,6 @@ public class Data {
     }
 
 
-    public NearbyPeerCommunication getNearbyPeerCommunication() {
-        return mNearbyPeerCommunication;
-    }
-
-    public void setGroupChatsNearby(NearbyPeerCommunication mNearbyPeerCommunication) {
-        this.mNearbyPeerCommunication = mNearbyPeerCommunication;
-    }
-
     public long getTotalPoints() {
         return mTotalPoints;
     }

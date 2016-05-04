@@ -105,6 +105,8 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
             Intent i = new Intent(this, TrajectoryTracker.class);
             startService(i);
         }
+
+        wifiP2pTurnOn();
     }
 
 
@@ -425,10 +427,20 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
                     mPopupWindow.dismiss();
                 }
 
-                long timeFromLastUpdate = new Date().getTime() - ApplicationContext.getInstance().
-                                                                getData().getLastUpdated().getTime();
 
-                if(timeFromLastUpdate > 1000 * 60 * 60){    //TODO how often update?
+
+
+                if(ApplicationContext.getInstance().getData() != null) {
+
+                    Date lastUpdate = ApplicationContext.getInstance().getData().getLastUpdated();
+                    long timeFromLastUpdate = new Date().getTime() - lastUpdate.getTime();
+
+
+                    if (timeFromLastUpdate > 1000 * 60 * 60) {    //TODO how often update?
+                        ApplicationContext.getInstance().getServerCommunicationHandler().performStationsNearbyRequest();
+                    }
+                }
+                else {
                     ApplicationContext.getInstance().getServerCommunicationHandler().performStationsNearbyRequest();
                 }
 
@@ -512,8 +524,10 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
 
     public void wifiP2pDisconnectAllPeers(){
 
-        ArrayList<SimWifiP2pSocket> sockets = ApplicationContext.getInstance().getData().
-                getGroupChatsNearby().getAllDeviceClientSockets();
+        //TODO
+
+        /*
+        ArrayList<SimWifiP2pSocket> sockets = ApplicationContext.getInstance().getNearbyPeerCommunication().get
 
         for(SimWifiP2pSocket socket : sockets){
             try {
@@ -521,7 +535,7 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
             } catch (IOException e) {
                 //ignore
             }
-        }
+        }*/
     }
 
 
