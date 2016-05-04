@@ -70,7 +70,7 @@ public class HomeFragment extends Fragment {
         ImageButton trajectories = (ImageButton) v.findViewById(R.id.trajectories_icon);
         ImageButton stationsNearby = (ImageButton) v.findViewById(R.id.bike_stations_icon);
         ImageButton userProfile = (ImageButton) v.findViewById(R.id.user_icon);
-        ImageButton groupChats = (ImageButton) v.findViewById(R.id.message_groups_icon);
+        ImageButton chats = (ImageButton) v.findViewById(R.id.message_groups_icon);
 
         trajectories.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +90,13 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 getParentActivity().showUserProfile();
+            }
+        });
+
+        chats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getParentActivity().showChats();
             }
         });
 

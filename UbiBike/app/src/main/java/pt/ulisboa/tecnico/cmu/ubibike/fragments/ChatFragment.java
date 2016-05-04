@@ -14,13 +14,15 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.R;
+import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
 import pt.ulisboa.tecnico.cmu.ubibike.adapters.MessageListAdapter;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.Chat;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.ChatMessage;
 
 public class ChatFragment extends ListFragment {
 
-    public static final String KEY_GROUP_OWNER = "group_owner";
+    public static final String ARGUMENT_KEY_GROUP_CHAT = "group_chat";
+    public static final String ARGUMENT_KEY_USERNAME = "username";
 
     private List<ChatMessage> mMessages;
     private Chat mChat;
@@ -29,12 +31,28 @@ public class ChatFragment extends ListFragment {
         // Required empty public constructor
     }
 
+    private UbiBike getParentActivity(){
+        return (UbiBike) getActivity();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        mChat = ApplicationContext.getInstance().getNearbyPeerCommunication().getGroupChat().getChat();
+
+        boolean groupChat = getArguments().getBoolean(ARGUMENT_KEY_GROUP_CHAT);
+
+        if(groupChat) {
+            mChat = ApplicationContext.getInstance().getNearbyPeerCommunication().getGroupChat().getChat();
+            getParentActivity().getSupportActionBar().setTitle("Group Chat");
+        }
+        else{
+            String username = getArguments().getString(ARGUMENT_KEY_USERNAME);
+            mChat = ApplicationContext.getInstance().getNearbyPeerCommunication().
+                    getIndividualChat(username);
+
+            getParentActivity().getSupportActionBar().setTitle(username);
+
+        }
 
         mMessages = mChat.getAllMessages();
 

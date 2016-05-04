@@ -20,6 +20,7 @@ public class NearbyPeerCommunication {
 
     public NearbyPeerCommunication() {
         mNearDevices = new HashMap<>();
+        mGroupChat = new GroupChat();
         mIndividualChats = new HashMap<>();
     }
 
@@ -33,6 +34,10 @@ public class NearbyPeerCommunication {
 
     public void addDeviceNearby(String deviceName, String virtualAddress){
         mNearDevices.put(deviceName, new Device(deviceName, virtualAddress));
+    }
+
+    public Device getDeviceNearby(String deviceName){
+        return mNearDevices.get(deviceName);
     }
 
     public String getDeviceNearbyVirtualAddress(String deviceName){

@@ -36,8 +36,9 @@ public class ChatsListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chats_list, container, false);
 
-        setUIElements(view);
+        getParentActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        setUIElements(view);
 
         return view;
     }
@@ -67,7 +68,7 @@ public class ChatsListFragment extends Fragment {
         groupChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO open group chat here
+                getParentActivity().showGroupChat();
             }
         });
 
@@ -88,7 +89,7 @@ public class ChatsListFragment extends Fragment {
                       ApplicationContext.getInstance().getNearbyPeerCommunication().addIndividualChat(username);
                 }
 
-                //TODO open individual chat here
+                getParentActivity().showIndividualChat(username);
             }
         });
 
