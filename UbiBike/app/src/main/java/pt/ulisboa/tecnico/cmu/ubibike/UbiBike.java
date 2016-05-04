@@ -42,6 +42,7 @@ import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketManager;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Trajectory;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.ChatFragment;
+import pt.ulisboa.tecnico.cmu.ubibike.fragments.ChatsListFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.HomeFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.LoginFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.MapFragment;
@@ -50,6 +51,8 @@ import pt.ulisboa.tecnico.cmu.ubibike.fragments.TrajectoryListFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.UserProfileFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.MobileConnectionManager;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.SessionManager;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.Chat;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.ChatMessage;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.CommunicationTasks;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.termite.SimWifiP2pBroadcastReceiver;
 import pt.ulisboa.tecnico.cmu.ubibike.services.TrajectoryTracker;
@@ -107,6 +110,19 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         }
 
         wifiP2pTurnOn();
+
+
+
+        //TODO delete this hardcoded
+        ApplicationContext.getInstance().getNearbyPeerCommunication().addDeviceNearby("test", "...");
+        ApplicationContext.getInstance().getNearbyPeerCommunication().getDeviceNearby("test").setUsername("andriy");
+        ApplicationContext.getInstance().getNearbyPeerCommunication().addIndividualChat("andriy");
+        Chat chat = ApplicationContext.getInstance().getNearbyPeerCommunication().getIndividualChat("andriy");
+        chat.addNewMessage(new ChatMessage(true, "Someone", "Helloo"));
+        chat.addNewMessage(new ChatMessage(false, "andriy", "Hi there!"));
+        chat.addNewMessage(new ChatMessage(true, "Someone", "This looks nice!"));
+
+
     }
 
 
@@ -312,15 +328,37 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
 
 
     /**
-     * Shows a group chat hosted by the groupOwner provided
-     *
-     * @param groupOwner - p2p group owner
+     * Shows nearby chats listing
      */
-    public void showGroupChat(String groupOwner){
+    public void showChats(){
+        Fragment fragment = new ChatsListFragment();
+        replaceFragment(fragment, false, true);
+    }
+
+    /**
+     * Shows a group chat
+     */
+    public void showGroupChat(){
         Fragment fragment = new ChatFragment();
 
         Bundle arguments = new Bundle();
-        arguments.putString(ChatFragment.KEY_GROUP_OWNER, groupOwner);
+        arguments.putBoolean(ChatFragment.ARGUMENT_KEY_GROUP_CHAT, true);
+        fragment.setArguments(arguments);
+
+        replaceFragment(fragment, false, true);
+    }
+
+    /**
+     * Shows a chat with the given user
+     *
+     * @param username - user chat to open
+     */
+    public void showIndividualChat(String username){
+        Fragment fragment = new ChatFragment();
+
+        Bundle arguments = new Bundle();
+        arguments.putBoolean(ChatFragment.ARGUMENT_KEY_GROUP_CHAT, false);
+        arguments.putString(ChatFragment.ARGUMENT_KEY_USERNAME, username);
         fragment.setArguments(arguments);
 
         replaceFragment(fragment, false, true);
