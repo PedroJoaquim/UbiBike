@@ -19,7 +19,7 @@ public class DBObjectSelector {
             return null;
         }
 
-        User u = new User(result.getInt("uid"), result.getString("username"), result.getString("public_key"), result.getBytes("password"));
+        User u = new User(result.getInt("uid"), result.getString("username"), result.getString("public_key"), result.getBytes("password"), result.getInt("points"));
 
         try {
             result.close();
@@ -40,7 +40,7 @@ public class DBObjectSelector {
             return null;
         }
 
-        User u = new User(result.getInt("uid"), result.getString("username"), result.getString("public_key"), result.getBytes("password"));
+        User u = new User(result.getInt("uid"), result.getString("username"), result.getString("public_key"), result.getBytes("password"), result.getInt("points"));
 
         try {
             result.close();
@@ -224,10 +224,10 @@ public class DBObjectSelector {
         List<Bike> resultList = new ArrayList<Bike>();
 
         Statement stmt = conn.createStatement();
-        ResultSet result = stmt.executeQuery("SELECT bid FROM stations AS s, bikes_stations AS bs WHERE s.sid = " + sid + " AND bs.sid = s.sid AND bs.bid NOT IN (SELECT bid FROM bookings)");
+        ResultSet result = stmt.executeQuery("SELECT b.bid, b.bike_addr FROM stations AS s, bikes_stations AS bs, bikes As b WHERE s.sid = " + sid + " AND bs.sid = s.sid AND b.bid = bs.bid AND bs.bid NOT IN (SELECT bid FROM bookings)");
 
         while (result.next()) {
-            resultList.add(new Bike(result.getInt("bid")));
+            resultList.add(new Bike(result.getInt("bid"), result.getString("bike_addr")));
         }
 
         try {
@@ -243,10 +243,10 @@ public class DBObjectSelector {
         List<Bike> resultList = new ArrayList<Bike>();
 
         Statement stmt = conn.createStatement();
-        ResultSet result = stmt.executeQuery("SELECT bid FROM stations AS s, bikes_stations AS bs WHERE s.sid = " + sid + " AND bs.sid = s.sid");
+        ResultSet result = stmt.executeQuery("SELECT b.bid, b.bike_addr FROM stations AS s, bikes_stations AS bs, bikes AS b WHERE s.sid = " + sid + " AND bs.sid = s.sid AND b.bid = bs.bid");
 
         while (result.next()) {
-            resultList.add(new Bike(result.getInt("bid")));
+            resultList.add(new Bike(result.getInt("bid"), result.getString("bike_addr")));
         }
 
         try {
@@ -280,5 +280,21 @@ public class DBObjectSelector {
         } catch (SQLException e) {/*ignore*/}
 
         return b;
+    }
+
+    public static int calcUserGlobalRank(Connection conn, int uid) throws SQLException {
+
+        Statement stmt = conn.createStatement();
+        ResultSet result = stmt.executeQuery("SELECT uid, points FROM users ORDER BY points DESC");
+        int pos = 1;
+
+        while (result.next()) {
+            if(uid == result.getInt("uid")){
+                return pos;
+            }
+            pos++;
+        }
+
+        return -1;
     }
 }

@@ -16,20 +16,26 @@ public class User {
     @JsonIgnore
     private byte[] password;
     private Trajectory[] trajectories;
+    private int points;
+    private int globalRank;
 
-    public User(int uid, String username, String public_key, byte[] password) {
+    public User(int uid, String username, String public_key, byte[] password, int points) {
         this.uid = uid;
         this.username = username;
         this.publicKey = public_key;
         this.password = password;
+        this.globalRank = -1;
+        this.points = points;
     }
 
-    public User(int uid, String username, String public_key, byte[] password, Trajectory[] trajectories) {
+    public User(int uid, String username, String public_key, byte[] password, Trajectory[] trajectories, int points) {
         this.uid = uid;
         this.username = username;
         this.publicKey = public_key;
         this.password = password;
         this.trajectories = trajectories;
+        this.globalRank = -1;
+        this.points = points;
     }
 
     public User() {}
@@ -78,5 +84,25 @@ public class User {
     @JsonSetter("trajectories")
     public void setTrajectories(Trajectory[] trajectories) {
         this.trajectories = trajectories;
+    }
+
+    @JsonGetter("rank")
+    public int getGlobalRank() {
+        return globalRank;
+    }
+
+    @JsonSetter("rank")
+    public void setGlobalRank(int globalRank) {
+        this.globalRank = globalRank;
+    }
+
+    @JsonGetter("points")
+    public int getPoints() {
+        return points;
+    }
+
+    @JsonSetter("points")
+    public void setPoints(int points) {
+        this.points = points;
     }
 }

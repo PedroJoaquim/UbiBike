@@ -9,9 +9,12 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 public class Bike {
 
     private int bid;
+    private String bikeAddr;
 
-    public Bike(int bid) {
+    public Bike(int bid, String bikeAddr) {
+
         this.bid = bid;
+        this.bikeAddr = bikeAddr;
     }
 
     public Bike() {}
@@ -24,5 +27,15 @@ public class Bike {
     @JsonSetter("bid")
     public void setBid(int bid) {
         this.bid = bid;
+    }
+
+    @JsonGetter("bike_addr")
+    public String getBikeAddr() {
+        return bikeAddr;
+    }
+
+    @JsonSetter("bike_addr")
+    public void setBikeAddr(String bikeAddr) {
+        this.bikeAddr = bikeAddr;
     }
 }

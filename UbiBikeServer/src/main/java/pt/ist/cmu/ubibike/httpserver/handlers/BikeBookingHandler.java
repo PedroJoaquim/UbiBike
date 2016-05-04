@@ -16,7 +16,7 @@ public class BikeBookingHandler extends AuthRequiredHandler {
 
     private static final String STATION_SID_ATTR = "sid";
     private Bike[] availableBikes;
-    private int bid;
+    private Bike bike;
 
     public BikeBookingHandler() {
         super();
@@ -46,21 +46,14 @@ public class BikeBookingHandler extends AuthRequiredHandler {
     @Override
     protected void executeAction(HttpExchange httpExchange) throws Exception {
 
-        Bike bike = availableBikes[new Random().nextInt(availableBikes.length)];
-
+        this.bike = availableBikes[new Random().nextInt(availableBikes.length)];
         DBObjectCreation.insertBikeBooking(DBConnection.getConnection(), this.user.getUid(), bike.getBid());
 
-        this.bid = bike.getBid();
     }
 
     @Override
     protected String produceAnswer(HttpExchange httpExchange) throws Exception {
-
         ObjectMapper mapper = new ObjectMapper();
-        ObjectNode jNode = mapper.createObjectNode();
-
-        jNode.put("bid", this.bid);
-
-        return jNode.toString();
+        return  mapper.writeValueAsString(this.bike);
     }
 }

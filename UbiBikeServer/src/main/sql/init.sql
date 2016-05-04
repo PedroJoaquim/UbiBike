@@ -55,13 +55,20 @@ CREATE TABLE stations (
   UNIQUE (station_name)
 );
 
+DROP TABLE IF EXISTS bikes;
+CREATE TABLE bikes (
+  bid INT NOT NULL,
+  bike_addr VARCHAR(40),
+  PRIMARY KEY (bid)
+);
+
 DROP TABLE IF EXISTS bikes_stations;
 CREATE TABLE bikes_stations (
   sid INT NOT NULL,
   bid INT NOT NULL,
   PRIMARY KEY (bid, sid),
   FOREIGN KEY (sid) REFERENCES stations (sid),
-  UNIQUE (bid)
+  FOREIGN KEY (bid) REFERENCES bikes (bid)
 );
 
 DROP TABLE IF EXISTS bookings;

@@ -1,4 +1,5 @@
-INSERT INTO users(username, public_key, password, points) VALUES ('pedro', 'pedro123123', CAST(0x2702CB34EE041711B9DF0C67A8D5C9DE02110C80E3FC966BA8341456DBC9EF2B AS BINARY(32)), 0);
+INSERT INTO users(username, public_key, password, points) VALUES ('pedro', 'pedro123123', CAST(0x2702CB34EE041711B9DF0C67A8D5C9DE02110C80E3FC966BA8341456DBC9EF2B AS BINARY(32)), 132);
+INSERT INTO users(username, public_key, password, points) VALUES ('teste', 'teste123', CAST(0x2702CB34EE041711B9DF0C67A8D5C9DE02110C80E3FC966BA8341456DBC9EF2B AS BINARY(32)), 130);
 
 INSERT INTO trajectories(tid, uid, coords_text, points_earned, user_tid, distance, ride_start_timestamp, ride_end_timestamp) VALUES (1, 1, '-123.0;-12.0#-123.0;-13.0#-123.0;-14.0#-123.0;-14.0#-123.0;-15.0', 100, 'TESTID', 100, 1234567890, 1234567899);
 
@@ -41,7 +42,8 @@ CREATE PROCEDURE initBikeStations()
     WHILE station_id <= num_stations DO
       SET num_cicles = 10;
       WHILE num_cicles > 0 DO
-        INSERT INTO bikes_stations (sid, bid) VALUES (station_id, bike_id);
+          INSERT INTO bikes (bid, bike_addr) VALUES (bike_id, "addr1");
+          INSERT INTO bikes_stations (sid, bid) VALUES (station_id, bike_id);
         SET num_cicles = num_cicles -1;
         SET bike_id = bike_id +1;
       END WHILE;

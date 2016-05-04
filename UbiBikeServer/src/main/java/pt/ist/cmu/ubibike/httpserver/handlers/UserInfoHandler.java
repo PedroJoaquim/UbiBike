@@ -24,6 +24,10 @@ public class UserInfoHandler extends AuthRequiredHandler {
         Connection conn = DBConnection.getConnection();
         Trajectory[] trajectories = DBObjectSelector.getTrajectoriesFromUser(conn, this.user.getUid());
         this.user.setTrajectories(trajectories);
+
+        if(this.user.getPoints() > 0){
+            this.user.setGlobalRank(DBObjectSelector.calcUserGlobalRank(conn, user.getUid()));
+        }
     }
 
     @Override
