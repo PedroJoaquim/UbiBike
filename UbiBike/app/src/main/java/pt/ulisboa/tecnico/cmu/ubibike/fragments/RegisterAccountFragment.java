@@ -119,6 +119,8 @@ public class RegisterAccountFragment extends Fragment {
                     return;
                 }
 
+                ApplicationContext.getInstance().setPassword(pssWd);
+
                 ApplicationContext.getInstance().getServerCommunicationHandler().
                         performRegisterRequest(usrName, pssWd);
 

@@ -15,12 +15,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Near Group Chat"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Group Chat"
             android:layout_gravity="center_horizontal"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/imageView6"
-            android:layout_marginLeft="10dp" />
+            android:layout_marginLeft="10dp"
+            android:id="@+id/group_textView" />
 
         <ImageView
             android:layout_width="wrap_content"

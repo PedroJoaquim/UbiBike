@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.cmu.ubibike.peercommunication;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
@@ -74,6 +75,16 @@ public class NearbyPeerCommunication {
 
     public Set<String> getNearDevicesSet(){
         return mNearDevices.keySet();
+    }
+
+    public Set<String> getNearDevicesUsernamesSet(){
+        Set<String> usernames = new HashSet<>();
+
+        for(String deviceName : mNearDevices.keySet()){
+            usernames.add(getDeviceNearby(deviceName).getUsername());
+        }
+
+        return usernames;
     }
 
     public SimWifiP2pSocket getNearDeviceClientSocket(String deviceName){

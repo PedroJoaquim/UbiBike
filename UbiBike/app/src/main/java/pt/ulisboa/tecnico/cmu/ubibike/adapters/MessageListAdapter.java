@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.cmu.ubibike.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,20 +16,17 @@ import pt.ulisboa.tecnico.cmu.ubibike.R;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.ChatMessage;
 
 
-/**
- * Created by andriy on 12.03.2016.
- */
 public class MessageListAdapter extends BaseAdapter{
 
     private final Context context;
 
     private List<ChatMessage> messages;
+    private boolean groupChat;
 
-    private View vi;
-
-    public MessageListAdapter(Context c, List<ChatMessage> msgs) {
+    public MessageListAdapter(Context c, List<ChatMessage> msgs, boolean grpChat) {
         context = c;
         messages = msgs;
+        groupChat = grpChat;
     }
 
     @Override
@@ -59,7 +55,7 @@ public class MessageListAdapter extends BaseAdapter{
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        final View rowView = inflater.inflate(R.layout.list_row_message, parent, false);
+        final View vi = inflater.inflate(R.layout.list_row_message, parent, false);
 
         LinearLayout inBubble = (LinearLayout) vi.findViewById(R.id.inMessageBubble);
         LinearLayout outBubble = (LinearLayout) vi.findViewById(R.id.outMessageBubble);
@@ -74,7 +70,14 @@ public class MessageListAdapter extends BaseAdapter{
         String date = msg.getDay();
         String currentDay = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
 
-        inMessage_sender_textView.setText(msg.getSenderUsername());
+
+        //only show sender name on incoming messages in group chat
+        if(msg.isReceived() && groupChat) {
+            inMessage_sender_textView.setText(msg.getSenderUsername());
+        }
+        else{
+            inMessage_sender_textView.setVisibility(View.GONE);
+        }
 
         if(date.equals(currentDay))   //msg sent today
             date = msg.getHour();
@@ -103,7 +106,7 @@ public class MessageListAdapter extends BaseAdapter{
             dateOutBubble_textView.setText(date);
         }
 
-        return rowView;
+        return vi;
     }
 }
 

@@ -87,6 +87,7 @@ public class LoginFragment extends Fragment {
                     return;
                 }
 
+                ApplicationContext.getInstance().setPassword(pssWd);
 
                 if (MobileConnectionManager.isOnline(getActivity())) {
 
@@ -114,8 +115,6 @@ public class LoginFragment extends Fragment {
                                                                             setUid(appData.getUid());
                         ApplicationContext.getInstance().getServerCommunicationHandler().
                                                             setSessionToken(appData.getSessionToken());
-
-                        ApplicationContext.getInstance().setPassword(pssWd);
 
                         getParentActivity().finishLogin();
 

@@ -18,7 +18,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
-import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
 import pt.inesc.termite.wifidirect.SimWifiP2pDeviceList;
 import pt.inesc.termite.wifidirect.SimWifiP2pInfo;
 import pt.inesc.termite.wifidirect.SimWifiP2pManager;
@@ -54,6 +52,7 @@ import pt.ulisboa.tecnico.cmu.ubibike.managers.SessionManager;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.Chat;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.ChatMessage;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.CommunicationTasks;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.GroupChat;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.termite.SimWifiP2pBroadcastReceiver;
 import pt.ulisboa.tecnico.cmu.ubibike.services.TrajectoryTracker;
 
@@ -102,8 +101,6 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
 
         registerBroadcastReceiver();
 
-        ApplicationContext.getInstance().getServerCommunicationHandler().performStationsNearbyRequest();
-
         if(savedInstanceState == null){
             Intent i = new Intent(this, TrajectoryTracker.class);
             startService(i);
@@ -115,13 +112,31 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
 
         //TODO delete this hardcoded
         ApplicationContext.getInstance().getNearbyPeerCommunication().addDeviceNearby("test", "...");
-        ApplicationContext.getInstance().getNearbyPeerCommunication().getDeviceNearby("test").setUsername("andriy");
-        ApplicationContext.getInstance().getNearbyPeerCommunication().addIndividualChat("andriy");
-        Chat chat = ApplicationContext.getInstance().getNearbyPeerCommunication().getIndividualChat("andriy");
-        chat.addNewMessage(new ChatMessage(true, "Someone", "Helloo"));
-        chat.addNewMessage(new ChatMessage(false, "andriy", "Hi there!"));
-        chat.addNewMessage(new ChatMessage(true, "Someone", "This looks nice!"));
+        ApplicationContext.getInstance().getNearbyPeerCommunication().addDeviceNearby("test1", "...");
+        ApplicationContext.getInstance().getNearbyPeerCommunication().addDeviceNearby("test2", "...");
+        ApplicationContext.getInstance().getNearbyPeerCommunication().getDeviceNearby("test").setUsername("folano");
+        ApplicationContext.getInstance().getNearbyPeerCommunication().getDeviceNearby("test1").setUsername("gatuno");
+        ApplicationContext.getInstance().getNearbyPeerCommunication().getDeviceNearby("test2").setUsername("invalido");
+        ApplicationContext.getInstance().getNearbyPeerCommunication().addIndividualChat("folano");
+        ApplicationContext.getInstance().getNearbyPeerCommunication().addIndividualChat("gatuno");
+        ApplicationContext.getInstance().getNearbyPeerCommunication().addIndividualChat("invalido");
 
+        Chat chat = ApplicationContext.getInstance().getNearbyPeerCommunication().getIndividualChat("gatuno");
+        chat.addNewMessage(new ChatMessage(true, "gatuno", "Helloo"));
+        chat.addNewMessage(new ChatMessage(false, "me", "Hi there!"));
+        chat.addNewMessage(new ChatMessage(true, "gatuno", "bla bla bla..."));
+
+
+        GroupChat group = ApplicationContext.getInstance().getNearbyPeerCommunication().getGroupChat();
+        group.addMember("folano");
+        group.addMember("gatuno");
+        group.addMember("invalido");
+        group.setOwner("'gatuno'");
+        Chat groupChat = ApplicationContext.getInstance().getNearbyPeerCommunication().getGroupChat().getChat();
+        groupChat.addNewMessage(new ChatMessage(true, "folano", "Oii"));
+        groupChat.addNewMessage(new ChatMessage(true, "gatuno", "Hola"));
+        groupChat.addNewMessage(new ChatMessage(true, "invalido", "Wazzzaaaaaa"));
+        groupChat.addNewMessage(new ChatMessage(true, "gatuno", "Wazzzaaaaaaaaaaaaa"));
 
     }
 
@@ -154,10 +169,6 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
     @Override
     protected void onResume() {
         super.onResume();
-
-        getSupportActionBar().show();
-        getSupportActionBar().setTitle("UbiBike");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         if (!mNetworkChangeReceiverRegistered) {
             registerReceiver(mNetworkChangeReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
@@ -478,9 +489,7 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
                         ApplicationContext.getInstance().getServerCommunicationHandler().performStationsNearbyRequest();
                     }
                 }
-                else {
-                    ApplicationContext.getInstance().getServerCommunicationHandler().performStationsNearbyRequest();
-                }
+                else
 
                 ApplicationContext.getInstance().getServerCommunicationHandler().executeNextPendingRequest();
             }

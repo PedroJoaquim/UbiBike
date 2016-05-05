@@ -11,10 +11,9 @@ import java.util.Set;
 public class GroupChat {
 
     private String mOwner;
-    private Set<String> mMembers;
+    private Set<String> mMembers;   //usernames
 
     private Chat mChat;
-
 
     public GroupChat() {
         mMembers = new HashSet<>();
@@ -29,6 +28,9 @@ public class GroupChat {
         mOwner = owner;
     }
 
+    public void addMember(String username){
+        mMembers.add(username);
+    }
     public Set<String> getMembers() {
         return mMembers;
     }

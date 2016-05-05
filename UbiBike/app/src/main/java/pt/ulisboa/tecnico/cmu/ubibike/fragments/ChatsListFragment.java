@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -54,6 +55,7 @@ public class ChatsListFragment extends Fragment {
     public void setUIElements(View view){
 
         RelativeLayout groupChat = (RelativeLayout) view.findViewById(R.id.group_chat_layout);
+
         mPeersNearbyListView = (ListView) view.findViewById(R.id.peers_nearby_listView);
 
 
@@ -62,6 +64,13 @@ public class ChatsListFragment extends Fragment {
         }
         else{
             groupChat.setVisibility(View.VISIBLE);
+            TextView group_textView = (TextView) view.findViewById(R.id.group_textView);
+
+            String groupOwner = ApplicationContext.getInstance().getNearbyPeerCommunication().
+                                                                            getGroupChat().getOwner();
+            if( groupOwner != null) {
+                group_textView.setText("Group hosted by '" + groupOwner + "'");
+            }
         }
 
 
@@ -73,7 +82,7 @@ public class ChatsListFragment extends Fragment {
         });
 
 
-        Set<String> nearDevices = ApplicationContext.getInstance().getNearbyPeerCommunication().getNearDevicesSet();
+        Set<String> nearDevices = ApplicationContext.getInstance().getNearbyPeerCommunication().getNearDevicesUsernamesSet();
         final PeersChatAdapter adapter = new PeersChatAdapter(getActivity(), new ArrayList<>(nearDevices));
 
         mPeersNearbyListView.setAdapter(adapter);
@@ -92,6 +101,5 @@ public class ChatsListFragment extends Fragment {
                 getParentActivity().showIndividualChat(username);
             }
         });
-
     }
 }
