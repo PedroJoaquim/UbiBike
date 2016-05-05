@@ -156,7 +156,7 @@ public class ApplicationContext extends Application {
 
     public void removePendingRequest(int id){
 
-        for(int i = 0; i < mPendingRequests.size()-1; i++){
+        for(int i = 0; i <= mPendingRequests.size()-1; i++){
             if(mPendingRequests.get(i).getID() == id){
                 mPendingRequests.remove(i);
                 return;

@@ -431,12 +431,16 @@ public class ServerCommunicationHandler {
                     if(json.has(JsonParser.ERROR)){
                         String errorMsg = json.getString(JsonParser.ERROR);
                         Toast.makeText(ApplicationContext.getInstance().getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
-                        return;
                     }
+                    else {
 
-                    Data appData = ApplicationContext.getInstance().getData();
+                        Data appData = ApplicationContext.getInstance().getData();
 
-                    parseMethod.invoke(null, new Object[]{json, appData});
+                        parseMethod.invoke(null, new Object[]{json, appData});
+
+                        Toast.makeText(ApplicationContext.getInstance().getActivity(),
+                                "Success at " + getRequestType(requestType) + " request.", Toast.LENGTH_SHORT).show();
+                    }
 
                 } catch (Exception e) {
                     String msg = "Couldn't perform " + getRequestType(requestType) + " request.";
@@ -444,9 +448,6 @@ public class ServerCommunicationHandler {
                     return;
                 }
             }
-
-            Toast.makeText(ApplicationContext.getInstance().getActivity(),
-                    "Success at " + getRequestType(requestType) + " request.", Toast.LENGTH_SHORT).show();
 
             //check if current finished request is a pending request re-execution
             //if so, remove it from pending request collection

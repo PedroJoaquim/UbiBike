@@ -489,7 +489,6 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
                         ApplicationContext.getInstance().getServerCommunicationHandler().performStationsNearbyRequest();
                     }
                 }
-                else
 
                 ApplicationContext.getInstance().getServerCommunicationHandler().executeNextPendingRequest();
             }
