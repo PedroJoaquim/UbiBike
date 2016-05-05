@@ -17,7 +17,6 @@ import pt.ulisboa.tecnico.cmu.ubibike.R;
 import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.MobileConnectionManager;
-import pt.ulisboa.tecnico.cmu.ubibike.utils.Password;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.Validator;
 
 
@@ -109,12 +108,12 @@ public class LoginFragment extends Fragment {
                         Data appData = ApplicationContext.getInstance().getStorageManager().
                                                                         getAppDataFromDB(clientID);
 
-                        ApplicationContext.getInstance().setData(appData);
-
                         ApplicationContext.getInstance().getServerCommunicationHandler().
-                                                                            setUid(appData.getUid());
+                                                                            setUid(appData.getUID());
                         ApplicationContext.getInstance().getServerCommunicationHandler().
                                                             setSessionToken(appData.getSessionToken());
+
+                        ApplicationContext.getInstance().setData(appData);
 
                         getParentActivity().finishLogin();
 

@@ -108,7 +108,6 @@ public class TrajectoryTracker extends Service implements LocationListener {
     public void onLocationChanged(Location location) {
         Log.d("UbiBike", "NewLocation");
 
-
         ApplicationContext.getInstance().getData().
                 setLastPosition(location.getLatitude(), location.getLongitude());
 
@@ -118,6 +117,10 @@ public class TrajectoryTracker extends Service implements LocationListener {
         if(mLastPosition != location){
             mLastPosition = location;
             mPositionChanged = true;
+
+            ApplicationContext.getInstance().getData().setLastPosition(location.getLatitude(),
+                                                                        location.getLongitude());
+
         }
         else{
             mPositionChanged = false;

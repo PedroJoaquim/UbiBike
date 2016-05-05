@@ -35,7 +35,6 @@ import pt.inesc.termite.wifidirect.SimWifiP2pManager.PeerListListener;
 import pt.inesc.termite.wifidirect.SimWifiP2pManager.GroupInfoListener;
 import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
 
-import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketManager;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Trajectory;
@@ -56,8 +55,6 @@ import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.GroupChat;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.termite.SimWifiP2pBroadcastReceiver;
 import pt.ulisboa.tecnico.cmu.ubibike.services.TrajectoryTracker;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class UbiBike extends AppCompatActivity implements PeerListListener, GroupInfoListener {
@@ -258,10 +255,10 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
      */
     public void finishLogin(){
         Data appData = ApplicationContext.getInstance().getData();
-        mSessionManager.createLoginSession(appData.getUid());
+        mSessionManager.createLoginSession(appData.getUID());
 
         ApplicationContext.getInstance().getStorageManager().
-                registerLoginCredentialsOnDB(appData.getUid(),
+                registerLoginCredentialsOnDB(appData.getUID(),
                                             appData.getUsername(),
                                             ApplicationContext.getInstance().getPassword());
 
@@ -421,7 +418,9 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         String lastSyncStr;
 
 
-        if(ApplicationContext.getInstance().getData() != null){
+        if((ApplicationContext.getInstance().getData()  != null) &&
+            (ApplicationContext.getInstance().getData().getLastUserInfoUpdated() != null)){
+
             lastSyncStr = "Last sync: " + ApplicationContext.getInstance().getData().getLastUpdatedRelativeString();
         }
         else{
@@ -481,16 +480,25 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
 
                 if(ApplicationContext.getInstance().getData() != null) {
 
-                    Date lastUpdate = ApplicationContext.getInstance().getData().getLastUpdated();
-                    long timeFromLastUpdate = new Date().getTime() - lastUpdate.getTime();
+                    Date lastStationsUpdated = ApplicationContext.getInstance().getData().getLastStationUpdated();
 
-
-                    if (timeFromLastUpdate > 1000 * 60 * 60) {    //TODO how often update?
+                    //if there was no update yet, update
+                    if(lastStationsUpdated == null){
                         ApplicationContext.getInstance().getServerCommunicationHandler().performStationsNearbyRequest();
                     }
+                    //otherwise check if the stations were not updated for more that certain ammount of time
+                    else {
+
+                        long timeFromLastUpdate = new Date().getTime() - lastStationsUpdated.getTime();
+
+                        if (timeFromLastUpdate > 1000 * 60 * 60 * 24 * 3) {    //3 days
+                            ApplicationContext.getInstance().getServerCommunicationHandler().performStationsNearbyRequest();
+                        }
+                    }
+
+                    ApplicationContext.getInstance().getServerCommunicationHandler().executeNextPendingRequest();
                 }
 
-                ApplicationContext.getInstance().getServerCommunicationHandler().executeNextPendingRequest();
             }
             else{
                 showNoInternetConnectionPopupWindow();

@@ -9,25 +9,25 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 
-import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.NearbyPeerCommunication;
-
 /**
  * Created by andriy on 12.03.2016.
  */
 public class Data {
 
-    private int uid;
-    private String username;
-    private String sessionToken;
-    private String publicKeyToken;
+    private int mUID;
+    private String mUsername;
+    private String mSessionToken;
+    private String mPublicToken;
 
     private HashMap<Integer, BikePickupStation> mBikeStations;
     private ArrayList<Trajectory> mTrajectories;
     private Trajectory mLastTrackedTrajectory;
     private Bike mBikeBooked;
     private LatLng mLastPosition;
-    private Date dateUpdated;
+    private Date mDateUserInfoUpdated;
+    private Date mDateStationsUpdated;
 
+    private int mGlobalRank;
     private long mTotalPoints;
     private double mTotalDistance;
     private long mTotalTime;
@@ -36,46 +36,50 @@ public class Data {
 
 
     public Data(int id, String usrn) {
-        uid = id;
-        username = usrn;
+        mUID = id;
+        mUsername = usrn;
 
         mBikeStations = new HashMap<>();
         mTrajectories = new ArrayList<>();
         mLastPosition = new LatLng(0.0, 0.0); //TODO last position
-        dateUpdated = new Date();
         mTotalPoints = 0;
+        mGlobalRank = -1;
         mTotalDistance = 0.0;
         mTotalTime = 0;
     }
 
     public Data(int uid, String username, String sessionToken, String publicKeyToken,
-                ArrayList<BikePickupStation> mBikeStations, ArrayList<Trajectory> mTrajectories,
-                LatLng mLastPosition, Date dateUpdated) {
+                ArrayList<BikePickupStation> bikeStations, ArrayList<Trajectory> trajectories,
+                LatLng lastPosition, Date dateUserInfoUpdated, Date dateStationsUpdated,
+                long totalPoints, int globalRank) {
 
         HashMap<Integer, BikePickupStation> stations = new HashMap<>();
 
-        for(BikePickupStation station : mBikeStations){
+        for(BikePickupStation station : bikeStations){
             stations.put(station.getSid(), station);
         }
 
-        this.uid = uid;
-        this.username = username;
-        this.sessionToken = sessionToken;
-        this.publicKeyToken = publicKeyToken;
+        mUID = uid;
+        mUsername = username;
+        mSessionToken = sessionToken;
+        mPublicToken = publicKeyToken;
 
-        this.mBikeStations = stations;
-        this.mTrajectories = mTrajectories;
-        this.mLastPosition = mLastPosition;
-        this.dateUpdated = dateUpdated;
+        mBikeStations = stations;
+        mTrajectories = trajectories;
+        mLastPosition = lastPosition;
+        mDateUserInfoUpdated = dateUserInfoUpdated;
+        mDateStationsUpdated = dateStationsUpdated;
 
         for(Trajectory t : mTrajectories) {
-            this.mTotalPoints += t.getPointsEarned();
-            this.mTotalDistance += t.getTravelledDistance();
-            this.mTotalTime += (t.getEndTime().getTime() - t.getStartTime().getTime());
+            mTotalDistance += t.getTravelledDistance();
+            mTotalTime += (t.getEndTime().getTime() - t.getStartTime().getTime());
             if(mLongestRide.getTravelledDistance() < t.getTravelledDistance()) {
                 mLongestRide = t;
             }
         }
+
+        mTotalPoints = totalPoints;
+        mGlobalRank = globalRank;
     }
 
 
@@ -178,50 +182,58 @@ public class Data {
         return mBikeBooked;
     }
 
-    public Date getLastUpdated() {
-        return dateUpdated;
+    public Date getLastUserInfoUpdated() {
+        return mDateUserInfoUpdated;
+    }
+
+    public Date getLastStationUpdated(){
+        return mDateStationsUpdated;
     }
 
     public String getLastUpdatedRelativeString(){
-        return DateUtils.getRelativeTimeSpanString(dateUpdated.getTime()).toString();
+        return DateUtils.getRelativeTimeSpanString(mDateUserInfoUpdated.getTime()).toString();
     }
 
-    public void setLastUpdated(Date dateUpdated) {
-        this.dateUpdated = dateUpdated;
+    public void setLastUserInfoUpdated(Date dateUpdated) {
+       mDateUserInfoUpdated = dateUpdated;
     }
 
-    public int getUid() {
-        return uid;
+    public void setLastStationsUpdated(Date dateUpdated){
+        mDateStationsUpdated = dateUpdated;
     }
 
-    public void setUid(int uid) {
-        this.uid = uid;
+    public int getUID() {
+        return mUID;
+    }
+
+    public void setUID(int mUID) {
+        this.mUID = mUID;
     }
 
     public String getUsername() {
-        return username;
+        return mUsername;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsername(String mUsername) {
+        this.mUsername = mUsername;
     }
 
     public String getSessionToken() {
-        return sessionToken;
+        return mSessionToken;
     }
 
-    public void setSessionToken(String sessionToken) {
-        this.sessionToken = sessionToken;
+    public void setSessionToken(String mSessionToken) {
+        this.mSessionToken = mSessionToken;
     }
 
-    public String getPublicKeyToken() {
-        return publicKeyToken;
+    public String getPublicToken() {
+        return mPublicToken;
     }
 
-    public boolean hasPublicKeyToken(){ return publicKeyToken != null; }
+    public boolean hasPublicKeyToken(){ return mPublicToken != null; }
 
-    public void setPublicKeyToken(String publicKeyToken) {
-        this.publicKeyToken = publicKeyToken;
+    public void setPublicToken(String mPublicToken) {
+        this.mPublicToken = mPublicToken;
     }
 
     public void setTrajectories(ArrayList<Trajectory> trajectories) {
@@ -232,8 +244,8 @@ public class Data {
         return mLastTrackedTrajectory;
     }
 
-    public void setLastTrackedTrajectory(Trajectory mLastTrackedTrajectory) {
-        this.mLastTrackedTrajectory = mLastTrackedTrajectory;
+    public void setLastTrackedTrajectory(Trajectory lastTrackedTrajectory) {
+        mLastTrackedTrajectory = lastTrackedTrajectory;
     }
 
     public void setBikeStations(ArrayList<BikePickupStation> bikeStations) {
@@ -257,6 +269,10 @@ public class Data {
     }
 
 
+    public void setTotalPoints(long points){
+        mTotalPoints = points;
+    }
+
     public long getTotalPoints() {
         return mTotalPoints;
     }
@@ -277,4 +293,11 @@ public class Data {
         return mLongestRide;
     }
 
+    public int getGlobalRank() {
+        return mGlobalRank;
+    }
+
+    public void setGlobalRank(int rank) {
+        mGlobalRank = rank;
+    }
 }

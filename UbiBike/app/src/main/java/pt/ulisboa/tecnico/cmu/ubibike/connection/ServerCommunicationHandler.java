@@ -128,7 +128,7 @@ public class ServerCommunicationHandler {
         ApplicationContext.getInstance().addPendingRequest(pReq);
 
         String msg = "Pending request [id=" + pReq.getID() + "] stored.";
-        Toast.makeText(ApplicationContext.getInstance().getActivity(), msg , Toast.LENGTH_SHORT).show();
+        Toast.makeText(ApplicationContext.getInstance(), msg , Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -142,7 +142,7 @@ public class ServerCommunicationHandler {
             performGenericRequest(pReq.getUrl(), pReq.getRequestType(), pReq.getJson(), false, pReq.getID());
 
             String msg = "Pending request [id=" + pReq.getID() + "] execution attempt.";
-            Toast.makeText(ApplicationContext.getInstance().getActivity(), msg , Toast.LENGTH_SHORT).show();
+            Toast.makeText(ApplicationContext.getInstance(), msg , Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -243,7 +243,7 @@ public class ServerCommunicationHandler {
 
                     if(json.has(JsonParser.ERROR)){
                         String errorMsg = json.getString(JsonParser.ERROR);
-                        Toast.makeText(ApplicationContext.getInstance().getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ApplicationContext.getInstance(), errorMsg, Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -265,21 +265,16 @@ public class ServerCommunicationHandler {
                     ApplicationContext.getInstance().setData(appData);
                     ApplicationContext.getInstance().getActivity().finishLogin();
 
-                    if(!appData.hasPublicKeyToken()){
-                        ApplicationContext.getInstance().getServerCommunicationHandler().
-                                performPublicKeyTokenRequest();
-                    }
-
                     ApplicationContext.getInstance().getStorageManager().updateAppDataOnDB(userID, appData);
 
                 } catch (Exception e) {
                     String msg = "An error ocurred while logging in";
-                    Toast.makeText(ApplicationContext.getInstance().getActivity(), msg, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ApplicationContext.getInstance(), msg, Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
 
-            Toast.makeText(ApplicationContext.getInstance().getActivity(), "Login successful.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ApplicationContext.getInstance(), "Login successful.", Toast.LENGTH_SHORT).show();
 
         }
 
@@ -337,7 +332,7 @@ public class ServerCommunicationHandler {
 
                     if(json.has(JsonParser.ERROR)){
                         String errorMsg = json.getString(JsonParser.ERROR);
-                        Toast.makeText(ApplicationContext.getInstance().getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ApplicationContext.getInstance(), errorMsg, Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -364,12 +359,12 @@ public class ServerCommunicationHandler {
 
                 } catch (Exception e) {
                     String msg = "An error occurred registering the account.";
-                    Toast.makeText(ApplicationContext.getInstance().getActivity(), msg, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ApplicationContext.getInstance(), msg, Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
 
-            Toast.makeText(ApplicationContext.getInstance().getActivity(), "Account registered.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ApplicationContext.getInstance(), "Account registered.", Toast.LENGTH_SHORT).show();
 
         }
     }
@@ -430,7 +425,7 @@ public class ServerCommunicationHandler {
 
                     if(json.has(JsonParser.ERROR)){
                         String errorMsg = json.getString(JsonParser.ERROR);
-                        Toast.makeText(ApplicationContext.getInstance().getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ApplicationContext.getInstance(), errorMsg, Toast.LENGTH_SHORT).show();
                     }
                     else {
 
@@ -438,13 +433,13 @@ public class ServerCommunicationHandler {
 
                         parseMethod.invoke(null, new Object[]{json, appData});
 
-                        Toast.makeText(ApplicationContext.getInstance().getActivity(),
+                        Toast.makeText(ApplicationContext.getInstance(),
                                 "Success at " + getRequestType(requestType) + " request.", Toast.LENGTH_SHORT).show();
                     }
 
                 } catch (Exception e) {
                     String msg = "Couldn't perform " + getRequestType(requestType) + " request.";
-                    Toast.makeText(ApplicationContext.getInstance().getActivity(), msg, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ApplicationContext.getInstance(), msg, Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
@@ -456,7 +451,7 @@ public class ServerCommunicationHandler {
                 executeNextPendingRequest();
 
                 String msg = "Pending request [id=" + pendentRequestID + "] executed with success.";
-                Toast.makeText(ApplicationContext.getInstance().getActivity(), msg , Toast.LENGTH_SHORT).show();
+                Toast.makeText(ApplicationContext.getInstance(), msg , Toast.LENGTH_SHORT).show();
             }
         }
     }

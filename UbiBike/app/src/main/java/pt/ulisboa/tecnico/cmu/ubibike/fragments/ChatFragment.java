@@ -20,7 +20,6 @@ import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
 import pt.ulisboa.tecnico.cmu.ubibike.adapters.MessageListAdapter;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.Chat;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.ChatMessage;
-import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.GroupChat;
 
 public class ChatFragment extends Fragment {
 

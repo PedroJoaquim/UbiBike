@@ -9,8 +9,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 
+import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
+import pt.ulisboa.tecnico.cmu.ubibike.connection.PendingRequest;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Bike;
-import pt.ulisboa.tecnico.cmu.ubibike.managers.CipherManager;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.BikePickupStation;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Trajectory;
@@ -27,6 +28,7 @@ public class JsonParser {
     public static final String USER_ID = "uid";
     private static final String SESSION_TOKEN = "session_token";
     private static final String PUBLIC_KEY_TOKEN = "public_key_token";
+
 
     private static final String LATITUDE = "lat";
     private static final String LONGITUDE = "lng";
@@ -50,10 +52,20 @@ public class JsonParser {
     private static final String START_TIME = "start_timestamp";
     private static final String END_TIME = "end_timestamp";
 
+    private static final String POINTS = "points";
+    private static final String GLOBAl_RANK = "rank";
+
     private static final String LAST_POSITION = "last_position";
-    private static final String LAST_UPDATED = "last_updated";
+    private static final String LAST_USER_INFO_UPDATED = "last_user_info_updated";
+    private static final String LAST_STATIONS_UPDATED = "last_stations_updated";
 
     private static final String BIKE_PICK = "bike_pick";
+
+    private static final String PENDING_REQUESTS = "pending_requests";
+    private static final String PENDING_REQUEST_ID = "preq_id";
+    private static final String PENDING_REQUEST_URL = "preq_url";
+    private static final String PENDING_REQUEST_TYPE = "preq_type";
+    private static final String PENDING_REQUEST_JSON = "preq_json";
 
     public static final String ERROR = "error";
 
@@ -160,7 +172,7 @@ public class JsonParser {
         int uid = jsonObject.getInt(USER_ID);
         String sessionToken = jsonObject.getString(SESSION_TOKEN);
 
-        appData.setUid(uid);
+        appData.setUID(uid);
         appData.setSessionToken(sessionToken);
     }
 
@@ -170,28 +182,32 @@ public class JsonParser {
         String sessionToken = jsonObject.getString(SESSION_TOKEN);
         String publicKeyToken = jsonObject.getString(PUBLIC_KEY_TOKEN);
 
-        appData.setUid(uid);
+        appData.setUID(uid);
         appData.setSessionToken(sessionToken);
-        appData.setPublicKeyToken(publicKeyToken);
+        appData.setPublicToken(publicKeyToken);
     }
 
     public static void parsePublicKeyTokenResponseFromJson(JSONObject jsonObject, Data appData) throws JSONException {
 
         String publicKeyToken = jsonObject.getString(PUBLIC_KEY_TOKEN);
 
-        appData.setPublicKeyToken(publicKeyToken);
+        appData.setPublicToken(publicKeyToken);
     }
 
     public static void parseUserInfoResponseFromJson(JSONObject jsonObject, Data appData) throws JSONException {
 
         ArrayList<Trajectory> trajectories = parseTrajectories(jsonObject);
+        appData.setGlobalRank(jsonObject.getInt(GLOBAl_RANK));
+        appData.setTotalPoints(jsonObject.getLong(POINTS));
         appData.setTrajectories(trajectories);
+        appData.setLastUserInfoUpdated(new Date());
     }
 
     public static void parseStationsResponseFromJson(JSONObject jsonObject, Data appData) throws JSONException {
 
         ArrayList<BikePickupStation> bikePickupStations = parseStations(jsonObject);
         appData.setBikeStations(bikePickupStations);
+        appData.setLastStationsUpdated(new Date());
     }
 
     public static void parseBikeBookResponseFromJson(JSONObject jsonObject, Data appData) throws JSONException {
@@ -218,10 +234,12 @@ public class JsonParser {
 
             JSONObject json = new JSONObject();
 
-            json.put(USER_ID, appData.getUid());
+            json.put(USER_ID, appData.getUID());
             json.put(USERNAME, appData.getUsername());
             json.put(SESSION_TOKEN, appData.getSessionToken());
-            json.put(PUBLIC_KEY_TOKEN, appData.getPublicKeyToken());
+            json.put(PUBLIC_KEY_TOKEN, appData.getPublicToken());
+            json.put(POINTS, appData.getTotalPoints());
+            json.put(GLOBAl_RANK, appData.getGlobalRank());
 
             //adding bikeStations
             JSONArray bikeStations = new JSONArray();
@@ -281,14 +299,42 @@ public class JsonParser {
 
             json.put(TRAJECTORIES, trajectories);
 
-
             //adding last position
             JSONObject lst_pos = new JSONObject();
             lst_pos.put(LATITUDE, appData.getLastPosition().latitude);
             lst_pos.put(LONGITUDE, appData.getLastPosition().longitude);
 
             json.put(LAST_POSITION, lst_pos);
-            json.put(LAST_UPDATED, appData.getLastUpdated().getTime());
+
+            if(appData.getLastUserInfoUpdated() != null) {
+                json.put(LAST_USER_INFO_UPDATED, appData.getLastUserInfoUpdated().getTime());
+            }
+
+            if(appData.getLastStationUpdated() != null) {
+                json.put(LAST_STATIONS_UPDATED, appData.getLastStationUpdated().getTime());
+            }
+
+
+            //adding pending requests to json to store on DB
+            ArrayList<PendingRequest> pendingRequests = ApplicationContext.getInstance().getAllPendingRequests();
+
+            JSONArray jsnPenReqs = new JSONArray();
+            for(PendingRequest pReq : pendingRequests){
+                JSONObject jsnPenReq = new JSONObject();
+
+                jsnPenReq.put(PENDING_REQUEST_ID, pReq.getID());
+                jsnPenReq.put(PENDING_REQUEST_URL, pReq.getUrl());
+                jsnPenReq.put(PENDING_REQUEST_TYPE, pReq.getRequestType());
+
+                if(pReq.getJson() != null) {
+                    jsnPenReq.put(PENDING_REQUEST_JSON, pReq.getJson().toString());
+                }
+
+                jsnPenReqs.put(jsnPenReq);
+            }
+
+            json.put(PENDING_REQUESTS, jsnPenReqs);
+
 
             return json;
 
@@ -319,10 +365,23 @@ public class JsonParser {
             double positionLongitude = lst_pos.getDouble(LONGITUDE);
 
             LatLng lastPosition = new LatLng(positionLatitude, positionLongitude);
-            Date lastUpdated = new Date(json.getLong(LAST_UPDATED));
+
+            Date lastUserInfoUpdated = null;
+            if(json.has(LAST_USER_INFO_UPDATED)) {
+                lastUserInfoUpdated = new Date(json.getLong(LAST_USER_INFO_UPDATED));
+            }
+
+            Date lastStationsUpdated = null;
+            if(json.has(LAST_STATIONS_UPDATED)) {
+                lastStationsUpdated = new Date(json.getLong(LAST_STATIONS_UPDATED));
+            }
+
+            int globalRank = json.getInt(GLOBAl_RANK);
+            long totalPoints = json.getLong(POINTS);
 
             return new Data(uid, username, sessionToken, publicKeyToken, bikePickupStations,
-                    trajectories, lastPosition, lastUpdated);
+                    trajectories, lastPosition, lastUserInfoUpdated, lastStationsUpdated, totalPoints,
+                    globalRank);
 
         }
         catch(Exception e){
@@ -419,6 +478,44 @@ public class JsonParser {
             return null;
         }
     }
+
+    /**
+     * Parses pending requests from json
+     *
+     * @param json - json containing requests
+     * @return - list of PendingRequest objects
+     */
+    public static ArrayList<PendingRequest> parsePendingRequests(JSONObject json) {
+        ArrayList<PendingRequest> pendingRequests = new ArrayList<>();
+
+        try {
+
+            JSONArray requests = json.getJSONArray(PENDING_REQUESTS);
+
+            for(int i = 0; i < requests.length(); i++) {
+                JSONObject request = requests.getJSONObject(i);
+
+                int id = request.getInt(PENDING_REQUEST_ID);
+                String url = request.getString(PENDING_REQUEST_URL);
+                int type = request.getInt(PENDING_REQUEST_TYPE);
+
+                String jsonStr = null;
+                if(request.has(PENDING_REQUEST_JSON)){
+                    jsonStr = request.getString(PENDING_REQUEST_JSON);
+                }
+
+                JSONObject jsonRequest = (jsonStr == null) ? null : new JSONObject(jsonStr);
+                pendingRequests.add(new PendingRequest(id, url, type, jsonRequest));
+            }
+
+            return pendingRequests;
+
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
+
 
 
     /**

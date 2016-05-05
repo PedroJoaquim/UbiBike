@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.cmu.ubibike;
 
 import android.app.Application;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import pt.ulisboa.tecnico.cmu.ubibike.connection.PendingRequest;
@@ -53,10 +54,15 @@ public class ApplicationContext extends Application {
             mUid = mSessionManager.getLoggedUser();
 
             if (mStorageManager.checkClientExistsOnDB(mUid) && mStorageManager.checkAppDataExistsOnDB(mUid)) {
-                mData = mStorageManager.getAppDataFromDB(mUid);
 
-                mServerCommunicationHandler.setUid(mData.getUid());
-                mServerCommunicationHandler.setSessionToken(mData.getSessionToken());
+                Data data = mStorageManager.getAppDataFromDB(mUid);
+
+                mPendingRequests = mStorageManager.getPendingRequestFromDB(mUid);
+
+                mServerCommunicationHandler.setUid(data.getUID());
+                mServerCommunicationHandler.setSessionToken(data.getSessionToken());
+
+                setData(data);
             }
         }
     }
@@ -92,11 +98,24 @@ public class ApplicationContext extends Application {
     }
 
     public void setData(Data appData) {
-        mData = appData;
-        mUid = mData.getUid();
 
-        mServerCommunicationHandler.setUid(mData.getUid());
+        mData = appData;
+        mUid = mData.getUID();
+
+        mServerCommunicationHandler.setUid(mData.getUID());
         mServerCommunicationHandler.setSessionToken(mData.getSessionToken());
+
+        if(mData.getLastUserInfoUpdated() == null){
+            getServerCommunicationHandler().performUserInfoRequest();
+        }
+
+        if(mData.getLastStationUpdated() == null){
+            getServerCommunicationHandler().performStationsNearbyRequest();
+        }
+
+        if(!mData.hasPublicKeyToken()){
+            getServerCommunicationHandler().performPublicKeyTokenRequest();
+        }
     }
 
     public UbiBike getActivity(){
@@ -144,6 +163,10 @@ public class ApplicationContext extends Application {
         else{
             return mPendingRequests.get(mPendingRequests.size()-1).getID() + 1;
         }
+    }
+
+    public ArrayList<PendingRequest> getAllPendingRequests(){
+        return mPendingRequests;
     }
     public PendingRequest getPendingRequest(){
         if(mPendingRequests.isEmpty()) {

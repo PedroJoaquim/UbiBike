@@ -10,10 +10,12 @@ import org.json.JSONObject;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.crypto.Cipher;
 
+import pt.ulisboa.tecnico.cmu.ubibike.connection.PendingRequest;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.JsonParser;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.Password;
@@ -161,6 +163,28 @@ public class StorageManager extends SQLiteOpenHelper {
         return appData;
     }
 
+    /**
+     * Gets pending requests stored on DB
+     *
+     * @param clientID - GooglePlus client id
+     * @return - app data object
+     */
+    public ArrayList<PendingRequest> getPendingRequestFromDB(int clientID){
+
+        ArrayList<PendingRequest> pendingRequests = new ArrayList<>();
+
+        try {
+
+            JSONObject json = getDataJsonFromDB(clientID);
+            pendingRequests = JsonParser.parsePendingRequests(json);
+
+        } catch (Exception e) {
+            //does not happen
+        }
+
+        return pendingRequests;
+    }
+
 
     /**
      * Gets application data json
@@ -168,7 +192,7 @@ public class StorageManager extends SQLiteOpenHelper {
      * @param clientID - client ID
      * @return - json
      */
-    public JSONObject getDataJsonFromDB(int clientID){
+    private JSONObject getDataJsonFromDB(int clientID){
 
         JSONObject json = null;
 
