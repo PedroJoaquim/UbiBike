@@ -12,14 +12,26 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.SignatureException;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.R;
 import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
 import pt.ulisboa.tecnico.cmu.ubibike.adapters.MessageListAdapter;
+import pt.ulisboa.tecnico.cmu.ubibike.managers.CipherManager;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.Chat;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.ChatMessage;
+import pt.ulisboa.tecnico.cmu.ubibike.utils.DigitalSignature;
+import pt.ulisboa.tecnico.cmu.ubibike.utils.JsonParser;
+import pt.ulisboa.tecnico.cmu.ubibike.utils.SerializationUtil;
 
 public class ChatFragment extends Fragment {
 
@@ -130,19 +142,17 @@ public class ChatFragment extends Fragment {
                 // (is not in viewGroup)
                 if (index > mListView.getLastVisiblePosition()) return;
 
-                if (mMessages.get(position).isReceived()){
+                if (mMessages.get(position).isReceived()) {
                     date = (TextView) mListView.getChildAt(index).
                             findViewById(R.id.dateInBubble_textView);
-                }
-                else{
+                } else {
                     date = (TextView) mListView.getChildAt(index).
                             findViewById(R.id.dateOutBubble_textView);
                 }
 
                 if (date.getVisibility() == View.GONE) {
                     date.setVisibility(View.VISIBLE);
-                }
-                else {
+                } else {
                     date.setVisibility(View.GONE);
                 }
 
@@ -156,6 +166,42 @@ public class ChatFragment extends Fragment {
             }
         });
 
+    }
+
+    private void sendPoints(long points) throws IOException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
+        String fromClientId = ApplicationContext.getInstance().getData().getUsername();
+        PrivateKey privateKey = CipherManager.getPrivateKey();
+
+        // ideias do jaquim
+        // { from_client_id: 1, to_client_id : 2 , points : 230, points_source: "ride" points_source_id : "ride_client_id", nounce: 3}
+        // { uid: 1 , username: "lol" , public_key : "string da chave", ttl : timestamp de validade }
+
+        // TODO: hardcoded next variables
+        String toClientId = "";
+        String pointsSource = "";
+        String pointsSourceId = "";
+        int nounce = -1;
+        int ttl = -1;
+
+        JSONObject pointsTransactionData = JsonParser.buildPointsTransactionDataJson(
+                fromClientId, toClientId, points, pointsSource, pointsSourceId, nounce, ttl);
+        //TODO: buildPointsTransactionDataJson
+
+        byte[] signature = DigitalSignature.signData(
+                CipherManager.getSHA2Digest(
+                        pointsTransactionData.toString().getBytes()), privateKey);
+
+        String base64publicKey = ApplicationContext.getInstance().getData().getPublicToken(); // representing publicKey
+
+        // create final json
+        JSONObject pointsTransaction =
+                JsonParser.buildPointsTransactionJson(
+                        pointsTransactionData, signature, base64publicKey);
+
+        String deviceName = toClientId; // TODO: is the same?
+
+        // send points
+        getParentActivity().wifiP2pSendMessageToPeer(deviceName, pointsTransaction.toString());
     }
 
 

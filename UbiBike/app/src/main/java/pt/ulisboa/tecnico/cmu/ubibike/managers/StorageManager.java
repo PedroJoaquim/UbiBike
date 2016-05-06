@@ -211,6 +211,7 @@ public class StorageManager extends SQLiteOpenHelper {
             json = new JSONObject(jsonStr);
 
         } catch (Exception e) {
+            e.printStackTrace();
             //does not happen
         }
 

@@ -5,6 +5,7 @@ import android.util.Base64;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -114,5 +115,18 @@ public class CipherManager {
      */
     public static PrivateKey getPrivateKey(){
         return privateKey;
+    }
+
+    /*
+     * SHA2 Hash function
+     */
+
+    public static byte[] getSHA2Digest(byte[] data){
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            return md.digest(data);
+        } catch (NoSuchAlgorithmException e) {
+            return null;
+        }
     }
 }

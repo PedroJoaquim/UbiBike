@@ -69,6 +69,10 @@ public class JsonParser {
 
     public static final String ERROR = "error";
 
+    private static final String POINTS_TRANSACTION_DATA = "points_transaction_data";
+    private static final String SIGNATURE = "signature";
+    private static final String BASE64_PUBLIC_KEY = "base64_public_key";
+
 
 
 
@@ -376,8 +380,14 @@ public class JsonParser {
                 lastStationsUpdated = new Date(json.getLong(LAST_STATIONS_UPDATED));
             }
 
-            int globalRank = json.getInt(GLOBAl_RANK);
-            long totalPoints = json.getLong(POINTS);
+            int globalRank = -1;
+            long totalPoints = -1;
+            try {
+                globalRank = json.getInt(GLOBAl_RANK);
+                totalPoints = json.getLong(POINTS);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             return new Data(uid, username, sessionToken, publicKeyToken, bikePickupStations,
                     trajectories, lastPosition, lastUserInfoUpdated, lastStationsUpdated, totalPoints,
@@ -385,8 +395,9 @@ public class JsonParser {
 
         }
         catch(Exception e){
-            return null;
+            e.printStackTrace();
         }
+        return null;
     }
 
 
@@ -541,5 +552,25 @@ public class JsonParser {
             }
         }
         return true;
+    }
+
+    public static JSONObject buildPointsTransactionJson(JSONObject pointsTransactionData, byte[] signature, String base64publicKey) {
+        try{
+            JSONObject json = new JSONObject();
+
+            json.put(POINTS_TRANSACTION_DATA, pointsTransactionData);
+            json.put(SIGNATURE, signature);
+            json.put(BASE64_PUBLIC_KEY, base64publicKey);
+
+            return json;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static JSONObject buildPointsTransactionDataJson(String fromClientId, String toClientId, long points, String pointsSource, String pointsSourceId, int nounce, int ttl) {
+        return null;
     }
 }
