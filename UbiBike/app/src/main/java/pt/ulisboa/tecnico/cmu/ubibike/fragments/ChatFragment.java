@@ -31,7 +31,6 @@ import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.Chat;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.ChatMessage;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.DigitalSignature;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.JsonParser;
-import pt.ulisboa.tecnico.cmu.ubibike.utils.SerializationUtil;
 
 public class ChatFragment extends Fragment {
 
