@@ -118,7 +118,7 @@ public class DBObjectSelector {
 
     public static PointsTransaction getPointsTransactionFromID(Connection conn, int ptid) throws SQLException {
 
-        Statement stmt = conn.createStatement();
+       /* Statement stmt = conn.createStatement();
         ResultSet result = stmt.executeQuery("SELECT * FROM points_transactions WHERE ptid = " + ptid);
 
         if (!result.next()) {
@@ -134,14 +134,16 @@ public class DBObjectSelector {
         try {
             result.close();
             stmt.close();
-        } catch (SQLException e) {/*ignore*/}
+        } catch (SQLException e) {}
 
-        return pt;
+        return pt */
+
+        return null;
     }
 
     public static PointsTransaction[] getPointsTransactionFromUser(Connection conn, int uid) throws SQLException {
 
-        List<PointsTransaction> resultList = new ArrayList<PointsTransaction>();
+       /* List<PointsTransaction> resultList = new ArrayList<PointsTransaction>();
 
         Statement stmt = conn.createStatement();
         ResultSet result = stmt.executeQuery("SELECT * FROM points_transactions WHERE sender_uid = " + uid + "OR receiver_uid = " + uid);
@@ -157,9 +159,11 @@ public class DBObjectSelector {
         try {
             result.close();
             stmt.close();
-        } catch (SQLException e) {/*ignore*/}
+        } catch (SQLException e) {}
 
-        return resultList.toArray(new PointsTransaction[resultList.size()]);
+        return resultList.toArray(new PointsTransaction[resultList.size()]);*/
+
+        return null;
     }
 
     public static Session getSessionFromUID(Connection conn, int uid) throws SQLException {
