@@ -107,7 +107,7 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         wifiP2pTurnOn();
 
 
-        //TODO delete this hardcoded
+        /*//TODO delete this hardcoded
         ApplicationContext.getInstance().getNearbyPeerCommunication().addDeviceNearby("test", "...");
         ApplicationContext.getInstance().getNearbyPeerCommunication().addDeviceNearby("test1", "...");
         ApplicationContext.getInstance().getNearbyPeerCommunication().addDeviceNearby("test2", "...");
@@ -133,7 +133,8 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         groupChat.addNewMessage(new ChatMessage(true, "folano", "Oii"));
         groupChat.addNewMessage(new ChatMessage(true, "gatuno", "Hola"));
         groupChat.addNewMessage(new ChatMessage(true, "invalido", "Wazzzaaaaaa"));
-        groupChat.addNewMessage(new ChatMessage(true, "gatuno", "Wazzzaaaaaaaaaaaaa"));
+        groupChat.addNewMessage(new ChatMessage(true, "gatuno", "Wazzzaaaaaaaaaaaaa"));7
+        */
 
     }
 

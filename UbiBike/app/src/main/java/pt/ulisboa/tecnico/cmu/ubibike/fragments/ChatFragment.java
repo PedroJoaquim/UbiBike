@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.cmu.ubibike.fragments;
 
+import android.app.Application;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -30,6 +31,7 @@ import pt.ulisboa.tecnico.cmu.ubibike.managers.CipherManager;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.Chat;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.ChatMessage;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.CommunicationTasks;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.NearbyPeerCommunication;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.DigitalSignature;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.JsonParser;
 
@@ -114,9 +116,6 @@ public class ChatFragment extends Fragment implements UpdatableUI {
         ImageButton send_button = (ImageButton) view.findViewById(R.id.chat_send_button);
         final EditText message_editText = (EditText) view.findViewById(R.id.chat_message_editText);
 
-        send_button.setClickable(false);
-        send_button.setEnabled(false);
-
         send_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -131,9 +130,9 @@ public class ChatFragment extends Fragment implements UpdatableUI {
 
                 if(mGroupChat){
 
-                    String message = "msg"; //TODO
+                    String msg = NearbyPeerCommunication.buildGroupChatMessage(myUsername, input);
 
-                    mChat.addNewMessage(new ChatMessage(false, myUsername, message));
+                    mChat.addNewMessage(new ChatMessage(false, myUsername, msg));
                     updateUI();
 
                     ArrayList<String> nearUsersUsernames = new ArrayList<>(ApplicationContext.getInstance().
@@ -142,18 +141,18 @@ public class ChatFragment extends Fragment implements UpdatableUI {
 
                     for(String username : nearUsersUsernames){
                         comm.new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                                                                            username, message);
+                                                                            username, msg);
                     }
                 }
                 else{
 
-                    String message = "msg"; //TODO
+                    String msg = NearbyPeerCommunication.buildIndividualChatMessage(myUsername, input);
 
-                    mChat.addNewMessage(new ChatMessage(false, myUsername, message));
+                    mChat.addNewMessage(new ChatMessage(false, myUsername, msg));
                     updateUI();
 
                     comm.new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                            mUsername, message);
+                            mUsername, msg);
 
                 }
             }

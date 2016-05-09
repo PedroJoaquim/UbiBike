@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.cmu.ubibike.peercommunication;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import pt.inesc.termite.wifidirect.SimWifiP2pInfo;
@@ -31,6 +32,7 @@ public class NearbyPeerCommunication {
 
     public NearbyPeerCommunication() {
         mNearDevices = new HashMap<>();
+        mNearDevicesUsernames = new HashMap<>();
         mGroupChat = new GroupChat();
         mIndividualChats = new HashMap<>();
     }
@@ -57,6 +59,13 @@ public class NearbyPeerCommunication {
 
     public void removeDeviceNearby(String deviceName){
         mNearDevices.remove(deviceName);
+
+        for(Map.Entry entry : mNearDevicesUsernames.entrySet()){
+            if(entry.getValue() == deviceName){
+                mNearDevicesUsernames.remove(entry.getKey());
+                return;
+            }
+        }
     }
 
     public GroupChat getGroupChat() {
@@ -114,6 +123,7 @@ public class NearbyPeerCommunication {
             mNearDevicesUsernames.put(username, deviceName);
         }
     }
+
 
 
     /**
