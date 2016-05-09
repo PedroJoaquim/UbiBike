@@ -1,6 +1,7 @@
 package pt.ist.cmu.ubibike.httpserver.db;
 
 import pt.ist.cmu.ubibike.httpserver.model.Booking;
+import pt.ist.cmu.ubibike.httpserver.model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,6 +20,18 @@ public class DBObjectUpdater {
         stmt.setInt(2, b.getUid());
         stmt.setBoolean(3, b.isActive());
         stmt.setInt(4, b.getBookingID());
+
+        stmt.executeUpdate();
+    }
+
+    public static void updateUser(Connection conn, User u) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("UPDATE users SET username = ?, public_key = ?, password = ?, points = ?, logical_clock = ?");
+
+        stmt.setString(1, u.getUsername());
+        stmt.setString(2, u.getPublicKey());
+        stmt.setBytes(3, u.getPassword());
+        stmt.setInt(4, u.getPoints());
+        stmt.setInt(5, u.getLogicalClock());
 
         stmt.executeUpdate();
     }

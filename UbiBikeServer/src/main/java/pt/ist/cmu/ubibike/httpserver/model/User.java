@@ -18,17 +18,19 @@ public class User {
     private Trajectory[] trajectories;
     private int points;
     private int globalRank;
+    private int logicalClock;
 
-    public User(int uid, String username, String public_key, byte[] password, int points) {
+    public User(int uid, String username, String public_key, byte[] password, int points, int logicalClock) {
         this.uid = uid;
         this.username = username;
         this.publicKey = public_key;
         this.password = password;
         this.globalRank = -1;
         this.points = points;
+        this.logicalClock = logicalClock;
     }
 
-    public User(int uid, String username, String public_key, byte[] password, Trajectory[] trajectories, int points) {
+    public User(int uid, String username, String public_key, byte[] password, Trajectory[] trajectories, int points, int logicalClock) {
         this.uid = uid;
         this.username = username;
         this.publicKey = public_key;
@@ -36,6 +38,7 @@ public class User {
         this.trajectories = trajectories;
         this.globalRank = -1;
         this.points = points;
+        this.logicalClock = logicalClock;
     }
 
     public User() {}
@@ -104,5 +107,15 @@ public class User {
     @JsonSetter("points")
     public void setPoints(int points) {
         this.points = points;
+    }
+
+    @JsonGetter("logical_clock")
+    public int getLogicalClock() {
+        return logicalClock;
+    }
+
+    @JsonSetter("logical_clock")
+    public void setLogicalClock(int logicalClock) {
+        this.logicalClock = logicalClock;
     }
 }

@@ -65,7 +65,7 @@ public class RegistrationHandler extends BaseHandler {
 
         this.uid = DBObjectCreation.insertUser(conn, this.username, this.publicKey, passwordHash);
 
-        User u = new User(uid, username, publicKey, passwordHash, 0);
+        User u = new User(uid, username, publicKey, passwordHash, 0, 0);
 
         this.publicKeyToken = TokenHandler.generatePublicKeyToken(u);
         this.sessionToken = SessionManager.startSession(u);

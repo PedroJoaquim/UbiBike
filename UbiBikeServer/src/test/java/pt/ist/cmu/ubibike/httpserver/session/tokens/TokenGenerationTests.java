@@ -24,7 +24,7 @@ public class TokenGenerationTests {
 
     @BeforeClass
     public static void oneTimeSetup(){
-        u = new User(uid, username, publicKey, password, 0);
+        u = new User(uid, username, publicKey, password, 0, 0);
     }
 
     @Test

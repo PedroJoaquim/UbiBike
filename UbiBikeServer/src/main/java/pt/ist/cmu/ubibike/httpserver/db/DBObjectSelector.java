@@ -19,7 +19,7 @@ public class DBObjectSelector {
             return null;
         }
 
-        User u = new User(result.getInt("uid"), result.getString("username"), result.getString("public_key"), result.getBytes("password"), result.getInt("points"));
+        User u = new User(result.getInt("uid"), result.getString("username"), result.getString("public_key"), result.getBytes("password"), result.getInt("points"), result.getInt("logical_clock"));
 
         try {
             result.close();
@@ -40,7 +40,7 @@ public class DBObjectSelector {
             return null;
         }
 
-        User u = new User(result.getInt("uid"), result.getString("username"), result.getString("public_key"), result.getBytes("password"), result.getInt("points"));
+        User u = new User(result.getInt("uid"), result.getString("username"), result.getString("public_key"), result.getBytes("password"), result.getInt("points"), result.getInt("logical_clock"));
 
         try {
             result.close();

@@ -7,8 +7,16 @@ CREATE TABLE users (
   public_key VARCHAR(2048) NOT NULL,
   password   BINARY(32)    NOT NULL,
   points     INT           NOT NULL DEFAULT 0,
+  logical_clock INT        NOT NULL DEFAULT 0,
   PRIMARY KEY (uid),
   UNIQUE (username)
+);
+
+DROP TABLE IF EXISTS pending_events;
+CREATE TABLE pending_events (
+  uid           INT NOT NULL,
+  logical_clock INT NOT NULL,
+  type          INT NOT NULL
 );
 
 DROP TABLE IF EXISTS trajectories;
