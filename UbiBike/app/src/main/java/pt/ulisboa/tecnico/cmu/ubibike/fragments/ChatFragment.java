@@ -1,11 +1,14 @@
 package pt.ulisboa.tecnico.cmu.ubibike.fragments;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -14,12 +17,9 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
-import java.security.SignatureException;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
@@ -29,10 +29,11 @@ import pt.ulisboa.tecnico.cmu.ubibike.adapters.MessageListAdapter;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.CipherManager;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.Chat;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.ChatMessage;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.CommunicationTasks;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.DigitalSignature;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.JsonParser;
 
-public class ChatFragment extends Fragment {
+public class ChatFragment extends Fragment implements UpdatableUI {
 
     public static final String ARGUMENT_KEY_GROUP_CHAT = "group_chat";
     public static final String ARGUMENT_KEY_USERNAME = "username";
@@ -42,6 +43,8 @@ public class ChatFragment extends Fragment {
     private boolean mGroupChat;
 
     private ListView mListView;
+
+    private String mUsername;   //receiver's username in individual chat mode
 
     public ChatFragment() {
         // Required empty public constructor
@@ -70,14 +73,28 @@ public class ChatFragment extends Fragment {
             }
         }
         else{
-            String username = getArguments().getString(ARGUMENT_KEY_USERNAME);
+            mUsername = getArguments().getString(ARGUMENT_KEY_USERNAME);
             mChat = ApplicationContext.getInstance().getNearbyPeerCommunication().
-                    getIndividualChat(username);
+                    getIndividualChat(mUsername);
 
-            getParentActivity().getSupportActionBar().setTitle(username);
-
+            getParentActivity().getSupportActionBar().setTitle(mUsername);
         }
 
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        ApplicationContext.getInstance().setCurrentFragment(this);
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+
+        ApplicationContext.getInstance().setCurrentFragment(null);
     }
 
     @Override
@@ -103,21 +120,42 @@ public class ChatFragment extends Fragment {
         send_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                String message = message_editText.getText().toString();
+                String input = message_editText.getText().toString();
 
-                Toast.makeText(getParentActivity(), message, Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(getParentActivity(), input, Toast.LENGTH_SHORT).show();
 
                 String myUsername = ApplicationContext.getInstance().getData().getUsername();
 
+                CommunicationTasks comm = getParentActivity().getCommunicationTasks();
+
                 if(mGroupChat){
+
+                    String message = "msg"; //TODO
+
                     mChat.addNewMessage(new ChatMessage(false, myUsername, message));
-                    updateMessagesView();
+                    updateUI();
+
+                    ArrayList<String> nearUsersUsernames = new ArrayList<>(ApplicationContext.getInstance().
+                                         getNearbyPeerCommunication().getGroupChat().getMembers());
+
+
+                    for(String username : nearUsersUsernames){
+                        comm.new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                                                                            username, message);
+                    }
                 }
                 else{
-                    mChat.addNewMessage(new ChatMessage(false, myUsername, message));
-                }
 
-                //TODO send
+                    String message = "msg"; //TODO
+
+                    mChat.addNewMessage(new ChatMessage(false, myUsername, message));
+                    updateUI();
+
+                    comm.new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                            mUsername, message);
+
+                }
             }
         });
 
@@ -167,9 +205,9 @@ public class ChatFragment extends Fragment {
 
     }
 
-    private void sendPoints(long points) throws IOException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
+    private void sendPoints(long points) throws Exception {
         String fromClientId = ApplicationContext.getInstance().getData().getUsername();
-        PrivateKey privateKey = CipherManager.getPrivateKey();
+        PrivateKey privateKey = CipherManager.getPrivateKey(); //TODO
 
         // ideias do jaquim
         // { from_client_id: 1, to_client_id : 2 , points : 230, points_source: "ride" points_source_id : "ride_client_id", nounce: 3}
@@ -209,7 +247,11 @@ public class ChatFragment extends Fragment {
         message_editText.setText("");
     }
 
-    public void updateMessagesView(){
-        ((MessageListAdapter) mListView.getAdapter()).notifyDataSetChanged();
+
+    @Override
+    public void updateUI() {
+        ((BaseAdapter) mListView.getAdapter()).notifyDataSetChanged();
     }
+
+
 }

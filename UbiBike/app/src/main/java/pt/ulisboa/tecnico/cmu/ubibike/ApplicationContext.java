@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import pt.ulisboa.tecnico.cmu.ubibike.connection.PendingRequest;
 import pt.ulisboa.tecnico.cmu.ubibike.connection.ServerCommunicationHandler;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
+import pt.ulisboa.tecnico.cmu.ubibike.fragments.UpdatableUI;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.SessionManager;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.StorageManager;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.NearbyPeerCommunication;
@@ -17,7 +18,8 @@ public class ApplicationContext extends Application {
 
     private static ApplicationContext mInstance;
 
-    private UbiBike mActivity;
+    private UbiBike mActivity;  //current activity instance
+    private UpdatableUI mFragment;  //current opened fragment instance (null if not UI updatable)
     private boolean mInternetConnected;
 
     private int mUid;
@@ -124,6 +126,14 @@ public class ApplicationContext extends Application {
 
     public void setActivity(UbiBike activity){
         mActivity = activity;
+    }
+
+    public UpdatableUI getCurrentFragment() {
+        return mFragment;
+    }
+
+    public void setCurrentFragment(UpdatableUI mFragment) {
+        this.mFragment = mFragment;
     }
 
     public ServerCommunicationHandler getServerCommunicationHandler() {

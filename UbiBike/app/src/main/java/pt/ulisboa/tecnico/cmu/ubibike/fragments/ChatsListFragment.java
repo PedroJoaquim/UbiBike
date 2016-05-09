@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,7 +19,7 @@ import pt.ulisboa.tecnico.cmu.ubibike.R;
 import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
 import pt.ulisboa.tecnico.cmu.ubibike.adapters.PeersChatAdapter;
 
-public class ChatsListFragment extends Fragment {
+public class ChatsListFragment extends Fragment implements UpdatableUI{
 
     private static final String TITLE = "Chats nearby";
 
@@ -50,6 +51,16 @@ public class ChatsListFragment extends Fragment {
 
         getParentActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getParentActivity().getSupportActionBar().setTitle(TITLE);
+
+        ApplicationContext.getInstance().setCurrentFragment(this);
+
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+
+        ApplicationContext.getInstance().setCurrentFragment(null);
     }
 
     public void setUIElements(View view){
@@ -95,11 +106,16 @@ public class ChatsListFragment extends Fragment {
                 String username = adapter.getItem(position);
 
                 if (!ApplicationContext.getInstance().getNearbyPeerCommunication().doesIndividualChatExist(username)) {
-                      ApplicationContext.getInstance().getNearbyPeerCommunication().addIndividualChat(username);
+                    ApplicationContext.getInstance().getNearbyPeerCommunication().addIndividualChat(username);
                 }
 
                 getParentActivity().showIndividualChat(username);
             }
         });
+    }
+
+    @Override
+    public void updateUI() {
+        ((BaseAdapter) mPeersNearbyListView.getAdapter()).notifyDataSetChanged();
     }
 }

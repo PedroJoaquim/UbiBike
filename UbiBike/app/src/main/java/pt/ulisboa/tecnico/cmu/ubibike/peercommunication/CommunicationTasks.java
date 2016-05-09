@@ -36,7 +36,7 @@ public class CommunicationTasks {
                 ApplicationContext.getInstance().getNearbyPeerCommunication().setDeviceServerSocket(serverSocket);
 
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e("Uncaught exception", e.toString());
             }
             while (!Thread.currentThread().isInterrupted()) {
 
@@ -51,6 +51,9 @@ public class CommunicationTasks {
                         receivedContent += st;
                         sock.getOutputStream().write(("\n").getBytes());
                         Log.d(TAG, "Received: " + receivedContent);
+
+                        NearbyPeerCommunication.processReceivedMessage(receivedContent);
+
                     }
                     catch (IOException e) {
                         Log.d("Error reading socket:", e.getMessage());
@@ -83,6 +86,8 @@ public class CommunicationTasks {
                 ApplicationContext.getInstance().
                         getNearbyPeerCommunication().addNearDeviceClientSocket(params[0], clientSocket);
 
+
+
             } catch (UnknownHostException e) {
                 return "Unknown Host:" + e.getMessage();
             } catch (IOException e) {
@@ -99,7 +104,7 @@ public class CommunicationTasks {
             try {
 
                 SimWifiP2pSocket clientSocket = ApplicationContext.getInstance().
-                        getNearbyPeerCommunication().getNearDeviceClientSocket(param[0]);
+                        getNearbyPeerCommunication().getNearDeviceClientSocketByUsername(param[0]);
 
                 clientSocket.getOutputStream().write((param[1] + "\n").getBytes());
                 BufferedReader sockIn = new BufferedReader(
@@ -108,7 +113,7 @@ public class CommunicationTasks {
                 clientSocket.close();
 
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e("Uncaught exception", e.toString());
             }
 
             return null;

@@ -246,7 +246,7 @@ public class TrajectoryTracker extends Service implements LocationListener {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Log.e("Uncaught exception", e.toString());
                 }
             }
 

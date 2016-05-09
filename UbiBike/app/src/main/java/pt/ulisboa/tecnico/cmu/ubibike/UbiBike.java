@@ -103,8 +103,8 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
             startService(i);
         }
 
-        wifiP2pTurnOn();
 
+        wifiP2pTurnOn();
 
 
         //TODO delete this hardcoded

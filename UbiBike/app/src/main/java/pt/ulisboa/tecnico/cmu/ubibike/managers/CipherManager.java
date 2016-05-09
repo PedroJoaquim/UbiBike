@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmu.ubibike.managers;
 
 import android.util.Base64;
+import android.util.Log;
 
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -11,6 +12,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.logging.Level;
 
 /**
  * Created by andriy on 13.04.2016.
@@ -99,7 +101,7 @@ public class CipherManager {
 
 
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            Log.e("Uncaught exception", e.toString());
         }
     }
 

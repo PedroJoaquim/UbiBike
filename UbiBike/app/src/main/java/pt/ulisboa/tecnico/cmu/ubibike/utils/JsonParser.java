@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.cmu.ubibike.utils;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
@@ -386,7 +388,7 @@ public class JsonParser {
                 globalRank = json.getInt(GLOBAl_RANK);
                 totalPoints = json.getLong(POINTS);
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e("Uncaught exception", e.toString());
             }
 
             return new Data(uid, username, sessionToken, publicKeyToken, bikePickupStations,
@@ -395,7 +397,7 @@ public class JsonParser {
 
         }
         catch(Exception e){
-            e.printStackTrace();
+            Log.e("Uncaught exception", e.toString());
         }
         return null;
     }
@@ -565,7 +567,7 @@ public class JsonParser {
             return json;
         }
         catch(Exception e){
-            e.printStackTrace();
+            Log.e("Uncaught exception", e.toString());
             return null;
         }
     }

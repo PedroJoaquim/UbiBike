@@ -10,8 +10,8 @@ import java.util.Set;
 
 public class GroupChat {
 
-    private String mOwner;
-    private Set<String> mMembers;   //usernames
+    private String mOwner;          //owner's username
+    private Set<String> mMembers;   //device names
 
     private Chat mChat;
 
