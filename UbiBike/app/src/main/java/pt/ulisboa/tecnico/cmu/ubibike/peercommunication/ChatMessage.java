@@ -1,25 +1,19 @@
-package pt.ulisboa.tecnico.cmu.ubibike.domain;
+package pt.ulisboa.tecnico.cmu.ubibike.peercommunication;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by andriy on 12.03.2016.
- */
+
 public class ChatMessage implements Comparable {
 
     private boolean mReceived;
-    private boolean mRead;
-    private String mSenderDeviceName;
-    private String mReceiverDeviceName;
+    private String mSenderUsername;
     private String mContent;
     private Date mDate;
 
-    public ChatMessage(boolean received, String senderDeviceName, String receiverDeviceName, String content) {
+    public ChatMessage(boolean received, String senderUsername, String content) {
         mReceived = received;
-        mRead = false;
-        mSenderDeviceName = senderDeviceName;
-        mReceiverDeviceName = receiverDeviceName;
+        mSenderUsername = senderUsername;
         mContent = content;
         mDate = new Date();
     }
@@ -63,20 +57,13 @@ public class ChatMessage implements Comparable {
         return mContent;
     }
 
-    public String getReceiverDeviceName() {
-        return mReceiverDeviceName;
-    }
-
-    public String getSenderDeviceName() {
-        return mSenderDeviceName;
+    public String getSenderUsername() {
+        return mSenderUsername;
     }
 
     public Date getDate() {
         return mDate;
     }
 
-    public void setRead(boolean mRead) {
-        this.mRead = mRead;
-    }
 }
 

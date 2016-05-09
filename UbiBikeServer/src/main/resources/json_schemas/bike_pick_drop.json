@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "bick-pick-drop",
+  "title": "bike-pick-drop",
   "description": "register bick pick drop",
   "type": "object",
 

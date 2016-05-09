@@ -2,12 +2,15 @@ package pt.ulisboa.tecnico.cmu.ubibike.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
+import pt.ulisboa.tecnico.cmu.ubibike.R;
 import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
 import pt.ulisboa.tecnico.cmu.ubibike.adapters.TrajectoryArrayAdapter;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Trajectory;
@@ -50,7 +53,6 @@ public class TrajectoryListFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        getParentActivity().showTrajectoryOnMap(mTrajectories.get(position).getTrajectoryID(), false);
+        getParentActivity().showTrajectoryOnMap(mTrajectories.get(position).getTrajectoryID(), false, false);
     }
-
 }

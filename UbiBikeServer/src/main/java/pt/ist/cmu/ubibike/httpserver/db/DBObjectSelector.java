@@ -60,8 +60,9 @@ public class DBObjectSelector {
             return null;
         }
 
-        Trajectory t = new Trajectory(result.getInt("tid"), result.getInt("uid"), result.getInt("points_earned"), CoordinatesParser.fromStoreFormat(result.getString("coords_text")),
-                      result.getLong("ride_start_timestamp"), result.getLong("ride_end_timestamp"), result.getFloat("distance"), result.getString("user_tid"));
+        Trajectory t = new Trajectory(result.getInt("tid"), result.getInt("start_sid"), result.getInt("end_sid"), result.getInt("uid"), result.getInt("points_earned"),
+                CoordinatesParser.fromStoreFormat(result.getString("coords_text")),
+                result.getLong("ride_start_timestamp"), result.getLong("ride_end_timestamp"), result.getFloat("distance"), result.getString("user_tid"));
 
         try {
             result.close();
@@ -81,8 +82,9 @@ public class DBObjectSelector {
             return null;
         }
 
-        Trajectory t = new Trajectory(result.getInt("tid"), result.getInt("uid"), result.getInt("points_earned"), CoordinatesParser.fromStoreFormat(result.getString("coords_text")),
-                            result.getLong("ride_start_timestamp"), result.getLong("ride_end_timestamp"), result.getFloat("distance"), result.getString("user_tid"));
+        Trajectory t = new Trajectory(result.getInt("tid"), result.getInt("start_sid"), result.getInt("end_sid"), result.getInt("uid"), result.getInt("points_earned"),
+                CoordinatesParser.fromStoreFormat(result.getString("coords_text")),
+                result.getLong("ride_start_timestamp"), result.getLong("ride_end_timestamp"), result.getFloat("distance"), result.getString("user_tid"));
 
         try {
             result.close();
@@ -101,8 +103,9 @@ public class DBObjectSelector {
         ResultSet result = stmt.executeQuery("SELECT * FROM trajectories WHERE uid = " + uid);
 
         while (result.next()) {
-            resultList.add(new Trajectory(result.getInt("tid"), result.getInt("uid"), result.getInt("points_earned"), CoordinatesParser.fromStoreFormat(result.getString("coords_text")),
-                                           result.getLong("ride_start_timestamp"), result.getLong("ride_end_timestamp"), result.getFloat("distance"), result.getString("user_tid")));
+            resultList.add(new Trajectory(result.getInt("tid"), result.getInt("start_sid"), result.getInt("end_sid"), result.getInt("uid"), result.getInt("points_earned"),
+                    CoordinatesParser.fromStoreFormat(result.getString("coords_text")),
+                    result.getLong("ride_start_timestamp"), result.getLong("ride_end_timestamp"), result.getFloat("distance"), result.getString("user_tid")));
         }
 
         try {

@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.cmu.ubibike.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,28 +13,20 @@ import java.util.Date;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmu.ubibike.R;
-import pt.ulisboa.tecnico.cmu.ubibike.domain.ChatMessage;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.ChatMessage;
 
 
-/**
- * Created by andriy on 12.03.2016.
- */
 public class MessageListAdapter extends BaseAdapter{
-    private Activity activity;
+
+    private final Context context;
 
     private List<ChatMessage> messages;
-    private static LayoutInflater inflater;
+    private boolean groupChat;
 
-    private View vi;
-
-    public MessageListAdapter(Activity a, List<ChatMessage> d) {
-        activity = a;
-        messages = d;
-        inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    }
-
-    public List<ChatMessage> getMessages() {
-        return messages;
+    public MessageListAdapter(Context c, List<ChatMessage> msgs, boolean grpChat) {
+        context = c;
+        messages = msgs;
+        groupChat = grpChat;
     }
 
     @Override
@@ -61,12 +52,10 @@ public class MessageListAdapter extends BaseAdapter{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        vi = convertView;
-        ChatMessage msg = messages.get(position);
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-
-        if(convertView==null)
-            vi = inflater.inflate(R.layout.list_row_message, null);
+        final View vi = inflater.inflate(R.layout.list_row_message, parent, false);
 
         LinearLayout inBubble = (LinearLayout) vi.findViewById(R.id.inMessageBubble);
         LinearLayout outBubble = (LinearLayout) vi.findViewById(R.id.outMessageBubble);
@@ -74,10 +63,21 @@ public class MessageListAdapter extends BaseAdapter{
         TextView outMessage_textView = (TextView) vi.findViewById(R.id.outMessage_textView);
         TextView dateInBubble_textView = (TextView) vi.findViewById(R.id.dateInBubble_textView);
         TextView dateOutBubble_textView = (TextView) vi.findViewById(R.id.dateOutBubble_textView);
+        TextView inMessage_sender_textView = (TextView) vi.findViewById(R.id.msg_sender_textView);
 
+        ChatMessage msg = messages.get(position);
 
         String date = msg.getDay();
         String currentDay = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+
+
+        //only show sender name on incoming messages in group chat
+        if(msg.isReceived() && groupChat) {
+            inMessage_sender_textView.setText(msg.getSenderUsername());
+        }
+        else{
+            inMessage_sender_textView.setVisibility(View.GONE);
+        }
 
         if(date.equals(currentDay))   //msg sent today
             date = msg.getHour();

@@ -23,8 +23,9 @@ public class Server {
         server.createContext("/BikePickDrop", new BikePickDropHandler());
         server.createContext("/Trajectory", new NewTrajectoryHandler());
         server.createContext("/Stations", new StationsInfoHandler());
-        server.createContext("/TrajectoriesHistory", new TrajectoriesHistoryHandler());
+        server.createContext("/BikeUnbooking", new UnbookingHandler());
         server.createContext("/User", new UserInfoHandler());
+        server.createContext("/PointsTransaction", new PointsTransactionHandler());
 
     }
 

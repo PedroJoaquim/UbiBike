@@ -23,7 +23,7 @@ public abstract class AuthRequiredHandler extends BaseHandler{
         Connection conn = DBConnection.getConnection();
 
         if(!urlQueyParams.containsKey(SESSION_TOKEN_PARAM) || !urlQueyParams.containsKey(UID_PARAM)){
-            throw new RuntimeException("This actions requires authentication");
+            throw new RuntimeException("This action requires authentication");
         }
 
         int uid = Integer.valueOf(this.urlQueyParams.get(UID_PARAM));

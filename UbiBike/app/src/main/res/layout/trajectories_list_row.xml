@@ -11,7 +11,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="From:"
-            android:id="@+id/textView"
+            android:id="@+id/hosted_by_textView"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
@@ -23,9 +23,9 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="To:"
             android:id="@+id/textView2"
-            android:layout_below="@+id/textView"
-            android:layout_alignLeft="@+id/textView"
-            android:layout_alignStart="@+id/textView"
+            android:layout_below="@+id/hosted_by_textView"
+            android:layout_alignLeft="@+id/hosted_by_textView"
+            android:layout_alignStart="@+id/hosted_by_textView"
             android:layout_marginTop="10dp"
             android:textColor="@color/black" />
 
@@ -59,8 +59,8 @@
             android:text="Station A"
             android:id="@+id/from_station_name_textView"
             android:layout_above="@+id/textView2"
-            android:layout_toRightOf="@+id/textView"
-            android:layout_toEndOf="@+id/textView"
+            android:layout_toRightOf="@+id/hosted_by_textView"
+            android:layout_toEndOf="@+id/hosted_by_textView"
             android:layout_marginLeft="5dp"
             android:textColor="@color/grey" />
 

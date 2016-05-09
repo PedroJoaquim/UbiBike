@@ -6,6 +6,7 @@ import pt.ist.cmu.ubibike.httpserver.db.DBConnection;
 import pt.ist.cmu.ubibike.httpserver.db.DBObjectSelector;
 import pt.ist.cmu.ubibike.httpserver.model.Station;
 
+import java.util.HashMap;
 
 
 public class StationsInfoHandler extends AuthRequiredHandler {
@@ -25,7 +26,10 @@ public class StationsInfoHandler extends AuthRequiredHandler {
     @Override
     protected String produceAnswer(HttpExchange httpExchange) throws Exception {
 
+        HashMap<String, Object> jsonMap = new HashMap<String, Object>();
+        jsonMap.put("stations", this.result);
+
         ObjectMapper mapper = new ObjectMapper();
-        return  mapper.writeValueAsString(this.result);
+        return  mapper.writeValueAsString(jsonMap);
     }
 }

@@ -12,8 +12,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.R;
+import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
+import pt.ulisboa.tecnico.cmu.ubibike.utils.Validator;
 
 
 public class RegisterAccountFragment extends Fragment {
@@ -25,6 +29,9 @@ public class RegisterAccountFragment extends Fragment {
         // Required empty public constructor
     }
 
+    private UbiBike getParentActivity(){
+        return (UbiBike) getActivity();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,14 +45,12 @@ public class RegisterAccountFragment extends Fragment {
 
     private void setViewElements(View view){
 
-        EditText name;
-        EditText email;
+        final EditText username;
         EditText reenteredPassword;
         final ImageView rightPasswordImage;
         Button createAccount;
 
-        name = (EditText) view.findViewById(R.id.name_editText);
-        email = (EditText) view.findViewById(R.id.email_editText);
+        username = (EditText) view.findViewById(R.id.username_editText);
         mPassword = (EditText) view.findViewById(R.id.password_editText);
         reenteredPassword = (EditText) view.findViewById(R.id.reentered_password_editText);
         rightPasswordImage = (ImageView) view.findViewById(R.id.right_password_imageView);
@@ -54,8 +59,7 @@ public class RegisterAccountFragment extends Fragment {
         int alpha = (int)(0.5 * 255.0f);
         int color = Color.argb(alpha, 255, 255, 255);   //white color
 
-        name.setHintTextColor(color);
-        email.setHintTextColor(color);
+        username.setHintTextColor(color);
         mPassword.setHintTextColor(color);
         reenteredPassword.setHintTextColor(color);
 
@@ -97,7 +101,29 @@ public class RegisterAccountFragment extends Fragment {
         createAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO action
+
+                if(!mRightPassword){
+                    return;
+                }
+
+                String usrName = username.getText().toString();
+                String pssWd = mPassword.getText().toString();
+
+                if(!Validator.isUsernameValid(usrName)){
+                    Toast.makeText(getActivity(), "Username should be..." /*TODO msg*/, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if(!Validator.isPasswordValid(pssWd)){
+                    Toast.makeText(getActivity(), "Password should be..." /*TODO msg*/, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                ApplicationContext.getInstance().setPassword(pssWd);
+
+                ApplicationContext.getInstance().getServerCommunicationHandler().
+                        performRegisterRequest(usrName, pssWd);
+
             }
         });
     }

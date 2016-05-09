@@ -1,32 +1,85 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="pt.ulisboa.tecnico.cmu.ubibike.fragments.HomeFragment"
-    android:padding="15dp">
+    android:padding="15dp"
+    android:background="@color/toolbar_color">
 
 
-    <Button
-        android:layout_width="wrap_content"
+    <TableLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Trajectories list"
-        android:id="@+id/trajectories_button"
-        android:layout_below="@+id/login_button"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:orientation="vertical"
+        android:background="#00a8d792"
+        android:baselineAligned="false"
+        android:layout_centerInParent="true"
+        android:id="@+id/tableLayout">
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="bike stations on map"
-        android:id="@+id/stations_nearby_button"
-        android:layout_below="@+id/trajectories_button"
-        android:layout_centerHorizontal="true" />
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Login"
-        android:id="@+id/login_button"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+            <android.support.v7.widget.AppCompatImageButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/user_icon"
+                android:src="@drawable/user"
+                android:layout_weight="1"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                app:backgroundTint="#e8af52" />
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/bike_stations_icon"
+                android:src="@drawable/bike_stations"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:clickable="true"
+                app:backgroundTint="#676C89" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/trajectories_icon"
+                android:layout_below="@+id/tableLayout"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/trajectories"
+                android:baselineAlignBottom="false"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:clickable="false"
+                android:scaleType="fitCenter"
+                app:backgroundTint="#F44062" />
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/groups"
+                android:id="@+id/message_groups_icon"
+                android:layout_weight="1"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                app:backgroundTint="#e91e8989" />
+
+        </TableRow>
+
+    </TableLayout>
+
+
 </RelativeLayout>

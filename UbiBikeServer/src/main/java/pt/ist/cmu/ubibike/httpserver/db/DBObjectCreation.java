@@ -1,6 +1,7 @@
 package pt.ist.cmu.ubibike.httpserver.db;
 
 import pt.ist.cmu.ubibike.httpserver.model.Coordinate;
+import pt.ist.cmu.ubibike.httpserver.model.Trajectory;
 import pt.ist.cmu.ubibike.httpserver.util.CoordinatesParser;
 
 import java.sql.*;
@@ -30,20 +31,22 @@ public class DBObjectCreation {
         return newId;
     }
 
-    public static int insertTrajectory(Connection conn, int uid, int pointsEarned, Coordinate[] coords, long rideStartTimestamp, long rideEndTimestamp, float distance, String userTID) throws SQLException {
+    public static int insertTrajectory(Connection conn, Trajectory t) throws SQLException {
 
         int newId;
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO trajectories(uid, coords_text, points_earned, user_tid, distance, ride_start_timestamp, ride_end_timestamp)" +
-                                                        "VALUES (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO trajectories(uid, start_sid, end_sid, coords_text, points_earned, user_tid, distance, ride_start_timestamp, ride_end_timestamp)" +
+                                                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 
 
-        stmt.setInt(1, uid);
-        stmt.setString(2, CoordinatesParser.toStoreFormat(coords));
-        stmt.setInt(3, pointsEarned);
-        stmt.setString(4, userTID);
-        stmt.setFloat(5, distance);
-        stmt.setLong(6, rideStartTimestamp);
-        stmt.setLong(7, rideEndTimestamp);
+        stmt.setInt(1, t.getUid());
+        stmt.setInt(2, t.getStartSid());
+        stmt.setInt(3, t.getEndSid());
+        stmt.setString(4, CoordinatesParser.toStoreFormat(t.getCoords()));
+        stmt.setInt(5, t.getPointsEarned());
+        stmt.setString(6, t.getUserTID());
+        stmt.setFloat(7, t.getDistance());
+        stmt.setLong(8, t.getRideStartTimestamp());
+        stmt.setLong(9, t.getRideEndTimestamp());
 
         stmt.executeUpdate();
 

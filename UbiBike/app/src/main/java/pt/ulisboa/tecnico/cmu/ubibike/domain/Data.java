@@ -1,9 +1,10 @@
 package pt.ulisboa.tecnico.cmu.ubibike.domain;
 
+import android.text.format.DateUtils;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,90 +14,93 @@ import java.util.HashMap;
  */
 public class Data {
 
-    private ArrayList<Chat> mConversations;
-    private ArrayList<BikePickupStation> mBikeStationsNearby;
-    private HashMap<Integer, Trajectory> mTrajectories;
+    private int mUID;
+    private String mUsername;
+    private String mSessionToken;
+    private String mPublicToken;
+
+    private HashMap<Integer, BikePickupStation> mBikeStations;
+    private ArrayList<Trajectory> mTrajectories;
+    private Trajectory mLastTrackedTrajectory;
+    private Bike mBikeBooked;
     private LatLng mLastPosition;
+    private Date mDateUserInfoUpdated;
+    private Date mDateStationsUpdated;
 
-    public Data(){
-        mConversations = new ArrayList<>();
-        mTrajectories = new HashMap<>();
+    private int mGlobalRank;
+    private long mTotalPoints;
+    private double mTotalDistance;
+    private long mTotalTime;
 
-        //hardcoded data below
-
-        mBikeStationsNearby = new ArrayList<>();
-        mBikeStationsNearby.add(new BikePickupStation("Alameda Station", 10, 38.737073, -9.133582));
-        mBikeStationsNearby.add(new BikePickupStation("Arco do Cego Station", 6, 38.735361, -9.142362));
-        mBikeStationsNearby.add(new BikePickupStation("Campo Grande Station", 20, 38.759571, -9.155870));
-        mBikeStationsNearby.add(new BikePickupStation("Alvalade Station", 11, 38.753040, -9.143829));
-        mBikeStationsNearby.add(new BikePickupStation("Amoreiras Station", 2, 38.724176, -9.161963));
-        mBikeStationsNearby.add(new BikePickupStation("Indendente Station", 13, 38.722102, -9.135514));
+    private Trajectory mLongestRide;
 
 
-        ArrayList<LatLng> route = new ArrayList<>();
-        route.add(new LatLng(38.737073, -9.133582));
-        route.add(new LatLng(38.736954, -9.133817));
-        route.add(new LatLng(38.736656, -9.133849));
-        route.add(new LatLng(38.736533, -9.136403));
-        route.add(new LatLng(38.736517, -9.136567));
-        route.add(new LatLng(38.736059, -9.136690));
-        route.add(new LatLng(38.735578, -9.137629));
-        route.add(new LatLng(38.735578, -9.137629));
-        route.add(new LatLng(38.735270, -9.139541));
-        route.add(new LatLng(38.735270, -9.139541));
-        route.add(new LatLng(38.735361, -9.142362));
+    public Data(int id, String usrn) {
+        mUID = id;
+        mUsername = usrn;
 
-        Date start1 =  new Date(1457794692 * 1000L); // 12/03/2016  14:58:12
-        Date end1 =  new Date(1457796849 * 1000L); // 12/03/2016  15:34:09
+        mBikeStations = new HashMap<>();
+        mTrajectories = new ArrayList<>();
+        mLastPosition = new LatLng(0.0, 0.0); //TODO last position
+        mTotalPoints = 0;
+        mGlobalRank = -1;
+        mTotalDistance = 0.0;
+        mTotalTime = 0;
+    }
 
+    public Data(int uid, String username, String sessionToken, String publicKeyToken,
+                ArrayList<BikePickupStation> bikeStations, ArrayList<Trajectory> trajectories,
+                LatLng lastPosition, Date dateUserInfoUpdated, Date dateStationsUpdated,
+                long totalPoints, int globalRank) {
 
-        Trajectory trajectory = new Trajectory(0, "Alameda Station", "Arco do Cego Station", route, 2398, start1, end1);
+        HashMap<Integer, BikePickupStation> stations = new HashMap<>();
 
-        mTrajectories.put(0, trajectory);
+        for(BikePickupStation station : bikeStations){
+            stations.put(station.getSid(), station);
+        }
 
+        mUID = uid;
+        mUsername = username;
+        mSessionToken = sessionToken;
+        mPublicToken = publicKeyToken;
 
-        ArrayList<LatLng> route2 = new ArrayList<>();
-        route2.add(new LatLng(38.774883, -9.097268));
-        route2.add(new LatLng(38.762047, -9.098372));
+        mBikeStations = stations;
+        mTrajectories = trajectories;
+        mLastPosition = lastPosition;
+        mDateUserInfoUpdated = dateUserInfoUpdated;
+        mDateStationsUpdated = dateStationsUpdated;
 
-        Date start2 =  new Date(1457882169 * 1000L); // 13/03/2016  15:16:09
-        Date end2 =  new Date(1457882471 * 1000L); // 13/03/2016  15:21:11
+        for(Trajectory t : mTrajectories) {
+            mTotalDistance += t.getTravelledDistance();
+            mTotalTime += (t.getEndTime().getTime() - t.getStartTime().getTime());
+            if(mLongestRide.getTravelledDistance() < t.getTravelledDistance()) {
+                mLongestRide = t;
+            }
+        }
 
-        Trajectory trajectory2 = new Trajectory(1, "Station1", "Station2", route2, 519, start2, end2);
-
-        mTrajectories.put(1, trajectory2);
-
-
-        ArrayList<LatLng> route3 = new ArrayList<>();
-        route3.add(new LatLng(38.741828, -9.133448));
-        route3.add(new LatLng(38.717370, -9.135922));
-
-        Date start3 =  new Date(1457860871 * 1000L); // 13/03/2016  09:21:11
-        Date end3 =  new Date(1457862011 * 1000L); // 13/03/2016  09:40:11
-
-        Trajectory trajectory3 = new Trajectory(2, "Station3", "Station4", route3, 600, start3, end3);
-
-        mTrajectories.put(2, trajectory3);
+        mTotalPoints = totalPoints;
+        mGlobalRank = globalRank;
     }
 
 
-    /**
-     * Gets all conversations
-     *
-     * @return - list of chats
-     */
-    public ArrayList<Chat> getConversations() {
-        return mConversations;
-    }
-
 
     /**
-     * Gets bike stations  nearby with bikes available to pickup
+     * Gets bike stations with bikes available to pickup
      *
      * @return - list of stations
      */
-    public ArrayList<BikePickupStation> getBikeStationsNearby(){
-        return mBikeStationsNearby;
+    public ArrayList<BikePickupStation> getBikeStations() {
+        return new ArrayList<>(mBikeStations.values());
+    }
+
+    /**
+     * Gets bike stations with a given ID
+     *
+     * @param sid - station ID
+     * @return - BikePickupStation object
+     */
+    public BikePickupStation getBikePickupStationById(int sid){
+        return mBikeStations.get(sid);
     }
 
     /**
@@ -105,14 +109,32 @@ public class Data {
      * @param trajectoryID - id
      * @return - Trajectory
      */
-    public Trajectory getTrajectory(int trajectoryID){
+    public Trajectory getTrajectory(int trajectoryID) {
         return mTrajectories.get(new Integer(trajectoryID));
+    }
+
+
+    /**
+     * Adds a given trajectory to collection
+     *
+     * @param newTrajectory - Trajectory to add
+     */
+    public void addTrajectory(Trajectory newTrajectory){
+        mTrajectories.add(newTrajectory);
+
+        if(newTrajectory.getTravelledDistance() > mLongestRide.getTravelledDistance()){
+            mLongestRide = newTrajectory;
+        }
+
+        mTotalDistance += newTrajectory.getTravelledDistance();
+        mTotalPoints += newTrajectory.getPointsEarned();
+        mTotalTime += (newTrajectory.getEndTime().getTime() - newTrajectory.getStartTime().getTime());
     }
 
     /**
      * @return - number of trajectories
      */
-    public int getTrajectoriesCount(){
+    public int getTrajectoriesCount() {
         return mTrajectories.size();
     }
 
@@ -122,9 +144,9 @@ public class Data {
      *
      * @return - trajectories list
      */
-    public ArrayList<Trajectory> getAllTrajectories(){
+    public ArrayList<Trajectory> getAllTrajectories() {
 
-        ArrayList<Trajectory> trajectories = new ArrayList<>(mTrajectories.values());
+        ArrayList<Trajectory> trajectories = mTrajectories;
         Collections.sort(trajectories);
 
         return trajectories;
@@ -133,18 +155,149 @@ public class Data {
     /**
      * Sets last GPS synced position to given one
      *
-     * @param latitude - coordinate
+     * @param latitude  - coordinate
      * @param longitude - coordinate
      */
-    public void setLastPosition(double latitude, double longitude){
+    public void setLastPosition(double latitude, double longitude) {
         mLastPosition = new LatLng(latitude, longitude);
     }
 
     /**
      * @return - last GPS synced position
      */
-    public LatLng getLastPosition(){
-        return new LatLng(38.748101, -9.148148);    //hardcoded at Entrecampos
+    public LatLng getLastPosition() {
+        return new LatLng(38.737681, -9.138382);    //TODO hardcoded
     }
 
+    /**
+     * Sets booked bike
+     *
+     * @param bike - Bike object to add to collection
+     */
+    public void setBikeBooked(Bike bike){
+        mBikeBooked = bike;
+    }
+
+    public Bike getBikeBooked(){
+        return mBikeBooked;
+    }
+
+    public Date getLastUserInfoUpdated() {
+        return mDateUserInfoUpdated;
+    }
+
+    public Date getLastStationUpdated(){
+        return mDateStationsUpdated;
+    }
+
+    public String getLastUpdatedRelativeString(){
+        return DateUtils.getRelativeTimeSpanString(mDateUserInfoUpdated.getTime()).toString();
+    }
+
+    public void setLastUserInfoUpdated(Date dateUpdated) {
+       mDateUserInfoUpdated = dateUpdated;
+    }
+
+    public void setLastStationsUpdated(Date dateUpdated){
+        mDateStationsUpdated = dateUpdated;
+    }
+
+    public int getUID() {
+        return mUID;
+    }
+
+    public void setUID(int mUID) {
+        this.mUID = mUID;
+    }
+
+    public String getUsername() {
+        return mUsername;
+    }
+
+    public void setUsername(String mUsername) {
+        this.mUsername = mUsername;
+    }
+
+    public String getSessionToken() {
+        return mSessionToken;
+    }
+
+    public void setSessionToken(String mSessionToken) {
+        this.mSessionToken = mSessionToken;
+    }
+
+    public String getPublicToken() {
+        return mPublicToken;
+    }
+
+    public boolean hasPublicKeyToken(){ return mPublicToken != null; }
+
+    public void setPublicToken(String mPublicToken) {
+        this.mPublicToken = mPublicToken;
+    }
+
+    public void setTrajectories(ArrayList<Trajectory> trajectories) {
+        mTrajectories = trajectories;
+    }
+
+    public Trajectory getLastTrackedTrajectory() {
+        return mLastTrackedTrajectory;
+    }
+
+    public void setLastTrackedTrajectory(Trajectory lastTrackedTrajectory) {
+        mLastTrackedTrajectory = lastTrackedTrajectory;
+    }
+
+    public void setBikeStations(ArrayList<BikePickupStation> bikeStations) {
+        HashMap<Integer, BikePickupStation> stations = new HashMap<>();
+
+        for(BikePickupStation station : bikeStations){
+            stations.put(station.getSid(), station);
+        }
+
+        mBikeStations = stations;
+    }
+
+    public int getNextTrajectoryID(){
+        int maxId = 0;
+
+        for(Trajectory t : mTrajectories){
+            maxId = (t.getTrajectoryID() > maxId) ? t.getTrajectoryID() : maxId;
+        }
+
+        return ++maxId;
+    }
+
+
+    public void setTotalPoints(long points){
+        mTotalPoints = points;
+    }
+
+    public long getTotalPoints() {
+        return mTotalPoints;
+    }
+
+    public double getTotalDistance() {
+        return mTotalDistance;
+    }
+
+    public double getTotalHours() {
+        return mTotalTime;
+    }
+
+    public int getTotalRides() {
+        return mTrajectories.size();
+    }
+
+    public Trajectory getLongestRide() {
+        return mLongestRide;
+    }
+
+    public int getGlobalRank() {
+        return mGlobalRank;
+    }
+
+    public void setGlobalRank(int rank) {
+        mGlobalRank = rank;
+    }
 }

@@ -1,24 +1,21 @@
 package pt.ist.cmu.ubibike.httpserver.handlers;
 
 import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 
-/**
- * Created by Pedro Joaquim on 14-03-2016.
- */
-public class TrajectoriesHistoryHandler extends AuthRequiredHandler {
+import java.io.IOException;
 
-    @Override
-    protected void continueActionValidation(HttpExchange httpExchange) {
+public class PointsTransactionHandler extends AuthRequiredHandler {
+
+    protected void continueActionValidation(HttpExchange httpExchange) throws Exception {
 
     }
 
-    @Override
     protected void executeAction(HttpExchange httpExchange) throws Exception {
 
     }
 
-    @Override
     protected String produceAnswer(HttpExchange httpExchange) throws Exception {
-        return "todo";
+        return null;
     }
 }

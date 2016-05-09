@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.R;
 import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Trajectory;
@@ -42,8 +43,14 @@ public class TrajectoryArrayAdapter extends ArrayAdapter<Trajectory> {
 
         Trajectory trajectory = getItem(position);
 
-        from.setText(trajectory.getStartStationName());
-        to.setText(trajectory.getEndStationName());
+        String startStationName = ApplicationContext.getInstance().getData().
+                getBikePickupStationById(trajectory.getStartStationID()).getStationName();
+
+        String endStationName = ApplicationContext.getInstance().getData().
+                getBikePickupStationById(trajectory.getEndStationID()).getStationName();
+
+        from.setText(startStationName);
+        to.setText(endStationName);
         distance.setText(String.format("%.3f km", trajectory.getTravelledDistanceInKm()));
         points.setText(String.valueOf(trajectory.getPointsEarned()));
         time.setText(trajectory.getReadableTravelTime());

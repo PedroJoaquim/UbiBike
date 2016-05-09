@@ -1,25 +1,21 @@
-package pt.ulisboa.tecnico.cmu.ubibike.domain;
+package pt.ulisboa.tecnico.cmu.ubibike.peercommunication;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 
-/**
- * Created by andriy on 12.03.2016.
- */
 public class Chat {
 
-    private String mClientID;
-    private String mClientUsername;
-
+    private String mUsername;
     private ChatMessage mLastReceivedMessage = null;
     private List<ChatMessage> mReceivedMessages = new ArrayList<>();
     private List<ChatMessage> mAllMessages = new ArrayList<>();
 
-    public Chat(String clientID, String clientUsername){
-        mClientID = clientID;
-        mClientUsername = clientUsername;
+    public Chat(){}
+
+    public Chat(String username) {
+        mUsername = username;
     }
 
     public void addNewMessage(ChatMessage message){
@@ -42,18 +38,12 @@ public class Chat {
         return mReceivedMessages;
     }
 
-    public ChatMessage getLastReceivedMessage() {
-        return mLastReceivedMessage;
-    }
-
     public ChatMessage getLastMessage(){
         return mAllMessages.get(mAllMessages.size() - 1);
     }
 
-    public void setAllMessagesRead(){
-
-        for (ChatMessage msg: mAllMessages)
-            msg.setRead(true);
+    public ChatMessage getLastReceivedMessage() {
+        return mLastReceivedMessage;
     }
-}
 
+}

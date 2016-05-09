@@ -18,21 +18,18 @@ import pt.ulisboa.tecnico.cmu.ubibike.exceptions.HttpFailedRequestException;
  */
 public class HttpRequests {
 
-    private static final int BUFFER_SIZE = 4 * 1024;
-
-    public static String performHttpCall(String type, String requestURL, JSONObject json, String token) throws Exception{
+    public static String performHttpCall(String type, String requestURL, JSONObject json) throws Exception{
 
         String response = "";
 
         URL url = new URL(requestURL);
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
-        urlConnection.setReadTimeout(10000);
-        urlConnection.setConnectTimeout(10000);
+        //urlConnection.setReadTimeout(10000);
+        //urlConnection.setConnectTimeout(10000);
         urlConnection.setRequestMethod(type);
         urlConnection.setDoInput(true);
         urlConnection.setDoOutput(type.equals("POST"));
-        urlConnection.setRequestProperty("Authorization", token);
 
         if(type.equals("POST")){
             urlConnection.setRequestProperty("Content-Type", "application/json");
@@ -42,15 +39,23 @@ public class HttpRequests {
             out.close();
         }
 
-        int httpResponseCode = urlConnection.getResponseCode();
 
-        if (httpResponseCode == HttpsURLConnection.HTTP_OK) {
+        int httpResponseCode = urlConnection.getResponseCode();
+        String msg = urlConnection.getResponseMessage();
+
+        if (httpResponseCode == HttpsURLConnection.HTTP_OK){
             String line;
             BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             while ((line = br.readLine()) != null) {
                 response += line;
             }
-
+        }
+        else if(httpResponseCode == HttpURLConnection.HTTP_BAD_REQUEST){
+            String line;
+            BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getErrorStream()));
+            while ((line = br.readLine()) != null) {
+                response += line;
+            }
         }
         else if(httpResponseCode == HttpsURLConnection.HTTP_UNAUTHORIZED){
             urlConnection.disconnect();

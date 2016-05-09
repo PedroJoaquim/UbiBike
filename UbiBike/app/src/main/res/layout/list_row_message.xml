@@ -16,10 +16,21 @@
         android:visibility="visible">
 
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="sender"
+            android:id="@+id/msg_sender_textView"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp" />
+
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout"
+            android:layout_below="@+id/msg_sender_textView">
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -28,7 +39,9 @@
                 android:background="@drawable/out_message_bg"
                 android:id="@+id/inMessageBubble"
                 android:visibility="visible"
-                android:layout_centerVertical="true">
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -47,7 +60,8 @@
                 android:visibility="gone"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/inMessageBubble"
-                android:layout_toEndOf="@+id/inMessageBubble" />
+                android:layout_toEndOf="@+id/inMessageBubble"
+                android:layout_marginLeft="10dp" />
 
         </LinearLayout>
 
@@ -56,7 +70,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_alignParentRight="true">
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/linearLayout">
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -86,7 +101,8 @@
                 android:visibility="gone"
                 android:layout_gravity="right"
                 android:layout_toLeftOf="@+id/outMessageBubble"
-                android:layout_toStartOf="@+id/outMessageBubble" />
+                android:layout_toStartOf="@+id/outMessageBubble"
+                android:layout_marginRight="10dp" />
 
         </LinearLayout>
 
