@@ -1,60 +1,137 @@
 package pt.ist.cmu.ubibike.httpserver.model;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 public class PointsTransaction {
 
-    private int ptid;
-    private int points;
-    private int senderUID;
-    private int receiverUID;
-    private Date executionTimestamp;
+    private TransactionInfo transactionInfo;
+    private int targetLogicalClock;
+    private String validationToken;
+    private String sourcePublicKeyToken;
 
-    public PointsTransaction(int ptid, int senderUID, int receiverUID, int points, Date executionTimestamp) {
-        this.ptid = ptid;
-        this.senderUID = senderUID;
-        this.receiverUID = receiverUID;
-        this.points = points;
-        this.executionTimestamp = executionTimestamp;
+    public PointsTransaction() {
     }
 
-    public int getPtid() {
-        return ptid;
+    @JsonGetter("transaction_info")
+    public TransactionInfo getTransactionInfo() {
+        return transactionInfo;
     }
 
-    public void setPtid(int ptid) {
-        this.ptid = ptid;
+    @JsonSetter("transaction_info")
+    public void setTransactionInfo(TransactionInfo transactionInfo) {
+        this.transactionInfo = transactionInfo;
     }
 
-    public int getSenderUID() {
-        return senderUID;
+    @JsonGetter("target_logical_clock")
+    public int getTargetLogicalClock() {
+        return targetLogicalClock;
     }
 
-    public void setSenderUID(int senderUID) {
-        this.senderUID = senderUID;
+    @JsonSetter("target_logical_clock")
+    public void setTargetLogicalClock(int targetLogicalClock) {
+        this.targetLogicalClock = targetLogicalClock;
     }
 
-    public int getReceiverUID() {
-        return receiverUID;
+    @JsonGetter("validation_token")
+    public String getValidationToken() {
+        return validationToken;
     }
 
-    public void setReceiverUID(int receiverUID) {
-        this.receiverUID = receiverUID;
+    @JsonSetter("validation_token")
+    public void setValidationToken(String validationToken) {
+        this.validationToken = validationToken;
+    }
+
+    @JsonGetter("source_public_key_token")
+    public String getSourcePublicKeyToken() {
+        return sourcePublicKeyToken;
+    }
+
+    @JsonSetter("source_public_key_token")
+    public void setSourcePublicKeyToken(String sourcePublicKeyToken) {
+        this.sourcePublicKeyToken = sourcePublicKeyToken;
+    }
+
+    public int getSourceUid() {
+        return this.transactionInfo.getSourceUid();
+    }
+
+    public int getTargetUid() {
+        return this.transactionInfo.getTargetUid();
     }
 
     public int getPoints() {
-        return points;
+        return this.transactionInfo.getPoints();
     }
 
-    public void setPoints(int points) {
-        this.points = points;
+    public long getTimestamp() {
+        return Long.valueOf(this.transactionInfo.getTimestamp());
     }
 
-    public Date getExecutionTimestamp() {
-        return executionTimestamp;
+    public int getSourceLogialClock() {
+        return this.transactionInfo.getSourceLogialClock();
     }
 
-    public void setExecutionTimestamp(Date executionTimestamp) {
-        this.executionTimestamp = executionTimestamp;
+    private class TransactionInfo {
+
+        private int sourceUid;
+        private int targetUid;
+        private int points;
+        private String timestamp;
+        private int sourceLogialClock;
+
+        public TransactionInfo() {
+        }
+
+        @JsonGetter("source_uid")
+        public int getSourceUid() {
+            return sourceUid;
+        }
+
+        @JsonSetter("source_uid")
+        public void setSourceUid(int sourceUid) {
+            this.sourceUid = sourceUid;
+        }
+
+        @JsonGetter("target_uid")
+        public int getTargetUid() {
+            return targetUid;
+        }
+
+        @JsonSetter("target_uid")
+        public void setTargetUid(int targetUid) {
+            this.targetUid = targetUid;
+        }
+
+        @JsonGetter("points")
+        public int getPoints() {
+            return points;
+        }
+
+        @JsonSetter("points")
+        public void setPoints(int points) {
+            this.points = points;
+        }
+
+        @JsonGetter("timestamp")
+        public String getTimestamp() {
+            return timestamp;
+        }
+
+        @JsonSetter("timestamp")
+        public void setTimestamp(String timestamp) {
+            this.timestamp = timestamp;
+        }
+
+        @JsonGetter("source_logical_clock")
+        public int getSourceLogialClock() {
+            return sourceLogialClock;
+        }
+
+        @JsonSetter("source_logical_clock")
+        public void setSourceLogialClock(int sourceLogialClock) {
+            this.sourceLogialClock = sourceLogialClock;
+        }
     }
 }

@@ -15,7 +15,7 @@ public class JSONSchemaValidation {
 
     private static final String BASE_PATH = "resource:/json_schemas/";
     private static final String TRAJECTORY_SCHEMA = "new_trajectory.json";
-    private static final String POINTS_TRANSACTION_SCHEMA = "points_transaction.json";
+    private static final String POINTS_TRANSACTION_SCHEMA = "points.json";
     private static final String REGISTER_TRANSACTION_SCHEMA = "register.json";
     private static final String AUTHENTICATE_USER_SCHEMA = "authentication.json";
     private static final String BIKE_PICK_DROP_SCHEMA = "bike_pick_drop.json";

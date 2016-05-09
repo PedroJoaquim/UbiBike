@@ -14,9 +14,12 @@ CREATE TABLE users (
 
 DROP TABLE IF EXISTS pending_events;
 CREATE TABLE pending_events (
-  uid           INT NOT NULL,
-  logical_clock INT NOT NULL,
-  type          INT NOT NULL
+  source_uid           INT NOT NULL,
+  source_logical_clock INT NOT NULL,
+  target_uid           INT NOT NULL,
+  target_logical_clock INT NOT NULL,
+  points               INT NOT NULL,
+  transaction_timestamp LONG NOT NULL
 );
 
 DROP TABLE IF EXISTS trajectories;
@@ -32,19 +35,6 @@ CREATE TABLE trajectories (
   ride_start_timestamp LONG  NOT NULL,
   ride_end_timestamp LONG  NOT NULL,
   PRIMARY KEY (tid)
-);
-
-DROP TABLE IF EXISTS points_transactions;
-CREATE TABLE points_transactions (
-  ptid                INT NOT NULL AUTO_INCREMENT,
-  sender_uid          INT NOT NULL,
-  receiver_uid        INT NOT NULL,
-  points              INT NOT NULL,
-  execution_timestamp TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (ptid, sender_uid, receiver_uid),
-  FOREIGN KEY (sender_uid) REFERENCES users (uid),
-  FOREIGN KEY (receiver_uid) REFERENCES users (uid),
-  UNIQUE (ptid)
 );
 
 DROP TABLE IF EXISTS sessions;
