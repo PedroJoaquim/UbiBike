@@ -129,10 +129,13 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
             String myDeviceName = ApplicationContext.getInstance()
                                                     .getNearbyPeerCommunication().getDeviceName();
 
+
             //I haven't done my username broadcast yet
             if(myDeviceName == null){
+                myDeviceName = ginfo.getDeviceName();
+
                 ApplicationContext.getInstance().
-                                 getNearbyPeerCommunication().setDeviceName(ginfo.getDeviceName());
+                                 getNearbyPeerCommunication().setDeviceName(myDeviceName);
 
 
                 Set<String> nearDevices = ApplicationContext.getInstance().

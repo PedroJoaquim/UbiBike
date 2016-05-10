@@ -17,7 +17,7 @@ public class CommunicationTasks {
 
     public static final String TAG = "UbiBike";
 
-    private static final int PORT = 8000;
+    private static final int PORT = 10001;
 
     public class IncomingCommunicationTask extends AsyncTask<Void, String, Void> {
 
@@ -81,7 +81,10 @@ public class CommunicationTasks {
                 String virtualAddress = ApplicationContext.getInstance().
                         getNearbyPeerCommunication().getDeviceNearbyVirtualAddress(params[0]);
 
-                SimWifiP2pSocket clientSocket = new SimWifiP2pSocket(virtualAddress, PORT);
+                String[] splittedAddr = virtualAddress.split(":");
+
+
+                SimWifiP2pSocket clientSocket = new SimWifiP2pSocket(splittedAddr[0], Integer.parseInt(splittedAddr[1]));
 
                 ApplicationContext.getInstance().
                         getNearbyPeerCommunication().addNearDeviceClientSocket(params[0], clientSocket);

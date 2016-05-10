@@ -30,7 +30,7 @@ public class ServerCommunicationHandler {
     private PrivateKey privateKey;
 
 
-    private static String HOST_SERVER = "http://192.168.1.67:8000";
+    private static String HOST_SERVER = "http://193.136.131.212:8000";
     private static String URL_LOGIN = "/auth";                               //[POST] json_schema = authentication.json
     private static String URL_REGISTER_ACCOUNT = "/registration";            //[POST] json_schema = register.json
     private static String URL_PUBLIC_KEY_TOKEN = "/PublicKeyToken";          //[GET]  url com session_token & uid
