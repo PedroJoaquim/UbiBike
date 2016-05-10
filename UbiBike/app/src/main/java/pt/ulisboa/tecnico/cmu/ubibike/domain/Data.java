@@ -22,7 +22,10 @@ public class Data {
     private HashMap<Integer, BikePickupStation> mBikeStations;
     private ArrayList<Trajectory> mTrajectories;
     private Trajectory mLastTrackedTrajectory;
+
+    private boolean mBikeBookingRequested;
     private Bike mBikeBooked;
+
     private LatLng mLastPosition;
     private Date mDateUserInfoUpdated;
     private Date mDateStationsUpdated;
@@ -178,8 +181,20 @@ public class Data {
         mBikeBooked = bike;
     }
 
+    public boolean isAnyBikeBooked(){
+        return mBikeBooked != null;
+    }
+
     public Bike getBikeBooked(){
         return mBikeBooked;
+    }
+
+    public boolean isBikeBookingRequested() {
+        return mBikeBookingRequested;
+    }
+
+    public void setBikeBookingRequested(boolean mBikeBookingRequested) {
+        this.mBikeBookingRequested = mBikeBookingRequested;
     }
 
     public Date getLastUserInfoUpdated() {
@@ -267,7 +282,6 @@ public class Data {
 
         return ++maxId;
     }
-
 
     public void setTotalPoints(long points){
         mTotalPoints = points;

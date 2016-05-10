@@ -37,6 +37,8 @@ public class NearbyPeerCommunication {
         mIndividualChats = new HashMap<>();
     }
 
+
+
     public String getDeviceName() {
         return mDeviceName;
     }
@@ -161,9 +163,6 @@ public class NearbyPeerCommunication {
         }
 
     }
-
-
-
 
     public static void processIndividualChatMessage(String received){
         String[] receivedParts = received.split(SPACE);

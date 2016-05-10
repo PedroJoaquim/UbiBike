@@ -29,8 +29,7 @@ public class ServerCommunicationHandler {
     private PublicKey publicKey;
     private PrivateKey privateKey;
 
-
-    private static String HOST_SERVER = "http://193.136.131.212:8000";
+    private static String HOST_SERVER = "http://194.210.230.111:8000";
     private static String URL_LOGIN = "/auth";                               //[POST] json_schema = authentication.json
     private static String URL_REGISTER_ACCOUNT = "/registration";            //[POST] json_schema = register.json
     private static String URL_PUBLIC_KEY_TOKEN = "/PublicKeyToken";          //[GET]  url com session_token & uid
@@ -48,6 +47,7 @@ public class ServerCommunicationHandler {
     private static final int REQUEST_BIKE_PICK_DROP = 3;
     private static final int REQUEST_TRAJECTORY_POST = 4;
     private static final int REQUEST_BIKE_BOOK = 5;
+    private static final int REQUEST_BIKE_UNBOOK = 6;
 
     private static final boolean AUTH_REQUEST = true;
     private static final boolean NON_AUTH_REQUEST = false;
@@ -190,6 +190,12 @@ public class ServerCommunicationHandler {
         String url = buildUrl(URL_BIKE_BOOK, AUTH_REQUEST) + "&sid=" + sid;
 
         performGenericRequest(url, REQUEST_BIKE_BOOK, null, true, null);
+    }
+
+    public void performBikeUnbookRequest(){
+        String url = buildUrl(URL_BIKE_BOOK, AUTH_REQUEST);
+
+        performGenericRequest(url, REQUEST_BIKE_UNBOOK, null, true, null);
     }
 
 
@@ -488,6 +494,7 @@ public class ServerCommunicationHandler {
             case REQUEST_STATIONS_NEARBY: request = "stations nearby"; break;
             case REQUEST_BIKE_PICK_DROP: request = "bike pick/drop"; break;
             case REQUEST_BIKE_BOOK: request = "bike book"; break;
+            case REQUEST_BIKE_UNBOOK: request = "bike unbook"; break;
         }
 
         return request;

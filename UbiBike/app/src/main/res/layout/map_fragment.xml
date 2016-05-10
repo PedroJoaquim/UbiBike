@@ -95,4 +95,50 @@
             android:duplicateParentState="true"/>
     </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_gravity="center_horizontal|bottom"
+        android:id="@+id/booked_bike"
+        android:background="#8bde92"
+        android:visibility="invisible"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Bike Booked"
+            android:id="@+id/booked_bike_textView"
+            android:textColor="@color/white"
+            android:duplicateParentState="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/undo_imageButton"
+            android:background="@drawable/undo"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Station: Alameda"
+            android:id="@+id/booked_bike_station_textView"
+            android:layout_below="@+id/booked_bike_textView"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textColor="@color/white" />
+
+    </RelativeLayout>
+
 </FrameLayout>

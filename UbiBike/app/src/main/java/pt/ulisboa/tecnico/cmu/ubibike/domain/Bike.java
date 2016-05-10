@@ -4,6 +4,7 @@ package pt.ulisboa.tecnico.cmu.ubibike.domain;
 public class Bike {
 
     private int bid;
+    private int sid;
     private String uuid;    //in our case the WIFI Direct peers device id
 
     public Bike(int bid, String uuid, int sid) {
@@ -17,6 +18,14 @@ public class Bike {
 
     public void setBid(int bid) {
         this.bid = bid;
+    }
+
+    public int getSid() {
+        return sid;
+    }
+
+    public void setSid(int sid) {
+        this.sid = sid;
     }
 
     public String getUuid() {

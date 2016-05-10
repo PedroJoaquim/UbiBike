@@ -53,13 +53,9 @@ public class CommunicationTasks {
                         Log.d(TAG, "Received: " + receivedContent);
 
                         NearbyPeerCommunication.processReceivedMessage(receivedContent);
-
                     }
                     catch (IOException e) {
                         Log.d("Error reading socket:", e.getMessage());
-                    }
-                    finally {
-                        sock.close();
                     }
                 }
                 catch (IOException e) {
@@ -107,13 +103,12 @@ public class CommunicationTasks {
             try {
 
                 SimWifiP2pSocket clientSocket = ApplicationContext.getInstance().
-                        getNearbyPeerCommunication().getNearDeviceClientSocketByUsername(param[0]);
+                        getNearbyPeerCommunication().getNearDeviceClientSocketByDeviceName(param[0]);
 
                 clientSocket.getOutputStream().write((param[1] + "\n").getBytes());
                 BufferedReader sockIn = new BufferedReader(
                         new InputStreamReader(clientSocket.getInputStream()));
                 sockIn.readLine();
-                clientSocket.close();
 
             } catch (IOException e) {
                 Log.e("Uncaught exception", e.toString());

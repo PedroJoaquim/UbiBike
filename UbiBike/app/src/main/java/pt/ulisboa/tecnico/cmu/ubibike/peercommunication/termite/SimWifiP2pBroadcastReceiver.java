@@ -33,6 +33,7 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
         if (SimWifiP2pBroadcast.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
 
             int state = intent.getIntExtra(SimWifiP2pBroadcast.EXTRA_WIFI_STATE, -1);
+
             if (state == SimWifiP2pBroadcast.WIFI_P2P_STATE_ENABLED) {
                 Toast.makeText(mActivity, "WiFi Direct enabled",
                         Toast.LENGTH_SHORT).show();
@@ -46,75 +47,11 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
             Toast.makeText(mActivity, "Peer list changed",
                     Toast.LENGTH_SHORT).show();
 
+
             SimWifiP2pDeviceList devices = (SimWifiP2pDeviceList) intent.getSerializableExtra(
                                                             SimWifiP2pBroadcast.EXTRA_DEVICE_LIST);
 
-
-            checkBookedBikeInRange(devices);
-
-            Set<String> devicesBeforeUpdate = ApplicationContext.getInstance().
-                                                getNearbyPeerCommunication().getNearDevicesSet();
-
-            Set<String> devicesAfterUpdate = new HashSet<>();
-
-            for(SimWifiP2pDevice device : devices.getDeviceList()){
-                devicesAfterUpdate.add(device.deviceName);
-            }
-
-            //getting new devices
-            Set<String>  newDevices = new HashSet(devicesAfterUpdate);
-            newDevices.removeAll(devicesBeforeUpdate);
-
-            //register new devices,
-            //establish socket connection with each of them and
-            //send my username so that they know
-            for(String newDevice : newDevices){
-
-                String newDeviceVirtAddr = devices.getByName(newDevice).virtDeviceAddress;
-
-                ApplicationContext.getInstance().
-                        getNearbyPeerCommunication().addDeviceNearby(newDevice, newDeviceVirtAddr);
-
-                ApplicationContext.getInstance().getActivity().getCommunicationTasks().
-                        new OutgoingCommunicationTask().
-                        executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, newDevice);
-
-
-                String myDeviceName = ApplicationContext.getInstance().
-                                                        getNearbyPeerCommunication().getDeviceName();
-
-                //if I know my device name, send my username to other
-                //otherwise delay this announcemet
-                if(myDeviceName != null) {
-                    String msg =  "[username] " +  myDeviceName +  ApplicationContext.getInstance()
-                                                                         .getData().getUsername();
-
-                    ApplicationContext.getInstance().getActivity().getCommunicationTasks().
-                            new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                            newDevice, msg);
-                }
-            }
-
-
-            //getting devices that are not in range anymore
-            Set<String> notInRangeDevices = new HashSet<>(devicesBeforeUpdate);
-            notInRangeDevices.removeAll(devicesAfterUpdate);
-
-            //removing them
-            for(String notInRangeDevice : notInRangeDevices){
-
-                ApplicationContext.getInstance().getNearbyPeerCommunication().
-                        removeDeviceNearby(notInRangeDevice);
-
-            }
-
-
-            UpdatableUI currentFragment =  ApplicationContext.getInstance().getCurrentFragment();
-
-            //check if there is visible UI updatable fragment to update
-            if(currentFragment != null){
-                currentFragment.updateUI();
-            }
+            processPeersChanged(devices);
 
 
         } else if (SimWifiP2pBroadcast.WIFI_P2P_NETWORK_MEMBERSHIP_CHANGED_ACTION.equals(action)) {
@@ -126,60 +63,9 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
                     SimWifiP2pBroadcast.EXTRA_GROUP_INFO);
 
 
-            String myDeviceName = ApplicationContext.getInstance()
-                                                    .getNearbyPeerCommunication().getDeviceName();
+            processNetworkMembership(ginfo);
 
 
-            //I haven't done my username broadcast yet
-            if(myDeviceName == null){
-                myDeviceName = ginfo.getDeviceName();
-
-                ApplicationContext.getInstance().
-                                 getNearbyPeerCommunication().setDeviceName(myDeviceName);
-
-
-                Set<String> nearDevices = ApplicationContext.getInstance().
-                                                    getNearbyPeerCommunication().getNearDevicesSet();
-
-                String myUsername = ApplicationContext.getInstance().getData().getUsername();
-
-                for(String device : nearDevices){
-                    String msg = NearbyPeerCommunication.buildUsernameBroadcastMessage(myDeviceName, myUsername);
-                    ApplicationContext.getInstance().getActivity().getCommunicationTasks().
-                            new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                            device, msg);
-                }
-            }
-
-            //setting group members to Set<String> containing device names
-            ApplicationContext.getInstance().getNearbyPeerCommunication().
-                    getGroupChat().setMembers(new HashSet<>(ginfo.getDevicesInNetwork()));
-
-            if(ginfo.askIsGO()){
-                ApplicationContext.getInstance().getNearbyPeerCommunication().
-                        getGroupChat().setOwner(ginfo.getDeviceName());
-
-
-                //announce group members that I'm the group owner
-                for(String groupMember : ginfo.getDevicesInNetwork()){
-
-                    String myUsername = ApplicationContext.getInstance().getData().getUsername();
-
-                    String msg = NearbyPeerCommunication.buildGroupOwnerBroadcastMessage(myUsername);
-
-                    ApplicationContext.getInstance().getActivity().getCommunicationTasks().
-                            new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                            groupMember, msg);
-                }
-            }
-
-
-            UpdatableUI currentFragment =  ApplicationContext.getInstance().getCurrentFragment();
-
-            //check if there is visible UI updatable fragment to update
-            if(currentFragment != null){
-                currentFragment.updateUI();
-            }
 
         } else if (SimWifiP2pBroadcast.WIFI_P2P_GROUP_OWNERSHIP_CHANGED_ACTION.equals(action)) {
 
@@ -192,6 +78,150 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
         }
     }
 
+
+    /**
+     * Reacts to peers in range changed action
+     */
+    private void processPeersChanged(SimWifiP2pDeviceList devices) {
+
+        checkBookedBikeInRange(devices);
+
+        Set<String> devicesBeforeUpdate = ApplicationContext.getInstance().
+                getNearbyPeerCommunication().getNearDevicesSet();
+
+        Set<String> devicesAfterUpdate = new HashSet<>();
+
+        for(SimWifiP2pDevice device : devices.getDeviceList()){
+            devicesAfterUpdate.add(device.deviceName);
+        }
+
+        //getting new devices
+        Set<String>  newDevices = new HashSet(devicesAfterUpdate);
+        newDevices.removeAll(devicesBeforeUpdate);
+
+        //register new devices,
+        //establish socket connection with each of them and
+        //send my username so that they know
+        for(String newDevice : newDevices){
+
+            String newDeviceVirtAddr = devices.getByName(newDevice).virtDeviceAddress;
+
+            ApplicationContext.getInstance().
+                    getNearbyPeerCommunication().addDeviceNearby(newDevice, newDeviceVirtAddr);
+
+            //creating and saving client socket
+            ApplicationContext.getInstance().getActivity().getCommunicationTasks().
+                    new OutgoingCommunicationTask().
+                    executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, newDevice);
+
+
+            String myDeviceName = ApplicationContext.getInstance().
+                    getNearbyPeerCommunication().getDeviceName();
+
+            //if I know my device name, send my username to other
+            //otherwise delay this announcemet
+            if(myDeviceName != null) {
+
+                String myUsername = ApplicationContext.getInstance().getData().getUsername();
+                String msg =  NearbyPeerCommunication.buildUsernameBroadcastMessage(myDeviceName,myUsername);
+
+                //sending my username
+                ApplicationContext.getInstance().getActivity().getCommunicationTasks().
+                        new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                        newDevice, msg);
+            }
+        }
+
+
+        //getting devices that are not in range anymore
+        Set<String> notInRangeDevices = new HashSet<>(devicesBeforeUpdate);
+        notInRangeDevices.removeAll(devicesAfterUpdate);
+
+        //removing them
+        for(String notInRangeDevice : notInRangeDevices){
+
+            ApplicationContext.getInstance().getNearbyPeerCommunication().
+                    removeDeviceNearby(notInRangeDevice);
+
+        }
+
+
+        UpdatableUI currentFragment =  ApplicationContext.getInstance().getCurrentFragment();
+
+        //check if there is visible UI updatable fragment to update
+        if(currentFragment != null){
+            currentFragment.updateUI();
+        }
+    }
+
+
+    /**
+     *  Reacts to network membership changed action
+     */
+    private void processNetworkMembership(SimWifiP2pInfo ginfo) {
+
+        String myDeviceName = ApplicationContext.getInstance()
+                .getNearbyPeerCommunication().getDeviceName();
+
+
+        //I haven't done my username broadcast yet
+        if(myDeviceName == null){
+            myDeviceName = ginfo.getDeviceName();
+
+            ApplicationContext.getInstance().
+                    getNearbyPeerCommunication().setDeviceName(myDeviceName);
+
+            Set<String> nearDevices = ApplicationContext.getInstance().
+                    getNearbyPeerCommunication().getNearDevicesSet();
+
+            String myUsername = ApplicationContext.getInstance().getData().getUsername();
+
+
+            for(String device : nearDevices){
+
+                String msg = NearbyPeerCommunication.buildUsernameBroadcastMessage(myDeviceName, myUsername);
+
+                ApplicationContext.getInstance().getActivity().getCommunicationTasks().
+                        new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                        device, msg);
+            }
+        }
+
+        //setting group members to Set<String> containing device names
+        ApplicationContext.getInstance().getNearbyPeerCommunication().
+                getGroupChat().setMembers(new HashSet<>(ginfo.getDevicesInNetwork()));
+
+
+        //If I'm the group owner
+        //I announce that to peers nearby
+        if(ginfo.askIsGO()){
+
+            ApplicationContext.getInstance().getNearbyPeerCommunication().
+                    getGroupChat().setOwner(ginfo.getDeviceName());
+
+
+            //announce group members that I'm the group owner
+            for(String groupMember : ginfo.getDevicesInNetwork()){
+
+                String myUsername = ApplicationContext.getInstance().getData().getUsername();
+
+                String msg = NearbyPeerCommunication.buildGroupOwnerBroadcastMessage(myUsername);
+
+                ApplicationContext.getInstance().getActivity().getCommunicationTasks().
+                        new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                        groupMember, msg);
+            }
+        }
+
+
+        UpdatableUI currentFragment =  ApplicationContext.getInstance().getCurrentFragment();
+
+        //check if there is visible UI updatable fragment to update
+        if(currentFragment != null){
+            currentFragment.updateUI();
+        }
+
+    }
 
     /**
      * Checks whether or not user is near to booked bike

@@ -226,6 +226,7 @@ public class JsonParser {
         Bike bike = new Bike(bid, uuid, sid);
 
         appData.setBikeBooked(bike);
+        appData.setBikeBookingRequested(false);
     }
 
 

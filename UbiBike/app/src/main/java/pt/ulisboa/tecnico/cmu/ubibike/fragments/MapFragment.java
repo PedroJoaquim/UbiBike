@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmu.ubibike.fragments;
 
 import android.content.Context;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,8 +13,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -26,6 +29,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -141,7 +146,10 @@ public class MapFragment extends Fragment {
         FrameLayout nextTrajectory = (FrameLayout) mView.findViewById(R.id.next_trajectory_frame);
         FrameLayout previousTrajectory = (FrameLayout) mView.findViewById(R.id.prev_trajectory_frame);
         FrameLayout trajectoryInfo = (FrameLayout) mView.findViewById(R.id.trajectory_info_frame);
-        RelativeLayout bookBike = (RelativeLayout) mView.findViewById(R.id.book_bike);
+        RelativeLayout bookBikeLayout = (RelativeLayout) mView.findViewById(R.id.book_bike);
+        RelativeLayout bookedBikeLayout = (RelativeLayout) mView.findViewById(R.id.booked_bike);
+        ImageButton undo_booking = (ImageButton) mView.findViewById(R.id.undo_imageButton);
+
 
         if(mTrajectoryView) {
 
@@ -171,20 +179,72 @@ public class MapFragment extends Fragment {
                 }
             });
         }
+        //otherwise we are on stations nearby view
         else{
             nextTrajectory.setVisibility(View.INVISIBLE);
             previousTrajectory.setVisibility(View.INVISIBLE);
             trajectoryInfo.setVisibility(View.INVISIBLE);
 
-            bookBike.setOnClickListener(new View.OnClickListener() {
+            bookBikeLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    ApplicationContext.getInstance().getServerCommunicationHandler().
-                            performBikeBookRequest(mCurrentSelectedStation);
+                    if (ApplicationContext.getInstance().getData().isAnyBikeBooked()) {
+                        Toast.makeText(getActivity(), "There is already an active booking", Toast.LENGTH_SHORT).show();
+                    } else {
+                        ApplicationContext.getInstance().getServerCommunicationHandler().
+                                performBikeBookRequest(mCurrentSelectedStation);
+                    }
 
                 }
             });
+
+            undo_booking.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    //TODO confirm logic
+
+                    ApplicationContext.getInstance().getServerCommunicationHandler().
+                            performBikeUnbookRequest();
+
+                    ApplicationContext.getInstance().getData().setBikeBookingRequested(true);
+
+                }
+            });
+
+
+            //after server confirmation
+            boolean isBikeBooked = ApplicationContext.getInstance().getData().isAnyBikeBooked();
+
+            //bike requested by user but didnt perform server request yet
+            boolean isBikeBookingRequested = ApplicationContext.getInstance().getData().isAnyBikeBooked();
+
+
+            if(isBikeBooked){
+                bookBikeLayout.setVisibility(View.GONE);
+                bookedBikeLayout.setVisibility(View.VISIBLE);
+
+                int bikeSid = ApplicationContext.getInstance().getData().getBikeBooked().getSid();
+                String stationName = ApplicationContext.getInstance().getData().
+                        getBikePickupStationById(bikeSid).getStationName();
+
+                TextView booked_textView = (TextView) mView.findViewById(R.id.booked_bike_textView);
+                booked_textView.setText("Bike booked");
+
+                TextView booked_station_textView = (TextView) mView.findViewById(R.id.booked_bike_station_textView);
+                booked_station_textView.setText("Station: " + stationName);
+            }
+            else if(isBikeBooked && isBikeBookingRequested){
+                bookBikeLayout.setVisibility(View.GONE);
+                bookedBikeLayout.setVisibility(View.VISIBLE);
+
+                TextView booked_textView = (TextView) mView.findViewById(R.id.booked_bike_textView);
+                booked_textView.setText("Bike booking requested");
+
+                TextView booked_station_textView = (TextView) mView.findViewById(R.id.booked_bike_station_textView);
+                booked_station_textView.setText("");
+            }
         }
     }
 
@@ -210,11 +270,9 @@ public class MapFragment extends Fragment {
 
                         googleMap.getUiSettings().setAllGesturesEnabled(true);
 
-
-                        if(mTrajectoryView){    //swowing trajectory
+                        if (mTrajectoryView) {    //swowing trajectory
                             showTrajectory(mTrajectoryBeingShowed);
-                        }
-                        else{       //showing bike stations nearby
+                        } else {       //showing bike stations nearby
                             showBikeStationsNearby();
                         }
                     }
@@ -225,9 +283,9 @@ public class MapFragment extends Fragment {
     }
 
 
-    /**
-     * Shows next trajectory on map
-     */
+
+
+
     public void showNextTrajectoryOnMap(){
 
         mGoogleMap.clear();
@@ -244,9 +302,6 @@ public class MapFragment extends Fragment {
         }
     }
 
-    /**
-     * Shows previous trajectory on map
-     */
     public void showPreviousTrajectoryOnMap(){
 
         mGoogleMap.clear();
@@ -263,13 +318,13 @@ public class MapFragment extends Fragment {
         }
     }
 
-
     public void showTrajectory(int trajectoryID){
 
         mTrajectoryBeingShowed = trajectoryID;
 
         String title = "Trajectory view (" + (mTrajectoryBeingShowed + 1) + "/"
                 + mTrajectoriesCount + ")";
+
         getParentActivity().getSupportActionBar().setTitle(title);
 
 
@@ -368,8 +423,6 @@ public class MapFragment extends Fragment {
                         .fromResource(R.drawable.current_position_marker));
 
         Marker pos = mGoogleMap.addMarker(currentPositionMarker);
-        String id = pos.getId();
-
 
         //adding stations to map
         for(BikePickupStation station : bikeStations){
@@ -397,6 +450,7 @@ public class MapFragment extends Fragment {
         mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
+
                 BikePickupStation station = mMarkerStation.get(marker.getId());
 
                 if(station == null) { //selected marker is not a bike station
@@ -406,18 +460,31 @@ public class MapFragment extends Fragment {
                 mCurrentSelectedStation = station.getSid();
 
 
-                RelativeLayout bookBike = (RelativeLayout) mView.findViewById(R.id.book_bike);
+                if(!ApplicationContext.getInstance().getData().isAnyBikeBooked()) {
+                    RelativeLayout bookBike = (RelativeLayout) mView.findViewById(R.id.book_bike);
 
-                if(station.getBikesAvailableQuantity() > 0){
-                    bookBike.setVisibility(View.VISIBLE);
-                }
-                else{
-                    bookBike.setVisibility(View.GONE);
+                    if (station.getBikesAvailableQuantity() > 0) {
+                        bookBike.setVisibility(View.VISIBLE);
+                    } else {
+                        bookBike.setVisibility(View.GONE);
+                        Toast.makeText(getActivity(), "No bikes available on selected station.", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
 
                 return false;
             }
         });
+
+    }
+
+
+
+    public void updateUI(){
+
+        if(ApplicationContext.getInstance().getData().isAnyBikeBooked()){
+
+        }
 
     }
 
