@@ -104,6 +104,10 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
         //send my username so that they know
         for(String newDevice : newDevices){
 
+            if(newDevice.toLowerCase().startsWith("bike")){
+                continue;
+            }
+
             String newDeviceVirtAddr = devices.getByName(newDevice).virtDeviceAddress;
 
             ApplicationContext.getInstance().
@@ -132,14 +136,10 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
             }
         }
 
-
-        //getting devices that are not in range anymore
-        Set<String> notInRangeDevices = new HashSet<>(devicesBeforeUpdate);
-        notInRangeDevices.removeAll(devicesAfterUpdate);
+        devicesBeforeUpdate.removeAll(devicesAfterUpdate);
 
         //removing them
-        for(String notInRangeDevice : notInRangeDevices){
-
+        for(String notInRangeDevice : devicesBeforeUpdate){
             ApplicationContext.getInstance().getNearbyPeerCommunication().
                     removeDeviceNearby(notInRangeDevice);
 

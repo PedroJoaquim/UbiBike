@@ -95,7 +95,7 @@ public class NearbyPeerCommunication {
     }
 
     public Set<String> getNearDevicesSet(){
-        return mNearDevices.keySet();
+        return new HashSet<>(mNearDevices.keySet());
     }
 
     public Set<String> getNearDevicesUsernamesSet(){
