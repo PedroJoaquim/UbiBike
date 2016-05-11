@@ -118,4 +118,12 @@ public class User {
     public void setLogicalClock(int logicalClock) {
         this.logicalClock = logicalClock;
     }
+
+    public void incLogicalClock() {
+        this.logicalClock++;
+    }
+
+    public void incPoints(int pointsEarned) {
+        this.points += pointsEarned;
+    }
 }

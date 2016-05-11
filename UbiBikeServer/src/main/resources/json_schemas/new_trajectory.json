@@ -41,7 +41,11 @@
     "distance":{
       "description": "ride distance in meters",
       "type": "number"
+    },
+    "logical_clock":{
+       "description": "trajectory logical clock",
+       "type": "integer"
     }
   },
-  "required": ["user_tid", "start_sid", "end_sid", "coords", "start_timestamp", "end_timestamp", "distance" ]
+  "required": ["user_tid", "start_sid", "end_sid", "coords", "start_timestamp", "end_timestamp", "distance", "logical_clock"]
 }

@@ -15,7 +15,7 @@ public class Trajectory {
     private long rideEndTimestamp;
     private float distance;
     private String userTID;
-
+    private int logicalClock;
 
     public Trajectory(int tid, int startSid, int endSid, int uid, int pointsEarned, Coordinate[] coords, long rideStartTimestamp, long rideEndTimestamp, float distance, String userTID) {
         this.tid = tid;
@@ -130,5 +130,15 @@ public class Trajectory {
     @JsonSetter("end_sid")
     public void setEndSid(int endSid) {
         this.endSid = endSid;
+    }
+
+    @JsonGetter("logical_clock")
+    public int getLogicalClock() {
+        return logicalClock;
+    }
+
+    @JsonSetter("logical_clock")
+    public void setLogicalClock(int logicalClock) {
+        this.logicalClock = logicalClock;
     }
 }
