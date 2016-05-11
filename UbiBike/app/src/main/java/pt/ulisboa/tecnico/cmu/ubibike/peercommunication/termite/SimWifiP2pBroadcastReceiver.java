@@ -98,7 +98,6 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
         }
     }
 
-
     /**
      *  Reacts to network membership changed action
      */

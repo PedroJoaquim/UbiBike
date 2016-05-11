@@ -26,6 +26,7 @@ public class ChatsListFragment extends Fragment implements UpdatableUI {
     private static final String TITLE = "Chats nearby";
 
     private ListView mPeersNearbyListView;
+    private View mView;
 
     public ChatsListFragment() {
     }
@@ -38,13 +39,13 @@ public class ChatsListFragment extends Fragment implements UpdatableUI {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_chats_list, container, false);
+        mView = inflater.inflate(R.layout.fragment_chats_list, container, false);
 
         getParentActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        setUIElements(view);
+        setUIElements();
 
-        return view;
+        return mView;
     }
 
     @Override
@@ -65,11 +66,11 @@ public class ChatsListFragment extends Fragment implements UpdatableUI {
         ApplicationContext.getInstance().setCurrentFragment(null);
     }
 
-    public void setUIElements(View view){
+    public void setUIElements(){
 
-        RelativeLayout groupChat = (RelativeLayout) view.findViewById(R.id.group_chat_layout);
+        RelativeLayout groupChat = (RelativeLayout) mView.findViewById(R.id.group_chat_layout);
 
-        mPeersNearbyListView = (ListView) view.findViewById(R.id.peers_nearby_listView);
+        mPeersNearbyListView = (ListView) mView.findViewById(R.id.peers_nearby_listView);
 
 
         if(ApplicationContext.getInstance().getNearbyPeerCommunication().getGroupChat().isEmpty()){
@@ -77,7 +78,7 @@ public class ChatsListFragment extends Fragment implements UpdatableUI {
         }
         else{
             groupChat.setVisibility(View.VISIBLE);
-            TextView group_textView = (TextView) view.findViewById(R.id.group_textView);
+            TextView group_textView = (TextView) mView.findViewById(R.id.group_textView);
 
             String groupOwner = ApplicationContext.getInstance().getNearbyPeerCommunication().
                                                                             getGroupChat().getOwner();
@@ -95,8 +96,8 @@ public class ChatsListFragment extends Fragment implements UpdatableUI {
         });
 
 
-        Set<String> username =  ApplicationContext.getInstance().getNearbyPeerCommunication().getGroupUsernameSet();
-        final PeersChatAdapter adapter = new PeersChatAdapter(getActivity(), new ArrayList<>(username));
+        ArrayList<String> username =  ApplicationContext.getInstance().getNearbyPeerCommunication().getGroupUsernameSet();
+        final PeersChatAdapter adapter = new PeersChatAdapter(getActivity(), username);
 
         mPeersNearbyListView.setAdapter(adapter);
 
@@ -119,5 +120,11 @@ public class ChatsListFragment extends Fragment implements UpdatableUI {
     @Override
     public void updateUI() {
         ((PeersChatAdapter) mPeersNearbyListView.getAdapter()).notifyDataSetChanged();
+
+        RelativeLayout groupChat = (RelativeLayout) mView.findViewById(R.id.group_chat_layout);
+
+        if(ApplicationContext.getInstance().getNearbyPeerCommunication().getGroupChat().isEmpty()){
+            groupChat.setVisibility(View.GONE);
+        }
     }
 }

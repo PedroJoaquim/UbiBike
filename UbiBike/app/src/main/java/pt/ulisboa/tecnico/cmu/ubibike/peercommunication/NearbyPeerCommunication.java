@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.cmu.ubibike.peercommunication;
 
 import android.os.AsyncTask;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class NearbyPeerCommunication {
     private HashMap<String, String> mNearDevicesUsernames;  //key = username name | value = deviceName
     private GroupChat mGroupChat;
     private HashMap<String, Chat> mIndividualChats; //key = username
-
+    private ArrayList<String> mUsernames;
 
     public static final String MESSAGE_TYPE_INDIVIDUAL = "[individual]";
     public static final String MESSAGE_TYPE_GROUP = "[group]";
@@ -36,6 +37,7 @@ public class NearbyPeerCommunication {
         mNearDevicesUsernames = new HashMap<>();
         mGroupChat = new GroupChat();
         mIndividualChats = new HashMap<>();
+        mUsernames = new ArrayList<>();
     }
 
 
@@ -95,7 +97,7 @@ public class NearbyPeerCommunication {
 
     public void addDeviceUsername(String deviceName, String username){
         mNearDevicesUsernames.put(username, deviceName);
-        mIndividualChats.put(username, new Chat(username));
+        mUsernames.add(username);
     }
 
     public String getUsernameByDeviceName(String deviceName){
@@ -220,11 +222,11 @@ public class NearbyPeerCommunication {
             }
 
             mGroupChat.removeMember(device);
-            mIndividualChats.remove(getUsernameByDeviceName(device));
+            mUsernames.remove(getUsernameByDeviceName(device));
         }
     }
 
-    public Set<String> getGroupUsernameSet() {
-        return mIndividualChats.keySet();
+    public ArrayList<String> getGroupUsernameSet() {
+        return mUsernames;
     }
 }
