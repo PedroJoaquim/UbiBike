@@ -116,7 +116,7 @@ public class DBObjectSelector {
         return resultList.toArray(new Trajectory[resultList.size()]);
     }
 
-    public static PointsTransaction getPointsTransactionFromID(Connection conn, int ptid) throws SQLException {
+    public static PointsTransactionAllInfo getPointsTransactionFromID(Connection conn, int ptid) throws SQLException {
 
        /* Statement stmt = conn.createStatement();
         ResultSet result = stmt.executeQuery("SELECT * FROM points_transactions WHERE ptid = " + ptid);
@@ -125,7 +125,7 @@ public class DBObjectSelector {
             return null;
         }
 
-        PointsTransaction pt = new PointsTransaction(result.getInt("ptid"),
+        PointsTransactionAllInfo pt = new PointsTransactionAllInfo(result.getInt("ptid"),
                 result.getInt("sender_uid"),
                 result.getInt("receiver_uid"),
                 result.getInt("points"),
@@ -141,15 +141,15 @@ public class DBObjectSelector {
         return null;
     }
 
-    public static PointsTransaction[] getPointsTransactionFromUser(Connection conn, int uid) throws SQLException {
+    public static PointsTransactionAllInfo[] getPointsTransactionFromUser(Connection conn, int uid) throws SQLException {
 
-       /* List<PointsTransaction> resultList = new ArrayList<PointsTransaction>();
+       /* List<PointsTransactionAllInfo> resultList = new ArrayList<PointsTransactionAllInfo>();
 
         Statement stmt = conn.createStatement();
         ResultSet result = stmt.executeQuery("SELECT * FROM points_transactions WHERE sender_uid = " + uid + "OR receiver_uid = " + uid);
 
         while (result.next()) {
-            resultList.add(new PointsTransaction(result.getInt("ptid"),
+            resultList.add(new PointsTransactionAllInfo(result.getInt("ptid"),
                     result.getInt("sender_uid"),
                     result.getInt("receiver_uid"),
                     result.getInt("points"),
@@ -161,7 +161,7 @@ public class DBObjectSelector {
             stmt.close();
         } catch (SQLException e) {}
 
-        return resultList.toArray(new PointsTransaction[resultList.size()]);*/
+        return resultList.toArray(new PointsTransactionAllInfo[resultList.size()]);*/
 
         return null;
     }
@@ -234,7 +234,7 @@ public class DBObjectSelector {
         ResultSet result = stmt.executeQuery("SELECT b.bid, b.bike_addr FROM stations AS s, bikes_stations AS bs, bikes As b WHERE s.sid = " + sid + " AND bs.sid = s.sid AND b.bid = bs.bid AND bs.bid NOT IN (SELECT bid FROM bookings)");
 
         while (result.next()) {
-            resultList.add(new Bike(result.getInt("bid"), result.getString("bike_addr")));
+            resultList.add(new Bike(result.getInt("bid"), result.getString("bike_addr"), sid));
         }
 
         try {
@@ -253,7 +253,7 @@ public class DBObjectSelector {
         ResultSet result = stmt.executeQuery("SELECT b.bid, b.bike_addr FROM stations AS s, bikes_stations AS bs, bikes AS b WHERE s.sid = " + sid + " AND bs.sid = s.sid AND b.bid = bs.bid");
 
         while (result.next()) {
-            resultList.add(new Bike(result.getInt("bid"), result.getString("bike_addr")));
+            resultList.add(new Bike(result.getInt("bid"), result.getString("bike_addr"), sid));
         }
 
         try {
@@ -303,5 +303,27 @@ public class DBObjectSelector {
         }
 
         return -1;
+    }
+
+    public static List<PendingEvent> getPendingEventsForUser(Connection conn, int uid) throws SQLException {
+        List<PendingEvent> resultList = new ArrayList<PendingEvent>();
+
+        Statement stmt = conn.createStatement();
+        ResultSet result = stmt.executeQuery("SELECT * FROM pending_events WHERE source_uid = " + uid + " OR target_uid = " + uid);
+
+        while (result.next()) {
+            resultList.add(new PendingEvent(result.getInt("pe_id"), result.getInt("source_uid"), result.getInt("source_logical_clock"),
+                                            result.getInt("target_uid"), result.getInt("target_logical_clock"),
+                                            result.getInt("points"), result.getLong("transaction_timestamp"),
+                                            result.getInt("type")));
+        }
+
+
+        try {
+            result.close();
+            stmt.close();
+        } catch (SQLException e) {/*ignore*/}
+
+        return resultList;
     }
 }

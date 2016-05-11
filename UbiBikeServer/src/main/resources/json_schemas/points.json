@@ -5,34 +5,6 @@
   "type": "object",
 
   "properties": {
-
-    "transaction_info": {
-      "description": "source uid",
-      "type": "object",
-      "properties": {
-        "source_uid" : {
-          "description": "source user uid",
-          "type" : "integer"
-        },
-        "target_uid" : {
-          "description": "target user uid",
-          "type" : "integer"
-        },
-        "points" : {
-          "description" : "points in transaction",
-          "type": "integer"
-        },
-        "timestamp" : {
-          "description" : "transaction timestamp",
-          "type" : "string"
-        },
-        "source_logical_clock" : {
-          "description" : "source user logical clock associated",
-          "type" : "integer"
-        }
-      },
-      "required": ["source_uid", "target_uid", "points", "timestamp", "source_logical_clock"]
-    },
     "target_logical_clock" : {
       "description" : "target user logical clock",
       "type" : "integer"
@@ -44,6 +16,10 @@
     "source_public_key_token" : {
       "description" : "public key token that signed the validation token from source user",
       "type" : "string"
+    },
+    "original_json_base_64" : {
+       "description" : "original json sent from the source to the target and that was signed",
+       "type": "string"
     }
   },
   "required": ["transaction_info", "target_logical_clock", "validation_token", "source_public_key_token"]

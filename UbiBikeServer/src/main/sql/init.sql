@@ -14,13 +14,15 @@ CREATE TABLE users (
 
 DROP TABLE IF EXISTS pending_events;
 CREATE TABLE pending_events (
+  pe_id                INT NOT NULL AUTO_INCREMENT,
   source_uid           INT NOT NULL,
   source_logical_clock INT NOT NULL,
   target_uid           INT NOT NULL,
   target_logical_clock INT NOT NULL,
   points               INT NOT NULL,
   transaction_timestamp LONG NOT NULL,
-  type                 INT NOT NULL
+  type                 INT NOT NULL,
+  PRIMARY KEY (pe_id)
 );
 
 DROP TABLE IF EXISTS trajectories;

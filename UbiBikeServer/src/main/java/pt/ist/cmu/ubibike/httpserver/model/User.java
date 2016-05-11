@@ -123,7 +123,11 @@ public class User {
         this.logicalClock++;
     }
 
-    public void incPoints(int pointsEarned) {
-        this.points += pointsEarned;
+    public void removePoints(int points) {
+        this.points -= points;
+    }
+
+    public void addPoints(int points){
+        this.points += points;
     }
 }

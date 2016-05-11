@@ -18,4 +18,8 @@ public class DBObjectRemove {
         Statement stmt = conn.createStatement();
         stmt.executeUpdate("DELETE FROM bookings WHERE uid = " + uid);
     }
+
+    public static void removePendingEvent(Connection connection, int peID) {
+
+    }
 }

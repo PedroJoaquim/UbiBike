@@ -121,6 +121,6 @@ public class DBObjectCreation {
     }
 
     public static void insertPendingEvent(Connection connection, PendingEvent pendingEvent) {
-
+        //todo - ignore pe_id
     }
 }

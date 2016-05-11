@@ -10,11 +10,13 @@ public class Bike {
 
     private int bid;
     private String bikeAddr;
+    private int sid;
 
-    public Bike(int bid, String bikeAddr) {
+    public Bike(int bid, String bikeAddr, int sid) {
 
         this.bid = bid;
         this.bikeAddr = bikeAddr;
+        this.sid = sid;
     }
 
     public Bike() {}
@@ -37,5 +39,15 @@ public class Bike {
     @JsonSetter("bike_addr")
     public void setBikeAddr(String bikeAddr) {
         this.bikeAddr = bikeAddr;
+    }
+
+    @JsonGetter("sid")
+    public int getSid() {
+        return sid;
+    }
+
+    @JsonSetter("sid")
+    public void setSid(int sid) {
+        this.sid = sid;
     }
 }

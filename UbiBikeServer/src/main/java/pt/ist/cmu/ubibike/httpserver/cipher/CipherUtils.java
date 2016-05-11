@@ -1,7 +1,10 @@
 package pt.ist.cmu.ubibike.httpserver.cipher;
 
+import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 
@@ -32,5 +35,12 @@ public class CipherUtils {
     }
 
 
-
+    public static PublicKey readPublicKeyFromBytes(byte[] encodedKey) {
+        try {
+            return  KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(encodedKey));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

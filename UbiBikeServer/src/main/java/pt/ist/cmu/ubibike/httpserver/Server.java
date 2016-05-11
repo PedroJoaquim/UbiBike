@@ -25,7 +25,7 @@ public class Server {
         server.createContext("/Stations", new StationsInfoHandler());
         server.createContext("/BikeUnbooking", new UnbookingHandler());
         server.createContext("/User", new UserInfoHandler());
-        server.createContext("/PointsTransaction", new PointsTransactionHandler());
+        server.createContext("/PointsTransactionAllInfo", new PointsTransactionHandler());
 
     }
 

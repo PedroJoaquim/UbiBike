@@ -2,6 +2,7 @@ package pt.ist.cmu.ubibike.httpserver.handlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
+import pt.ist.cmu.ubibike.httpserver.consistency.ConsistencyManager;
 import pt.ist.cmu.ubibike.httpserver.model.Trajectory;
 import pt.ist.cmu.ubibike.httpserver.util.JSONSchemaValidation;
 
@@ -34,9 +35,7 @@ public class NewTrajectoryHandler extends AuthRequiredHandler {
         t.setUid(this.user.getUid());
         t.setPointsEarned((int) (t.getDistance() * 10));
 
-
-
-
+        ConsistencyManager.getInstance().addNewTrajectory(this.user, t);
     }
 
     @Override
