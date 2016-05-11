@@ -186,7 +186,7 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
 
                 String msg = NearbyPeerCommunication.buildGroupOwnerBroadcastMessage(myUsername);
 
-                new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, groupMember, msg);
+                //new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, groupMember, msg);
             }
         }
 
