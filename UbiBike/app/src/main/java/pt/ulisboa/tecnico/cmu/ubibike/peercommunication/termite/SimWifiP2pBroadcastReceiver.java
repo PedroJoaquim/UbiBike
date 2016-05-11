@@ -128,6 +128,8 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
      */
     private static void checkBookedBikeInRange(SimWifiP2pDeviceList devices){
 
+        if(!ApplicationContext.getInstance().dataExists()) return;
+
         Bike bookedBike = ApplicationContext.getInstance().getData().getBikeBooked();
 
         //if there is booked bike, check whether or not is nearby

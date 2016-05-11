@@ -27,18 +27,12 @@ import pt.ulisboa.tecnico.cmu.ubibike.R;
 import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
 import pt.ulisboa.tecnico.cmu.ubibike.adapters.MessageListAdapter;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.UpdatableUI;
-import pt.ulisboa.tecnico.cmu.ubibike.managers.CipherManager;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.Chat;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.ChatMessage;
-import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.NearbyPeerCommunication;
-import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.OutgoingCommunicationTask;
-import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.TransferDataTask;
-import pt.ulisboa.tecnico.cmu.ubibike.utils.DigitalSignature;
-import pt.ulisboa.tecnico.cmu.ubibike.utils.JsonParser;
+
 
 public abstract class ChatFragment extends Fragment implements UpdatableUI {
 
-    public static final String ARGUMENT_KEY_GROUP_CHAT = "group_chat";
     public static final String ARGUMENT_KEY_USERNAME = "username";
 
     protected ListView mListView;

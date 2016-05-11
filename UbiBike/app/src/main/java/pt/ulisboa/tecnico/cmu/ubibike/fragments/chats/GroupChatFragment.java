@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -114,6 +115,16 @@ public class GroupChatFragment extends ChatFragment{
                 }
             }
         });
+    }
 
+
+    @Override
+    public void updateUI(){
+        super.updateUI();
+
+        if(ApplicationContext.getInstance().getNearbyPeerCommunication().getGroupChat().isEmpty()){
+            Toast.makeText(getActivity(), "Group is empty. No users to chat with.", Toast.LENGTH_SHORT).show();
+            getParentActivity().onBackPressed();
+        }
     }
 }

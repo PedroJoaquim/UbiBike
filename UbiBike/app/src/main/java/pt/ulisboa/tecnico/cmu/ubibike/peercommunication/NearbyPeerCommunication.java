@@ -229,4 +229,8 @@ public class NearbyPeerCommunication {
     public ArrayList<String> getGroupUsernameSet() {
         return mUsernames;
     }
+
+    public boolean doesGroupMemberExistByUsername(String username){
+        return mUsernames.contains(username);
+    }
 }

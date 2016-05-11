@@ -72,20 +72,7 @@ public class ChatsListFragment extends Fragment implements UpdatableUI {
 
         mPeersNearbyListView = (ListView) mView.findViewById(R.id.peers_nearby_listView);
 
-
-        if(ApplicationContext.getInstance().getNearbyPeerCommunication().getGroupChat().isEmpty()){
-            groupChat.setVisibility(View.GONE);
-        }
-        else{
-            groupChat.setVisibility(View.VISIBLE);
-            TextView group_textView = (TextView) mView.findViewById(R.id.group_textView);
-
-            String groupOwner = ApplicationContext.getInstance().getNearbyPeerCommunication().
-                                                                            getGroupChat().getOwner();
-            if( groupOwner != null) {
-                group_textView.setText("Group hosted by '" + groupOwner + "'");
-            }
-        }
+        updateGroupChatUI();
 
 
         groupChat.setOnClickListener(new View.OnClickListener() {
@@ -119,12 +106,29 @@ public class ChatsListFragment extends Fragment implements UpdatableUI {
 
     @Override
     public void updateUI() {
+
         ((PeersChatAdapter) mPeersNearbyListView.getAdapter()).notifyDataSetChanged();
 
+        updateGroupChatUI();
+    }
+
+
+    private void updateGroupChatUI(){
         RelativeLayout groupChat = (RelativeLayout) mView.findViewById(R.id.group_chat_layout);
+
 
         if(ApplicationContext.getInstance().getNearbyPeerCommunication().getGroupChat().isEmpty()){
             groupChat.setVisibility(View.GONE);
+        }
+        else{
+            groupChat.setVisibility(View.VISIBLE);
+            TextView group_textView = (TextView) mView.findViewById(R.id.group_textView);
+
+            String groupOwner = ApplicationContext.getInstance().getNearbyPeerCommunication().
+                    getGroupChat().getOwner();
+            if( groupOwner != null) {
+                group_textView.setText("Group hosted by '" + groupOwner + "'");
+            }
         }
     }
 }

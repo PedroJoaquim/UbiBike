@@ -1,13 +1,13 @@
 package pt.ulisboa.tecnico.cmu.ubibike.fragments.chats;
 
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -17,7 +17,6 @@ import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.R;
 import pt.ulisboa.tecnico.cmu.ubibike.adapters.MessageListAdapter;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.CipherManager;
-import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.Chat;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.ChatMessage;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.NearbyPeerCommunication;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.OutgoingCommunicationTask;
@@ -106,6 +105,16 @@ public class IndividualChatFragment extends ChatFragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void updateUI(){
+        super.updateUI();
+
+        if(!ApplicationContext.getInstance().getNearbyPeerCommunication().doesGroupMemberExistByUsername(mUsername)){
+            Toast.makeText(getActivity(), "User out of range. Chat unavailable.", Toast.LENGTH_SHORT).show();
+            getParentActivity().onBackPressed();
+        }
     }
 
     private void sendPoints(long points) throws Exception {

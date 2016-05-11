@@ -42,15 +42,15 @@ import pt.ulisboa.tecnico.cmu.ubibike.fragments.chats.ChatFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.chats.ChatsListFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.HomeFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.LoginFragment;
-import pt.ulisboa.tecnico.cmu.ubibike.fragments.MapFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.RegisterAccountFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.TrajectoryListFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.UserProfileFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.chats.GroupChatFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.chats.IndividualChatFragment;
+import pt.ulisboa.tecnico.cmu.ubibike.fragments.maps.StationsNearbyMapFragment;
+import pt.ulisboa.tecnico.cmu.ubibike.fragments.maps.TrajectoryViewMapFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.MobileConnectionManager;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.SessionManager;
-import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.NearbyPeerCommunication;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.IncomingCommunicationTask;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.OutgoingCommunicationTask;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.TransferDataTask;
@@ -301,7 +301,7 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
      * Shows nearby bike stations on map
      */
     public void showBikeStationsNearbyOnMap(){
-        Fragment fragment = new MapFragment();
+        Fragment fragment = new StationsNearbyMapFragment();
         replaceFragment(fragment, false, true);
     }
 
@@ -331,11 +331,10 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
      * @param explicitReplace - not relevant here
      */
     public void showTrajectoryOnMap(int trajectoryID, boolean trackedTrajectoryView, boolean explicitReplace){
-        Fragment fragment = new MapFragment();
+        Fragment fragment = new TrajectoryListFragment();
 
         Bundle arguments = new Bundle();
-        arguments.putInt(MapFragment.TRAJECTORY_ID_KEY, trajectoryID);
-        arguments.putBoolean(MapFragment.TRACKED_TRAJECTORY_VIEW_KEY, trackedTrajectoryView);
+        arguments.putInt(TrajectoryViewMapFragment.TRAJECTORY_ID_KEY, trajectoryID);
         fragment.setArguments(arguments);
 
         replaceFragment(fragment, explicitReplace, true);

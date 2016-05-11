@@ -23,7 +23,6 @@ public class Data {
     private ArrayList<Trajectory> mTrajectories;
     private Trajectory mLastTrackedTrajectory;
 
-    private boolean mBikeBookingRequested;
     private Bike mBikeBooked;
 
     private LatLng mLastPosition;
@@ -187,14 +186,6 @@ public class Data {
 
     public Bike getBikeBooked(){
         return mBikeBooked;
-    }
-
-    public boolean isBikeBookingRequested() {
-        return mBikeBookingRequested;
-    }
-
-    public void setBikeBookingRequested(boolean mBikeBookingRequested) {
-        this.mBikeBookingRequested = mBikeBookingRequested;
     }
 
     public Date getLastUserInfoUpdated() {
