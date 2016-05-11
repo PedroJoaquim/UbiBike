@@ -1,23 +1,24 @@
 package pt.ulisboa.tecnico.cmu.ubibike.peercommunication;
 
-import java.util.ArrayList;
+import android.os.AsyncTask;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
+import pt.inesc.termite.wifidirect.SimWifiP2pDeviceList;
 import pt.inesc.termite.wifidirect.SimWifiP2pInfo;
-import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
-import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketServer;
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.OutgoingCommunicationTask;
 
 
 public class NearbyPeerCommunication {
 
     private String mDeviceName;
-    private SimWifiP2pSocketServer mDeviceServerSocket;
 
-    private HashMap<String, Device> mNearDevices;   //key = device name
+    private SimWifiP2pDeviceList mNearbyDevices;
     private HashMap<String, String> mNearDevicesUsernames;  //key = username name | value = deviceName
     private GroupChat mGroupChat;
     private HashMap<String, Chat> mIndividualChats; //key = username
@@ -27,11 +28,11 @@ public class NearbyPeerCommunication {
     public static final String MESSAGE_TYPE_GROUP = "[group]";
     public static final String USERNAME_BROADCAST = "[username]";
     public static final String GROUPOWNER_BROADCAST = "[groupowner]";
-    public static final String SPACE = " ";
+    public static final String SEPARATOR = "ZABOLOTNYY";
 
 
     public NearbyPeerCommunication() {
-        mNearDevices = new HashMap<>();
+        mNearbyDevices = new SimWifiP2pDeviceList();
         mNearDevicesUsernames = new HashMap<>();
         mGroupChat = new GroupChat();
         mIndividualChats = new HashMap<>();
@@ -47,27 +48,23 @@ public class NearbyPeerCommunication {
         mDeviceName = deviceName;
     }
 
-    public void addDeviceNearby(String deviceName, String virtualAddress){
-        mNearDevices.put(deviceName, new Device(deviceName, virtualAddress));
+
+    public SimWifiP2pDevice getDeviceNearbyByName(String deviceName){
+        return mNearbyDevices.getByName(deviceName);
     }
 
-    public Device getDeviceNearby(String deviceName){
-        return mNearDevices.get(deviceName);
-    }
+    public SimWifiP2pDevice getDeviceNearbyByUsername(String username){
 
-    public String getDeviceNearbyVirtualAddress(String deviceName){
-        return mNearDevices.get(deviceName).getVirtualAddress();
-    }
-
-    public void removeDeviceNearby(String deviceName){
-        mNearDevices.remove(deviceName);
-
-        for(Map.Entry entry : mNearDevicesUsernames.entrySet()){
-            if(entry.getValue() == deviceName){
-                mNearDevicesUsernames.remove(entry.getKey());
-                return;
-            }
+        if(mNearDevicesUsernames.containsKey(username)){
+            return mNearbyDevices.getByName(mNearDevicesUsernames.get(username));
         }
+
+        return null;
+    }
+
+    public String getDeviceVirtualAddressByName(String deviceName){
+        SimWifiP2pDevice device = getDeviceNearbyByName(deviceName);
+        return device == null ? null : device.virtDeviceAddress;
     }
 
     public GroupChat getGroupChat() {
@@ -83,71 +80,51 @@ public class NearbyPeerCommunication {
     }
 
     public Chat getIndividualChat(String username){
+        if(!mIndividualChats.containsKey(username)){
+            addIndividualChat(username);
+        }
+
         return mIndividualChats.get(username);
     }
 
-    public SimWifiP2pSocketServer getDeviceServerSocket() {
-        return mDeviceServerSocket;
-    }
-
-    public void setDeviceServerSocket(SimWifiP2pSocketServer deviceServerSocket) {
-        mDeviceServerSocket = deviceServerSocket;
-    }
-
-    public Set<String> getNearDevicesSet(){
-        return new HashSet<>(mNearDevices.keySet());
-    }
 
     public Set<String> getNearDevicesUsernamesSet(){
-        return mNearDevicesUsernames.keySet();
-    }
-
-    public SimWifiP2pSocket getNearDeviceClientSocketByDeviceName(String deviceName){
-        return mNearDevices.get(deviceName).getClientSocket();
-    }
-
-    public SimWifiP2pSocket getNearDeviceClientSocketByUsername(String username){
-        String deviceName = mNearDevicesUsernames.get(username);
-
-        return getNearDeviceClientSocketByDeviceName(deviceName);
+        return new HashSet<>(mNearDevicesUsernames.keySet());
     }
 
 
-    public void addNearDeviceClientSocket(String deviceName, SimWifiP2pSocket clientSocket){
-        mNearDevices.get(deviceName).setClientSockets(clientSocket);
+    public void addDeviceUsername(String deviceName, String username){
+        mNearDevicesUsernames.put(username, deviceName);
+        mIndividualChats.put(username, new Chat(username));
     }
 
-    public void addNearDeviceUsername(String deviceName, String username){
-        Device dev = mNearDevices.get(deviceName);
-
-        if(dev != null){
-            dev.setUsername(username);
-            mNearDevicesUsernames.put(username, deviceName);
+    public String getUsernameByDeviceName(String deviceName){
+        for (Map.Entry<String, String> entry :  mNearDevicesUsernames.entrySet()) {
+            if(entry.getValue().equals(deviceName)){
+                return entry.getKey();
+            }
         }
+
+        return null;
     }
-
-
-
     /**
      * Building messages to send between peers
      */
     
     public static String buildIndividualChatMessage(String senderUsername, String message){
-        return MESSAGE_TYPE_INDIVIDUAL + SPACE + senderUsername + SPACE + message;
+        return MESSAGE_TYPE_INDIVIDUAL + SEPARATOR + senderUsername + SEPARATOR + message;
     }
 
     public static String buildGroupChatMessage(String senderUsername, String message){
-        return MESSAGE_TYPE_GROUP + SPACE + senderUsername + SPACE + message;
+        return MESSAGE_TYPE_GROUP + SEPARATOR + senderUsername + SEPARATOR + message;
     }
 
-    public static String buildUsernameBroadcastMessage(String myDeviceName, String myUsername){
-        return USERNAME_BROADCAST + SPACE +  myDeviceName + SPACE + myUsername;
-    }
+    public static String buildUsernameBroadcastMessage(String myDeviceName, String myUsername, boolean isGO){
 
-    public static String buildGroupOwnerBroadcastMessage(String myUsername){
-        return GROUPOWNER_BROADCAST + SPACE + myUsername;
-    }
+        String msg = USERNAME_BROADCAST + SEPARATOR +  myDeviceName + SEPARATOR + myUsername;
 
+        return isGO ? GROUPOWNER_BROADCAST + SEPARATOR + msg : msg;
+    }
 
     
     /**
@@ -155,7 +132,7 @@ public class NearbyPeerCommunication {
      */
     public static void processReceivedMessage(String received){
 
-        switch(received.split(SPACE)[0]){
+        switch(received.split(SEPARATOR)[0]){
             case MESSAGE_TYPE_INDIVIDUAL: processIndividualChatMessage(received); break;
             case MESSAGE_TYPE_GROUP: processGroupChatMessage(received); break;
             case USERNAME_BROADCAST: processUsernameBroadcastMessage(received); break;
@@ -165,7 +142,7 @@ public class NearbyPeerCommunication {
     }
 
     public static void processIndividualChatMessage(String received){
-        String[] receivedParts = received.split(SPACE);
+        String[] receivedParts = received.split(SEPARATOR);
 
         String senderUsername = receivedParts[1];
         String messageContent = receivedParts[2];
@@ -177,7 +154,7 @@ public class NearbyPeerCommunication {
     }
 
     private static void processGroupChatMessage(String received) {
-        String[] receivedParts = received.split(SPACE);
+        String[] receivedParts = received.split(SEPARATOR);
 
         String senderUsername = receivedParts[1];
         String messageContent = receivedParts[2];
@@ -190,24 +167,64 @@ public class NearbyPeerCommunication {
     }
 
     private static void processUsernameBroadcastMessage(String received) {
-        String[] receivedParts = received.split(SPACE);
+        String[] receivedParts = received.split(SEPARATOR);
 
         String deviceName = receivedParts[1];
         String username = receivedParts[2];
 
-        ApplicationContext.getInstance().getNearbyPeerCommunication().addNearDeviceUsername(deviceName, username);
+        ApplicationContext.getInstance().getNearbyPeerCommunication().addDeviceUsername(deviceName, username);
     }
 
     private static void processGroupOwnerBroadcastMessage(String received) {
-        String[] receivedParts = received.split(SPACE);
+        String[] receivedParts = received.split(SEPARATOR);
 
-        String groupOwnerUsername = receivedParts[1];
+        String groupOwnerUsername = receivedParts[3];
+        String deviceName = receivedParts[2];
 
         ApplicationContext.getInstance().getNearbyPeerCommunication().getGroupChat().setOwner(groupOwnerUsername);
+        ApplicationContext.getInstance().getNearbyPeerCommunication().addDeviceUsername(deviceName, groupOwnerUsername);
     }
 
 
+    public void updateNearbyDevices(SimWifiP2pDeviceList nearbyDevices) {
+        mNearbyDevices = nearbyDevices;
+    }
+
+    public void updateGroupDevices(SimWifiP2pInfo gInfo) {
+
+        if(gInfo.askIsGO()){
+            mGroupChat.setOwner(ApplicationContext.getInstance().getData().getUsername());
+        }
+
+        //add new members to group
+        for(String device : gInfo.getDevicesInNetwork()) {
+
+            //ignore devices that already have client socket
+            if(mGroupChat.getMembers().contains(device)){
+                continue;
+            }
+
+            mGroupChat.addMember(device);
+
+            String myUsername = ApplicationContext.getInstance().getData().getUsername();
+            String msg = NearbyPeerCommunication.buildUsernameBroadcastMessage(mDeviceName, myUsername, gInfo.askIsGO());
 
 
+            new OutgoingCommunicationTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, device, msg);
+        }
 
+        //remove old elements from group
+        for (String device : mGroupChat.getMembers()) {
+            if(gInfo.getDevicesInNetwork().contains(device)){
+                continue;
+            }
+
+            mGroupChat.removeMember(device);
+            mIndividualChats.remove(getUsernameByDeviceName(device));
+        }
+    }
+
+    public Set<String> getGroupUsernameSet() {
+        return mIndividualChats.keySet();
+    }
 }

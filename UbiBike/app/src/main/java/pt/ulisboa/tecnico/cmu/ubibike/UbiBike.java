@@ -38,16 +38,19 @@ import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketManager;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Trajectory;
-import pt.ulisboa.tecnico.cmu.ubibike.fragments.ChatFragment;
-import pt.ulisboa.tecnico.cmu.ubibike.fragments.ChatsListFragment;
+import pt.ulisboa.tecnico.cmu.ubibike.fragments.chats.ChatFragment;
+import pt.ulisboa.tecnico.cmu.ubibike.fragments.chats.ChatsListFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.HomeFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.LoginFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.MapFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.RegisterAccountFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.TrajectoryListFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.UserProfileFragment;
+import pt.ulisboa.tecnico.cmu.ubibike.fragments.chats.GroupChatFragment;
+import pt.ulisboa.tecnico.cmu.ubibike.fragments.chats.IndividualChatFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.MobileConnectionManager;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.SessionManager;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.NearbyPeerCommunication;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.IncomingCommunicationTask;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.OutgoingCommunicationTask;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.TransferDataTask;
@@ -173,7 +176,7 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
     @Override
     protected void onPause() {
         super.onPause();
-//        unregisterReceiver(mReceiver);
+
 
         if (mNetworkChangeReceiverRegistered) {
             unregisterReceiver(mNetworkChangeReceiver);
@@ -181,6 +184,13 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
 
             if(mPopupWindow != null) mPopupWindow.dismiss();
         }
+    }
+
+    @Override
+    protected void onStop() {
+        unregisterReceiver(mReceiver);
+        wifiP2pTurnOff();
+        super.onStop();
     }
 
     @Override
@@ -344,12 +354,7 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
      * Shows a group chat
      */
     public void showGroupChat(){
-        Fragment fragment = new ChatFragment();
-
-        Bundle arguments = new Bundle();
-        arguments.putBoolean(ChatFragment.ARGUMENT_KEY_GROUP_CHAT, true);
-        fragment.setArguments(arguments);
-
+        Fragment fragment = new GroupChatFragment();
         replaceFragment(fragment, false, true);
     }
 
@@ -359,10 +364,9 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
      * @param username - user chat to open
      */
     public void showIndividualChat(String username){
-        Fragment fragment = new ChatFragment();
+        Fragment fragment = new IndividualChatFragment();
 
         Bundle arguments = new Bundle();
-        arguments.putBoolean(ChatFragment.ARGUMENT_KEY_GROUP_CHAT, false);
         arguments.putString(ChatFragment.ARGUMENT_KEY_USERNAME, username);
         fragment.setArguments(arguments);
 
@@ -516,9 +520,8 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
 
     @Override
     public void onGroupInfoAvailable(SimWifiP2pDeviceList devices, SimWifiP2pInfo groupInfo) {
-
-        //TODO
-
+        SimWifiP2pBroadcastReceiver.processPeersChanged(devices);
+        SimWifiP2pBroadcastReceiver.processNetworkMembership(groupInfo);
     }
 
 
@@ -598,6 +601,7 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
             mManager = new SimWifiP2pManager(mService);
             mChannel = mManager.initialize(getApplication(), getMainLooper(), null);
             mBound = true;
+            wifiP2pRequestGroupsInfo();
         }
 
         @Override

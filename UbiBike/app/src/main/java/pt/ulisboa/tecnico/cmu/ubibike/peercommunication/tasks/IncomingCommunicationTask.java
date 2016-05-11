@@ -25,9 +25,7 @@ public class IncomingCommunicationTask extends AsyncTask<Void, String, Void> {
 
         try {
 
-            serverSocket = new SimWifiP2pSocketServer(10001);   //TODO
-
-            ApplicationContext.getInstance().getNearbyPeerCommunication().setDeviceServerSocket(serverSocket);
+            serverSocket = new SimWifiP2pSocketServer(10001);
 
         } catch (IOException e) {
             Log.e("Uncaught exception", e.toString());
@@ -46,6 +44,7 @@ public class IncomingCommunicationTask extends AsyncTask<Void, String, Void> {
                     sock.getOutputStream().write(("\n").getBytes());
 
                     NearbyPeerCommunication.processReceivedMessage(receivedContent);
+                    receivedContent = "";
                 }
                 catch (IOException e) {
                     Log.d("Error reading socket:", e.getMessage());

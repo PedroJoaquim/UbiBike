@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmu.ubibike.fragments;
+package pt.ulisboa.tecnico.cmu.ubibike.fragments.chats;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,9 +17,11 @@ import java.util.Set;
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.R;
 import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
+import pt.ulisboa.tecnico.cmu.ubibike.adapters.MessageListAdapter;
 import pt.ulisboa.tecnico.cmu.ubibike.adapters.PeersChatAdapter;
+import pt.ulisboa.tecnico.cmu.ubibike.fragments.UpdatableUI;
 
-public class ChatsListFragment extends Fragment implements UpdatableUI{
+public class ChatsListFragment extends Fragment implements UpdatableUI {
 
     private static final String TITLE = "Chats nearby";
 
@@ -93,8 +95,8 @@ public class ChatsListFragment extends Fragment implements UpdatableUI{
         });
 
 
-        Set<String> nearDevices = ApplicationContext.getInstance().getNearbyPeerCommunication().getNearDevicesUsernamesSet();
-        final PeersChatAdapter adapter = new PeersChatAdapter(getActivity(), new ArrayList<>(nearDevices));
+        Set<String> username =  ApplicationContext.getInstance().getNearbyPeerCommunication().getGroupUsernameSet();
+        final PeersChatAdapter adapter = new PeersChatAdapter(getActivity(), new ArrayList<>(username));
 
         mPeersNearbyListView.setAdapter(adapter);
 
@@ -116,6 +118,6 @@ public class ChatsListFragment extends Fragment implements UpdatableUI{
 
     @Override
     public void updateUI() {
-        ((BaseAdapter) mPeersNearbyListView.getAdapter()).notifyDataSetChanged();
+        ((PeersChatAdapter) mPeersNearbyListView.getAdapter()).notifyDataSetChanged();
     }
 }

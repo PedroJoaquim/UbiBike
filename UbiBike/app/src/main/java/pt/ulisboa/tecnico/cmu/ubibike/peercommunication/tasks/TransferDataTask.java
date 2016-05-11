@@ -16,7 +16,7 @@ public class TransferDataTask extends AsyncTask<String, String, Void> {
 
     @Override
     protected Void doInBackground(String... param) {
-        try {
+        /*try {
 
             SimWifiP2pSocket clientSocket = ApplicationContext.getInstance().
                     getNearbyPeerCommunication().getNearDeviceClientSocketByDeviceName(param[0]);
@@ -29,7 +29,7 @@ public class TransferDataTask extends AsyncTask<String, String, Void> {
         } catch (IOException e) {
             Log.e("Uncaught exception", e.toString());
         }
-
+            */
         return null;
     }
 }

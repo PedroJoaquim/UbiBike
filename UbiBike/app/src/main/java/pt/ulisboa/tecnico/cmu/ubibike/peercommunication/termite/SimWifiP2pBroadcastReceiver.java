@@ -10,7 +10,6 @@ import pt.ulisboa.tecnico.cmu.ubibike.domain.Bike;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.UpdatableUI;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.NearbyPeerCommunication;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.OutgoingCommunicationTask;
-import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.TransferDataTask;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -67,8 +66,6 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
 
             processNetworkMembership(ginfo);
 
-
-
         } else if (SimWifiP2pBroadcast.WIFI_P2P_GROUP_OWNERSHIP_CHANGED_ACTION.equals(action)) {
 
             SimWifiP2pInfo ginfo = (SimWifiP2pInfo) intent.getSerializableExtra(
@@ -84,47 +81,13 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
     /**
      * Reacts to peers in range changed action
      */
-    private void processPeersChanged(SimWifiP2pDeviceList devices) {
+    public static void processPeersChanged(SimWifiP2pDeviceList devices) {
 
         checkBookedBikeInRange(devices);
 
-        Set<String> devicesBeforeUpdate = ApplicationContext.getInstance().
-                getNearbyPeerCommunication().getNearDevicesSet();
 
-        Set<String> devicesAfterUpdate = new HashSet<>();
-
-        for(SimWifiP2pDevice device : devices.getDeviceList()){
-            devicesAfterUpdate.add(device.deviceName);
-        }
-
-        //getting new devices
-        Set<String>  newDevices = new HashSet(devicesAfterUpdate);
-        newDevices.removeAll(devicesBeforeUpdate);
-
-        //register new devices,
-        //establish socket connection with each of them and
-        //send my username so that they know
-        for(String newDevice : newDevices){
-
-            if(newDevice.toLowerCase().startsWith("bike")){
-                continue;
-            }
-
-            String newDeviceVirtAddr = devices.getByName(newDevice).virtDeviceAddress;
-
-            ApplicationContext.getInstance().
-                    getNearbyPeerCommunication().addDeviceNearby(newDevice, newDeviceVirtAddr);
-
-        }
-
-        devicesBeforeUpdate.removeAll(devicesAfterUpdate);
-
-        //removing them
-        for(String notInRangeDevice : devicesBeforeUpdate){
-            ApplicationContext.getInstance().getNearbyPeerCommunication().
-                    removeDeviceNearby(notInRangeDevice);
-
-        }
+        ApplicationContext.getInstance()
+                .getNearbyPeerCommunication().updateNearbyDevices(devices);
 
 
         UpdatableUI currentFragment =  ApplicationContext.getInstance().getCurrentFragment();
@@ -139,56 +102,15 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
     /**
      *  Reacts to network membership changed action
      */
-    private void processNetworkMembership(SimWifiP2pInfo ginfo) {
+    public static void processNetworkMembership(SimWifiP2pInfo ginfo) {
 
-        String myDeviceName = ginfo.getDeviceName();
-
+        //Get my own device name
         ApplicationContext.getInstance()
-                .getNearbyPeerCommunication().setDeviceName(myDeviceName);
+                .getNearbyPeerCommunication().setDeviceName(ginfo.getDeviceName());
 
 
-        Set<String> devicesInNetwork = ginfo.getDevicesInNetwork();
-
-
-        for(String device : devicesInNetwork) {
-
-            //ignore devices that already have client socket
-            if(ApplicationContext.getInstance().getNearbyPeerCommunication().
-                    getDeviceNearby(device).getClientSocket() != null){
-                continue;
-            }
-
-            String myUsername = ApplicationContext.getInstance().getData().getUsername();
-
-            String msg = NearbyPeerCommunication.buildUsernameBroadcastMessage(myDeviceName, myUsername);
-
-            new OutgoingCommunicationTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, device, msg);
-
-        }
-
-        //setting group members to Set<String> containing device names
         ApplicationContext.getInstance().getNearbyPeerCommunication().
-                getGroupChat().setMembers(new HashSet<>(devicesInNetwork));
-
-
-        //If I'm the group owner
-        //I announce that to peers nearby
-        if(ginfo.askIsGO()){
-
-            ApplicationContext.getInstance().getNearbyPeerCommunication().
-                    getGroupChat().setOwner(ginfo.getDeviceName());
-
-
-            //announce group members that I'm the group owner
-            for(String groupMember : devicesInNetwork){
-
-                String myUsername = ApplicationContext.getInstance().getData().getUsername();
-
-                String msg = NearbyPeerCommunication.buildGroupOwnerBroadcastMessage(myUsername);
-
-                //new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, groupMember, msg);
-            }
-        }
+                            updateGroupDevices(ginfo);
 
 
         UpdatableUI currentFragment =  ApplicationContext.getInstance().getCurrentFragment();
@@ -205,7 +127,7 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
      *
      * @param devices - peers in range list
      */
-    private void checkBookedBikeInRange(SimWifiP2pDeviceList devices){
+    private static void checkBookedBikeInRange(SimWifiP2pDeviceList devices){
 
         Bike bookedBike = ApplicationContext.getInstance().getData().getBikeBooked();
 
@@ -216,13 +138,13 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
 
                 //we are near booked bike
                 if (device.deviceName.equals(bookedBike.getUuid())) {
-                    mActivity.notifyNearBookedBike(true);
+                    ApplicationContext.getInstance().getActivity().notifyNearBookedBike(true);
                     return;
                 }
             }
 
             //if we didnt return yet, booked bike isnt in range -> notify tracking service
-            mActivity.notifyNearBookedBike(false);
+            ApplicationContext.getInstance().getActivity().notifyNearBookedBike(false);
         }
     }
 }

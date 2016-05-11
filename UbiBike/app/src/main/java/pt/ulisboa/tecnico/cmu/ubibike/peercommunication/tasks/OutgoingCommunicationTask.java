@@ -20,35 +20,38 @@ public class OutgoingCommunicationTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... params) {
+
+        SimWifiP2pSocket clientSocket = null;
+
         try {
 
             String virtualAddress = ApplicationContext.getInstance().
-                    getNearbyPeerCommunication().getDeviceNearbyVirtualAddress(params[0]);
+                    getNearbyPeerCommunication().getDeviceVirtualAddressByName(params[0]);
 
             String[] splittedAddr = virtualAddress.split(":");
 
+            clientSocket = new SimWifiP2pSocket(splittedAddr[0], Integer.parseInt(splittedAddr[1]));
 
-            SimWifiP2pSocket clientSocket = new SimWifiP2pSocket(splittedAddr[0], Integer.parseInt(splittedAddr[1]));
+            clientSocket.getOutputStream().write((params[1] + "\n").getBytes());
 
-            ApplicationContext.getInstance().
-                    getNearbyPeerCommunication().addNearDeviceClientSocket(params[0], clientSocket);
-
-            //there is a message to send
-            if(params.length == 2){
-
-                clientSocket.getOutputStream().write((params[1] + "\n").getBytes());
-                BufferedReader sockIn = new BufferedReader(
-                        new InputStreamReader(clientSocket.getInputStream()));
-                sockIn.readLine();
-
-            }
-
+            BufferedReader sockIn = new BufferedReader(
+                    new InputStreamReader(clientSocket.getInputStream()));
+            sockIn.readLine();
 
         } catch (UnknownHostException e) {
             return "Unknown Host:" + e.getMessage();
         } catch (IOException e) {
             return "IO error:" + e.getMessage();
+        } finally {
+            try{
+                if(clientSocket != null){
+                    clientSocket.close();
+                }
+            } catch (IOException e) {
+                //ignore
+            }
         }
+
         return null;
     }
 }

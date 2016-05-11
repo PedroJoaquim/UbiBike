@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
+
 
 public class Chat {
 
@@ -28,6 +30,19 @@ public class Chat {
 
         mAllMessages.add(message);
         Collections.sort(mAllMessages);
+
+
+
+        try{
+            ApplicationContext.getInstance().getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ApplicationContext.getInstance().getCurrentFragment().updateUI();
+                }
+            });}
+        catch (Exception e){
+            System.out.println("");
+        }
     }
 
     public List<ChatMessage> getAllMessages(){

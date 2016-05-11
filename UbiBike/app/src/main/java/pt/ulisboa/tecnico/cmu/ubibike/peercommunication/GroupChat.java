@@ -28,8 +28,8 @@ public class GroupChat {
         mOwner = owner;
     }
 
-    public void addMember(String username){
-        mMembers.add(username);
+    public void addMember(String deviceName){
+        mMembers.add(deviceName);
     }
     public Set<String> getMembers() {
         return mMembers;
@@ -47,4 +47,7 @@ public class GroupChat {
         return mChat;
     }
 
+    public void removeMember(String device) {
+        mMembers.remove(device);
+    }
 }

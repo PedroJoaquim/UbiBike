@@ -1,114 +1,49 @@
-package pt.ulisboa.tecnico.cmu.ubibike.fragments;
+package pt.ulisboa.tecnico.cmu.ubibike.fragments.chats;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONObject;
 
 import java.security.PrivateKey;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.R;
-import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
 import pt.ulisboa.tecnico.cmu.ubibike.adapters.MessageListAdapter;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.CipherManager;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.Chat;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.ChatMessage;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.NearbyPeerCommunication;
-import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.TransferDataTask;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.OutgoingCommunicationTask;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.DigitalSignature;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.JsonParser;
 
-public class ChatFragment extends Fragment implements UpdatableUI {
+/**
+ * Created by ASUS on 11/05/2016.
+ */
+public class IndividualChatFragment extends ChatFragment {
 
-    public static final String ARGUMENT_KEY_GROUP_CHAT = "group_chat";
-    public static final String ARGUMENT_KEY_USERNAME = "username";
+    private String mUsername;
+    private String mDeviceName;
 
-    private List<ChatMessage> mMessages;
-    private Chat mChat;
-    private boolean mGroupChat;
+    @Override
+    protected void createSpecificChat() {
+        mUsername = getArguments().getString(ARGUMENT_KEY_USERNAME);
+        mDeviceName = ApplicationContext.getInstance().getNearbyPeerCommunication().getDeviceNearbyByUsername(mUsername).deviceName;
+        mChat = ApplicationContext.getInstance().getNearbyPeerCommunication().getIndividualChat(mUsername);
 
-    private ListView mListView;
-
-    private String mUsername;   //receiver's username in individual chat mode
-
-    public ChatFragment() {
-        // Required empty public constructor
-    }
-
-    private UbiBike getParentActivity(){
-        return (UbiBike) getActivity();
+        try{getParentActivity().getSupportActionBar().setTitle(mUsername);}
+        catch (Exception e) {}
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        mGroupChat = getArguments().getBoolean(ARGUMENT_KEY_GROUP_CHAT);
-
-        if(mGroupChat) {
-            mChat = ApplicationContext.getInstance().getNearbyPeerCommunication().getGroupChat().getChat();
-
-            String groupOwner = ApplicationContext.getInstance().getNearbyPeerCommunication().
-                                                                            getGroupChat().getOwner();
-            if(groupOwner != null) {
-                getParentActivity().getSupportActionBar().setTitle("Group hosted by '" + groupOwner + "'");
-            }
-            else{
-                getParentActivity().getSupportActionBar().setTitle("Group chat");
-            }
-        }
-        else{
-            mUsername = getArguments().getString(ARGUMENT_KEY_USERNAME);
-            mChat = ApplicationContext.getInstance().getNearbyPeerCommunication().
-                    getIndividualChat(mUsername);
-
-            getParentActivity().getSupportActionBar().setTitle(mUsername);
-        }
-
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        ApplicationContext.getInstance().setCurrentFragment(this);
-    }
-
-    @Override
-    public void onPause(){
-        super.onPause();
-
-        ApplicationContext.getInstance().setCurrentFragment(null);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_conversation, container, false);
-
-        setViewElements(view);
-
-        return view;
-    }
-
-
-    private void setViewElements(View view){
+    protected void setViewElements(View view) {
 
         mListView = (ListView) view.findViewById(R.id.list);
         ImageButton send_button = (ImageButton) view.findViewById(R.id.chat_send_button);
@@ -117,47 +52,22 @@ public class ChatFragment extends Fragment implements UpdatableUI {
         send_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                String input = message_editText.getText().toString();
+            String input = message_editText.getText().toString();
+            String myUsername = ApplicationContext.getInstance().getData().getUsername();
 
+                String msg = NearbyPeerCommunication.buildIndividualChatMessage(myUsername, input);
 
-                Toast.makeText(getParentActivity(), input, Toast.LENGTH_SHORT).show();
+                mChat.addNewMessage(new ChatMessage(false, myUsername, input));
+                updateUI();
 
-                String myUsername = ApplicationContext.getInstance().getData().getUsername();
-
-                if(mGroupChat){
-
-                    String msg = NearbyPeerCommunication.buildGroupChatMessage(myUsername, input);
-
-                    mChat.addNewMessage(new ChatMessage(false, myUsername, msg));
-                    updateUI();
-
-                    ArrayList<String> nearUsersUsernames = new ArrayList<>(ApplicationContext.getInstance().
-                                         getNearbyPeerCommunication().getGroupChat().getMembers());
-
-
-                    for(String username : nearUsersUsernames){
-                        new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                                                                            username, msg);
-                    }
-                }
-                else{
-
-                    String msg = NearbyPeerCommunication.buildIndividualChatMessage(myUsername, input);
-
-                    mChat.addNewMessage(new ChatMessage(false, myUsername, msg));
-                    updateUI();
-
-                    new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                            mUsername, msg);
-
-                }
+                new OutgoingCommunicationTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mDeviceName, msg);
+                cleanMessageInput();
             }
         });
 
-
         mMessages = mChat.getAllMessages();
 
-        MessageListAdapter messageListAdapter = new MessageListAdapter(getActivity(), mMessages, mGroupChat );
+        MessageListAdapter messageListAdapter = new MessageListAdapter(getActivity(), mMessages, false);
         mListView.setAdapter(messageListAdapter);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -194,10 +104,8 @@ public class ChatFragment extends Fragment implements UpdatableUI {
                 if (index == shown) {
                     mListView.setSelection(mListView.getAdapter().getCount());
                 }
-
             }
         });
-
     }
 
     private void sendPoints(long points) throws Exception {
@@ -235,18 +143,4 @@ public class ChatFragment extends Fragment implements UpdatableUI {
         // send points
         getParentActivity().wifiP2pSendMessageToPeer(deviceName, pointsTransaction.toString());
     }
-
-
-    public void cleanMessageInput(){
-        EditText message_editText = (EditText) getView().findViewById(R.id.chat_message_editText);
-        message_editText.setText("");
-    }
-
-
-    @Override
-    public void updateUI() {
-        ((BaseAdapter) mListView.getAdapter()).notifyDataSetChanged();
-    }
-
-
 }
