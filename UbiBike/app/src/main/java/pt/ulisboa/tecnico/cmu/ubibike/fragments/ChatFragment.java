@@ -1,13 +1,11 @@
 package pt.ulisboa.tecnico.cmu.ubibike.fragments;
 
-import android.app.Application;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
@@ -30,8 +28,8 @@ import pt.ulisboa.tecnico.cmu.ubibike.adapters.MessageListAdapter;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.CipherManager;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.Chat;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.ChatMessage;
-import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.CommunicationTasks;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.NearbyPeerCommunication;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.TransferDataTask;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.DigitalSignature;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.JsonParser;
 
@@ -126,8 +124,6 @@ public class ChatFragment extends Fragment implements UpdatableUI {
 
                 String myUsername = ApplicationContext.getInstance().getData().getUsername();
 
-                CommunicationTasks comm = getParentActivity().getCommunicationTasks();
-
                 if(mGroupChat){
 
                     String msg = NearbyPeerCommunication.buildGroupChatMessage(myUsername, input);
@@ -140,7 +136,7 @@ public class ChatFragment extends Fragment implements UpdatableUI {
 
 
                     for(String username : nearUsersUsernames){
-                        comm.new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                        new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
                                                                             username, msg);
                     }
                 }
@@ -151,7 +147,7 @@ public class ChatFragment extends Fragment implements UpdatableUI {
                     mChat.addNewMessage(new ChatMessage(false, myUsername, msg));
                     updateUI();
 
-                    comm.new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                    new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
                             mUsername, msg);
 
                 }

@@ -9,6 +9,8 @@ import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Bike;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.UpdatableUI;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.NearbyPeerCommunication;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.OutgoingCommunicationTask;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.TransferDataTask;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -113,27 +115,6 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
             ApplicationContext.getInstance().
                     getNearbyPeerCommunication().addDeviceNearby(newDevice, newDeviceVirtAddr);
 
-            //creating and saving client socket
-            ApplicationContext.getInstance().getActivity().getCommunicationTasks().
-                    new OutgoingCommunicationTask().
-                    executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, newDevice);
-
-
-            String myDeviceName = ApplicationContext.getInstance().
-                    getNearbyPeerCommunication().getDeviceName();
-
-            //if I know my device name, send my username to other
-            //otherwise delay this announcemet
-            if(myDeviceName != null) {
-
-                String myUsername = ApplicationContext.getInstance().getData().getUsername();
-                String msg =  NearbyPeerCommunication.buildUsernameBroadcastMessage(myDeviceName,myUsername);
-
-                //sending my username
-                ApplicationContext.getInstance().getActivity().getCommunicationTasks().
-                        new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                        newDevice, msg);
-            }
         }
 
         devicesBeforeUpdate.removeAll(devicesAfterUpdate);
@@ -160,36 +141,34 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
      */
     private void processNetworkMembership(SimWifiP2pInfo ginfo) {
 
-        String myDeviceName = ApplicationContext.getInstance()
-                .getNearbyPeerCommunication().getDeviceName();
+        String myDeviceName = ginfo.getDeviceName();
+
+        ApplicationContext.getInstance()
+                .getNearbyPeerCommunication().setDeviceName(myDeviceName);
 
 
-        //I haven't done my username broadcast yet
-        if(myDeviceName == null){
-            myDeviceName = ginfo.getDeviceName();
+        Set<String> devicesInNetwork = ginfo.getDevicesInNetwork();
 
-            ApplicationContext.getInstance().
-                    getNearbyPeerCommunication().setDeviceName(myDeviceName);
 
-            Set<String> nearDevices = ApplicationContext.getInstance().
-                    getNearbyPeerCommunication().getNearDevicesSet();
+        for(String device : devicesInNetwork) {
+
+            //ignore devices that already have client socket
+            if(ApplicationContext.getInstance().getNearbyPeerCommunication().
+                    getDeviceNearby(device).getClientSocket() != null){
+                continue;
+            }
 
             String myUsername = ApplicationContext.getInstance().getData().getUsername();
 
+            String msg = NearbyPeerCommunication.buildUsernameBroadcastMessage(myDeviceName, myUsername);
 
-            for(String device : nearDevices){
+            new OutgoingCommunicationTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, device, msg);
 
-                String msg = NearbyPeerCommunication.buildUsernameBroadcastMessage(myDeviceName, myUsername);
-
-                ApplicationContext.getInstance().getActivity().getCommunicationTasks().
-                        new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                        device, msg);
-            }
         }
 
         //setting group members to Set<String> containing device names
         ApplicationContext.getInstance().getNearbyPeerCommunication().
-                getGroupChat().setMembers(new HashSet<>(ginfo.getDevicesInNetwork()));
+                getGroupChat().setMembers(new HashSet<>(devicesInNetwork));
 
 
         //If I'm the group owner
@@ -201,15 +180,13 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
 
 
             //announce group members that I'm the group owner
-            for(String groupMember : ginfo.getDevicesInNetwork()){
+            for(String groupMember : devicesInNetwork){
 
                 String myUsername = ApplicationContext.getInstance().getData().getUsername();
 
                 String msg = NearbyPeerCommunication.buildGroupOwnerBroadcastMessage(myUsername);
 
-                ApplicationContext.getInstance().getActivity().getCommunicationTasks().
-                        new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                        groupMember, msg);
+                new TransferDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, groupMember, msg);
             }
         }
 
@@ -220,7 +197,6 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
         if(currentFragment != null){
             currentFragment.updateUI();
         }
-
     }
 
     /**

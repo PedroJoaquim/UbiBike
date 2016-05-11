@@ -48,10 +48,9 @@ import pt.ulisboa.tecnico.cmu.ubibike.fragments.TrajectoryListFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.UserProfileFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.MobileConnectionManager;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.SessionManager;
-import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.Chat;
-import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.ChatMessage;
-import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.CommunicationTasks;
-import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.GroupChat;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.IncomingCommunicationTask;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.OutgoingCommunicationTask;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.TransferDataTask;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.termite.SimWifiP2pBroadcastReceiver;
 import pt.ulisboa.tecnico.cmu.ubibike.services.TrajectoryTracker;
 
@@ -63,7 +62,6 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
 
     public static final String TAG = "UbiBike";
 
-    private CommunicationTasks mCommunicationTasks;
     private SimWifiP2pManager mManager = null;
     private SimWifiP2pManager.Channel mChannel = null;
     private Messenger mService = null;
@@ -86,8 +84,6 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         mSessionManager = new SessionManager(this);
 
         mNetworkChangeReceiver = new NetworkChangeReceiver();
-
-        mCommunicationTasks = new CommunicationTasks();
 
         setViewElements();
 
@@ -533,8 +529,7 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         mBound = true;
 
         // spawn the chat server background task
-        mCommunicationTasks.new IncomingCommunicationTask().executeOnExecutor(
-                AsyncTask.THREAD_POOL_EXECUTOR);
+        new IncomingCommunicationTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
     }
 
@@ -547,13 +542,13 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
 
     public void wifiP2pConnectToPeer(String deviceName){
 
-        mCommunicationTasks.new OutgoingCommunicationTask().executeOnExecutor(
+        new OutgoingCommunicationTask().executeOnExecutor(
                 AsyncTask.THREAD_POOL_EXECUTOR, deviceName);
     }
 
     public void wifiP2pSendMessageToPeer(String deviceName, String message){
 
-        mCommunicationTasks.new TransferDataTask().executeOnExecutor(
+        new TransferDataTask().executeOnExecutor(
                 AsyncTask.THREAD_POOL_EXECUTOR, deviceName, message);
 
     }
@@ -622,7 +617,4 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         return mSessionManager;
     }
 
-    public CommunicationTasks getCommunicationTasks(){
-        return mCommunicationTasks;
-    }
 }
