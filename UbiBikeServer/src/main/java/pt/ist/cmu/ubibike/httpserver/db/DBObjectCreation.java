@@ -1,6 +1,7 @@
 package pt.ist.cmu.ubibike.httpserver.db;
 
 import pt.ist.cmu.ubibike.httpserver.model.Coordinate;
+import pt.ist.cmu.ubibike.httpserver.model.PendingEvent;
 import pt.ist.cmu.ubibike.httpserver.model.Trajectory;
 import pt.ist.cmu.ubibike.httpserver.util.CoordinatesParser;
 
@@ -117,5 +118,9 @@ public class DBObjectCreation {
         stmt.executeUpdate();
 
         try{stmt.close();} catch (SQLException e) {/*ignore*/}
+    }
+
+    public static void insertPendingEvent(Connection connection, PendingEvent pendingEvent) {
+
     }
 }

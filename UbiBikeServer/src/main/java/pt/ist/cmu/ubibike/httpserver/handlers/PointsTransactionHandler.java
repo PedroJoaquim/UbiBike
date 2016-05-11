@@ -30,9 +30,6 @@ public class PointsTransactionHandler extends AuthRequiredHandler {
         PointsTransaction pt = mapper.readValue(json, PointsTransaction.class);
 
 
-
-
-
     }
 
     protected void executeAction(HttpExchange httpExchange) throws Exception {

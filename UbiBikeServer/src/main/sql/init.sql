@@ -19,7 +19,8 @@ CREATE TABLE pending_events (
   target_uid           INT NOT NULL,
   target_logical_clock INT NOT NULL,
   points               INT NOT NULL,
-  transaction_timestamp LONG NOT NULL
+  transaction_timestamp LONG NOT NULL,
+  type                 INT NOT NULL
 );
 
 DROP TABLE IF EXISTS trajectories;
