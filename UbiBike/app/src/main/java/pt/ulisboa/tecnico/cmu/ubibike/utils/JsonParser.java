@@ -17,6 +17,7 @@ import pt.ulisboa.tecnico.cmu.ubibike.domain.Bike;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.BikePickupStation;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Trajectory;
+import pt.ulisboa.tecnico.cmu.ubibike.managers.CipherManager;
 
 /**
  * Created by andriy on 13.04.2016.
@@ -36,6 +37,8 @@ public class JsonParser {
     private static final String LONGITUDE = "lng";
 
     private static final String BIKE_ID = "bid";
+    private static final String BIKE_ADDR = "bike_addr";
+
     private static final String BIKE_STATIONS = "stations";
     private static final String STATION_ID = "sid";
     private static final String START_STATION = "start_sid";
@@ -218,10 +221,9 @@ public class JsonParser {
 
     public static void parseBikeBookResponseFromJson(JSONObject jsonObject, Data appData) throws JSONException {
 
-        //TODO finish
         int bid = jsonObject.getInt(BIKE_ID);
         int sid = jsonObject.getInt(STATION_ID);
-        String uuid = "";
+        String uuid = jsonObject.getString(BIKE_ADDR);
 
         Bike bike = new Bike(bid, uuid, sid);
 
@@ -561,7 +563,7 @@ public class JsonParser {
             JSONObject json = new JSONObject();
 
             json.put(POINTS_TRANSACTION_DATA, pointsTransactionData);
-            json.put(SIGNATURE, signature);
+            json.put(SIGNATURE, CipherManager.encodeToBase64String(signature));
             json.put(BASE64_PUBLIC_KEY, base64publicKey);
 
             return json;

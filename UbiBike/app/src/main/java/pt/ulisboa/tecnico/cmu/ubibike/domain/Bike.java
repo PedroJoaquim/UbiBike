@@ -5,7 +5,7 @@ public class Bike {
 
     private int bid;
     private int sid;
-    private String uuid;    //in our case the WIFI Direct peers device id
+    private String uuid;    //in our case the WIFI Direct peers device name
 
     public Bike(int bid, String uuid, int sid) {
         this.bid = bid;
