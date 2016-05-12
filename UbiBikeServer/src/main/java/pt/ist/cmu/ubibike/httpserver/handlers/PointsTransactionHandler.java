@@ -57,7 +57,7 @@ public class PointsTransactionHandler extends AuthRequiredHandler {
 
         //freshness check
         //finally check the user sending the request is either the source user or the target user
-        if((ptBaseInfo.getSourceUid() != this.user.getUid()) && (ptBaseInfo.getTargetUid() != this.user.getUid())){
+        if(!(ptBaseInfo.getSourceUsername().equals(this.user.getUsername())) && !(ptBaseInfo.getTargetUsername().equals(this.user.getUsername()))){
             throw new RuntimeException("user not in the reported transaction");
         }
 
@@ -87,7 +87,7 @@ public class PointsTransactionHandler extends AuthRequiredHandler {
         PublicKeyToken pkToken = TokenHandler.readPublicKeyToken(encodedPKToken);
 
         //check if public token it is from the source user
-        if(pkToken.getUid() != ptBaseInfo.getSourceUid()){
+        if(!pkToken.getUsername().equals(ptBaseInfo.getSourceUsername())){
             throw new RuntimeException("Invalid Transaction Validation Token");
         }
 

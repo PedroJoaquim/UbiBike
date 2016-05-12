@@ -366,10 +366,12 @@ public class ServerCommunicationHandler {
                         appData = new Data(userID, username);
                     }
 
+                    appData.setPrivateKey(privateKey);
+
                     JsonParser.parseRegisterAccountResponseFromJson(json, appData);
 
-                    int uid = ApplicationContext.getInstance().getData().getUID();
-                    ApplicationContext.getInstance().getStorageManager().storeClientKeyPairOnBD(uid, publicKey, privateKey);
+                    ApplicationContext.getInstance().getStorageManager().storeClientKeyPairOnBD(userID, publicKey, privateKey);
+                    ApplicationContext.getInstance().getStorageManager().storeServerPublicKeyOnDB(userID, appData.getServerPublicKey());
 
                     ApplicationContext.getInstance().setData(appData);
                     ApplicationContext.getInstance().getActivity().finishLogin();

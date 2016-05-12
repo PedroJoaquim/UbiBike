@@ -4,6 +4,7 @@ import android.app.Application;
 
 import java.lang.reflect.Array;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.ArrayList;
 
 import pt.ulisboa.tecnico.cmu.ubibike.connection.PendingRequest;
@@ -60,8 +61,10 @@ public class ApplicationContext extends Application {
 
                 Data data = mStorageManager.getAppDataFromDB(mUid);
 
+                PublicKey serverPK = mStorageManager.getServerPublicKeyFromDB(mUid);
                 PrivateKey sKey = mStorageManager.getClientPrivateKeyFromDB(mUid);
                 data.setPrivateKey(sKey);
+                data.setServerPublicKey(serverPK);
 
                 mPendingRequests = mStorageManager.getPendingRequestFromDB(mUid);
 

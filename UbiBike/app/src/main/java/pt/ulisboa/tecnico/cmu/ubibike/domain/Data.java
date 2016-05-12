@@ -51,7 +51,7 @@ public class Data {
         mBikeStations = new HashMap<>();
         mTrajectories = new ArrayList<>();
         mLastPosition = new LatLng(0.0, 0.0); //TODO last position
-        mTotalPoints = 0;
+        mTotalPoints = 500;
         mGlobalRank = -1;
         mTotalDistance = 0.0;
         mTotalTime = 0;
@@ -367,5 +367,13 @@ public class Data {
 
     public void setServerPublicKey(PublicKey mServerPublicKey) {
         this.mServerPublicKey = mServerPublicKey;
+    }
+
+    public HashMap<String, List<Long>> getTransactionLog() {
+        return mTransactionLog;
+    }
+
+    public void setTransactionLog(HashMap<String, List<Long>> mTransactionLog) {
+        this.mTransactionLog = mTransactionLog;
     }
 }

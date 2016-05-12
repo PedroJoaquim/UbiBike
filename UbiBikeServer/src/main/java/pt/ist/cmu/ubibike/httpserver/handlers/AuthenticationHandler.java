@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.fge.jsonschema.main.JsonValidator;
 import com.sun.net.httpserver.HttpExchange;
 import pt.ist.cmu.ubibike.httpserver.cipher.CipherUtils;
+import pt.ist.cmu.ubibike.httpserver.cipher.PublicKeyReader;
 import pt.ist.cmu.ubibike.httpserver.db.DBConnection;
 import pt.ist.cmu.ubibike.httpserver.db.DBObjectSelector;
 import pt.ist.cmu.ubibike.httpserver.model.User;
@@ -25,6 +26,7 @@ public class AuthenticationHandler extends BaseHandler {
 
     private String sessionToken;
     private User user;
+    private String encodedPublicKey;
 
     @Override
     protected void validateAction(HttpExchange httpExchange) throws Exception{
@@ -56,6 +58,8 @@ public class AuthenticationHandler extends BaseHandler {
             throw new RuntimeException("invalid credentials");
         }
 
+        this.encodedPublicKey = CipherUtils.encodeToBase64String(PublicKeyReader.getKey().getEncoded());
+
     }
 
     @Override
@@ -70,6 +74,7 @@ public class AuthenticationHandler extends BaseHandler {
 
         jNode.put("session_token", this.sessionToken);
         jNode.put("uid", this.user.getUid());
+        jNode.put("server_public_key", this.encodedPublicKey);
 
         return jNode.toString();
     }

@@ -18,10 +18,10 @@ import java.util.List;
 public class ConsistencyManager {
 
     private static ConsistencyManager instance;
-    private HashMap<Integer, Object> locks;
+    private HashMap<String, Object> locks;
 
     public ConsistencyManager() {
-        this.locks = new HashMap<Integer, Object>();
+        this.locks = new HashMap<String, Object>();
     }
 
     public static synchronized ConsistencyManager getInstance(){
@@ -33,7 +33,7 @@ public class ConsistencyManager {
     }
 
     public void addNewTrajectory(User u, Trajectory t) throws SQLException {
-        synchronized (getLockForUser(u.getUid())){
+        synchronized (getLockForUser(u.getUsername())){
 
             DBObjectCreation.insertTrajectory(DBConnection.getConnection(), t);
             u.addPoints(t.getPointsEarned());
@@ -43,7 +43,7 @@ public class ConsistencyManager {
                 checkPendingEvents(u);
             }
             else{
-                DBObjectCreation.insertPendingEvent(DBConnection.getConnection(), new PendingEvent(-1, u.getUid(), t.getLogicalClock(), -1, -1, t.getPointsEarned(), 0, PendingEvent.TRAJECTORY_TYPE));
+                DBObjectCreation.insertPendingEvent(DBConnection.getConnection(), new PendingEvent(-1, u.getUsername(), t.getLogicalClock(), "", -1, t.getPointsEarned(), 0, PendingEvent.TRAJECTORY_TYPE));
                 DBObjectUpdater.updateUser(DBConnection.getConnection(), u);
             }
         }
@@ -52,11 +52,11 @@ public class ConsistencyManager {
 
     public boolean addNewPointsTransaction(PointsTransactionAllInfo pt) throws SQLException {
 
-        synchronized (getLockForUser(pt.getSourceUid())){
-            synchronized (getLockForUser(pt.getTargetUid())){
+        synchronized (getLockForUser(pt.getSourceUsername())){
+            synchronized (getLockForUser(pt.getTargetUsername())){
 
-                User sourceUser = DBObjectSelector.getUserFromID(DBConnection.getConnection(), pt.getSourceUid());
-                User targetUser = DBObjectSelector.getUserFromID(DBConnection.getConnection(), pt.getTargetUid());
+                User sourceUser = DBObjectSelector.getUserFromUsername(DBConnection.getConnection(), pt.getSourceUsername());
+                User targetUser = DBObjectSelector.getUserFromUsername(DBConnection.getConnection(), pt.getTargetUsername());
 
 
                 if(actionAlreadyPerformed(pt)){
@@ -108,12 +108,12 @@ public class ConsistencyManager {
 
         List<User> usersToProcess = new ArrayList<User>();
         List<PendingEvent> pendingEventList = DBObjectSelector.getPendingEventsForUser(DBConnection.getConnection(), u.getUid());
-        final int uid = u.getUid();
+        final String username = u.getUsername();
 
         pendingEventList.sort(new Comparator<PendingEvent>() {
             public int compare(PendingEvent p1, PendingEvent p2) {
-                Integer p1LogicalClock = p1.getLogicalClockForUid(uid);
-                Integer p2LogicalClock = p2.getLogicalClockForUid(uid);
+                Integer p1LogicalClock = p1.getLogicalClockForUid(username);
+                Integer p2LogicalClock = p2.getLogicalClockForUid(username);
 
                 return p1LogicalClock.compareTo(p2LogicalClock);
             }
@@ -123,7 +123,7 @@ public class ConsistencyManager {
         for (int i = 0; i < pendingEventList.size(); i++) {
             PendingEvent pendingEvent = pendingEventList.get(i);
 
-            if(pendingEvent.getLogicalClockForUid(uid) == u.getLogicalClock() +1){
+            if(pendingEvent.getLogicalClockForUid(username) == u.getLogicalClock() +1){
                 User otherUser = executePendingEvent(u, pendingEvent);
                 if(otherUser != null) usersToProcess.add(otherUser);
             }
@@ -133,7 +133,7 @@ public class ConsistencyManager {
         }
 
         for (User u2: usersToProcess) {
-            Object lock = getLockForUser(u2.getUid());
+            Object lock = getLockForUser(u2.getUsername());
 
             synchronized (lock){
                 checkPendingEvents(u2);
@@ -152,21 +152,21 @@ public class ConsistencyManager {
         }
 
 
-        int otherUid = (pendingEvent.getSourceUID() == u.getUid() ? pendingEvent.getTargetUID() :
-                                                                     pendingEvent.getSourceUID());
+        String otherUsername = (pendingEvent.getSourceUsername().equals(u.getUsername()) ? pendingEvent.getTargetUsername() :
+                                                                                   pendingEvent.getSourceUsername());
 
-        User otherUser = DBObjectSelector.getUserFromID(DBConnection.getConnection(), otherUid);
+        User otherUser = DBObjectSelector.getUserFromUsername(DBConnection.getConnection(), otherUsername);
 
-        Object lock2 = getLockForUser(otherUser.getUid());
+        Object lock2 = getLockForUser(otherUsername);
 
         synchronized (lock2){
             //check if other user logical clock correct
-            if(otherUser.getLogicalClock() == pendingEvent.getLogicalClockForUid(otherUid) -1){
+            if(otherUser.getLogicalClock() == pendingEvent.getLogicalClockForUid(otherUsername) -1){
                 otherUser.incLogicalClock();
                 u.incLogicalClock();
 
                 //user is sending the points
-                if(u.getUid() == pendingEvent.getSourceUID()){
+                if(u.getUsername().equals(pendingEvent.getSourceUsername())){
                     u.removePoints(pendingEvent.getPoints());
                     otherUser.addPoints(pendingEvent.getPoints());
                 } else{
@@ -187,12 +187,12 @@ public class ConsistencyManager {
     /*
      * Gets Locks for users
      */
-    private synchronized Object getLockForUser(int uid){
+    private synchronized Object getLockForUser(String username){
 
-        if(!this.locks.containsKey(uid)){
-            this.locks.put(uid, new Object());
+        if(!this.locks.containsKey(username)){
+            this.locks.put(username, new Object());
         }
 
-        return this.locks.get(uid);
+        return this.locks.get(username);
     }
 }

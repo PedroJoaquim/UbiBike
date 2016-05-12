@@ -91,7 +91,7 @@ public class PointsTransactionUtils {
             }
 
             ApplicationContext.getInstance().getData().addTransactionLog(sourceUsername, timestamp);
-            
+
             //finally return the points
             return points;
 

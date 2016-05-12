@@ -8,10 +8,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.connection.PendingRequest;
@@ -91,6 +93,9 @@ public class JsonParser {
     public static final String ORIGINAL_JSON_BASE_64 = "original_json_base_64";
     public static final String TARGET_LOGICAL_CLOCK = "target_logical_clock";
     public static final String TTL = "ttl";
+    private static final String SERVER_PUBLIC_KEY = "server_public_key";
+    private static final String TRANSACTIONS = "transactions";
+    private static final String TRANSACTIONS_LOG = "transactions_log";
 
 
     /************************************************************************************************************************
@@ -192,9 +197,15 @@ public class JsonParser {
 
         int uid = jsonObject.getInt(USER_ID);
         String sessionToken = jsonObject.getString(SESSION_TOKEN);
+        String serverPublicKey = jsonObject.getString(SERVER_PUBLIC_KEY);
+
+
+        PublicKey serverPK = CipherManager.getPublicKeyFromBytes(CipherManager.decodeFromBase64String(serverPublicKey));
+
 
         appData.setUID(uid);
         appData.setSessionToken(sessionToken);
+        appData.setServerPublicKey(serverPK);
     }
 
     public static void parseRegisterAccountResponseFromJson(JSONObject jsonObject, Data appData) throws JSONException {
@@ -202,10 +213,17 @@ public class JsonParser {
         int uid = jsonObject.getInt(USER_ID);
         String sessionToken = jsonObject.getString(SESSION_TOKEN);
         String publicKeyToken = jsonObject.getString(PUBLIC_KEY_TOKEN);
+        String serverPublicKey = jsonObject.getString(SERVER_PUBLIC_KEY);
+
+
+        PublicKey serverPK = CipherManager.getPublicKeyFromBytes(CipherManager.decodeFromBase64String(serverPublicKey));
+
+
 
         appData.setUID(uid);
         appData.setSessionToken(sessionToken);
         appData.setPublicToken(publicKeyToken);
+        appData.setServerPublicKey(serverPK);
     }
 
     public static void parsePublicKeyTokenResponseFromJson(JSONObject jsonObject, Data appData) throws JSONException {
@@ -286,7 +304,24 @@ public class JsonParser {
                 json.put(BOOKED_BIKE, bk);
             }
 
-            //adding bikeStations
+            //adding transactionsLog
+            JSONArray transactionsLog = new JSONArray();
+            for (Map.Entry<String, List<Long>> logEntry : appData.getTransactionLog().entrySet()) {
+
+                JSONObject user = new JSONObject();
+                JSONArray entries = new JSONArray();
+
+                for (Long timestamp:logEntry.getValue()) {
+                    entries.put(timestamp);
+                }
+
+                user.put(USERNAME, logEntry.getKey());
+                user.put(TRANSACTIONS, entries);
+            }
+
+            json.put(TRANSACTIONS_LOG, transactionsLog);
+
+                //adding bikeStations
             JSONArray bikeStations = new JSONArray();
             for (BikePickupStation station : appData.getBikeStations()) {
 
@@ -441,7 +476,7 @@ public class JsonParser {
             long totalPoints = json.getLong(POINTS);
             int logicalClock = json.getInt(LOGICAL_CLOCK);
 
-            HashMap<String, List<Long>> transactionLog = new HashMap<>();
+            HashMap<String, List<Long>> transactionLog = parseTransactionLogs(json);
 
             return new Data(uid, username, sessionToken, publicKeyToken, bookedBike, bikePickupStations,
                     trajectories, lastPosition, lastUserInfoUpdated, lastStationsUpdated, totalPoints,
@@ -452,6 +487,37 @@ public class JsonParser {
             Log.e("Uncaught exception", e.toString());
         }
         return null;
+    }
+
+    private static HashMap<String, List<Long>> parseTransactionLogs(JSONObject json) {
+        HashMap<String, List<Long>> result = new HashMap<>();
+
+        if(!json.has(TRANSACTIONS_LOG)){
+            return result;
+        }
+
+        try{
+
+            JSONArray logs = json.getJSONArray(TRANSACTIONS_LOG);
+
+            for(int i = 0; i < logs.length(); i++) {
+                JSONObject log = logs.getJSONObject(i);
+
+                String username = log.getString(USERNAME);
+
+                result.put(username, new ArrayList<Long>());
+
+                JSONArray entries = log.getJSONArray(TRANSACTIONS);
+                for(int j = 0; j < entries.length(); j++){
+                    result.get(username).add(entries.getLong(j));
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
 

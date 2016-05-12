@@ -125,7 +125,7 @@ public class DBObjectSelector {
         ResultSet result = stmt.executeQuery("SELECT * FROM points_transactions WHERE source_uid = "+ uid+" OR target_uid = " + uid);
 
         while (result.next()) {
-            resultList.add(new PointsTransactionBaseInfo(result.getInt("source_uid"), result.getInt("target_uid"), result.getInt("points"), result.getLong("transaction_timestamp")));
+            resultList.add(new PointsTransactionBaseInfo(result.getString("source_uid"), result.getString("target_uid"), result.getInt("points"), result.getLong("transaction_timestamp")));
         }
 
         try {
@@ -302,8 +302,8 @@ public class DBObjectSelector {
         ResultSet result = stmt.executeQuery("SELECT * FROM pending_events WHERE source_uid = " + uid + " OR target_uid = " + uid);
 
         while (result.next()) {
-            resultList.add(new PendingEvent(result.getInt("pe_id"), result.getInt("source_uid"), result.getInt("source_logical_clock"),
-                                            result.getInt("target_uid"), result.getInt("target_logical_clock"),
+            resultList.add(new PendingEvent(result.getInt("pe_id"), result.getString("source_uid"), result.getInt("source_logical_clock"),
+                                            result.getString("target_uid"), result.getInt("target_logical_clock"),
                                             result.getInt("points"), result.getLong("transaction_timestamp"),
                                             result.getInt("type")));
         }
@@ -320,8 +320,8 @@ public class DBObjectSelector {
     public static PointsTransactionBaseInfo getEquivalentPointsTransaction(Connection connection, PointsTransactionAllInfo pt) throws SQLException {
 
         PreparedStatement stmt = connection.prepareStatement("SELECT * FROM points_transactions WHERE source_uid = ? AND target_uid = ? AND transaction_timestamp = ?");
-        stmt.setInt(1, pt.getSourceUid());
-        stmt.setInt(2, pt.getTargetUid());
+        stmt.setString(1, pt.getSourceUsername());
+        stmt.setString(2, pt.getTargetUsername());
         stmt.setLong(3, pt.getTimestamp());
 
         ResultSet result = stmt.executeQuery();
@@ -330,7 +330,7 @@ public class DBObjectSelector {
             return null;
         }
 
-        PointsTransactionBaseInfo ptBase = new PointsTransactionBaseInfo(result.getInt("source_uid"), result.getInt("target_uid"), result.getInt("points"), result.getLong("transaction_timestamp"));
+        PointsTransactionBaseInfo ptBase = new PointsTransactionBaseInfo(result.getString("source_uid"), result.getString("target_uid"), result.getInt("points"), result.getLong("transaction_timestamp"));
 
         try {
             result.close();
@@ -342,8 +342,8 @@ public class DBObjectSelector {
 
     public static PendingEvent getEquivalentPendingEvents(Connection connection, PointsTransactionAllInfo pt) throws SQLException {
         PreparedStatement stmt = connection.prepareStatement("SELECT * FROM pending_events WHERE source_uid = ? AND target_uid = ? AND transaction_timestamp = ?");
-        stmt.setInt(1, pt.getSourceUid());
-        stmt.setInt(2, pt.getTargetUid());
+        stmt.setString(1, pt.getSourceUsername());
+        stmt.setString(2, pt.getSourceUsername());
         stmt.setLong(3, pt.getTimestamp());
 
         ResultSet result = stmt.executeQuery();
@@ -352,8 +352,8 @@ public class DBObjectSelector {
             return null;
         }
 
-        PendingEvent pe = new PendingEvent(result.getInt("pe_id"), result.getInt("source_uid"), result.getInt("source_logical_clock"),
-                result.getInt("target_uid"), result.getInt("target_logical_clock"),
+        PendingEvent pe = new PendingEvent(result.getInt("pe_id"), result.getString("source_uid"), result.getInt("source_logical_clock"),
+                result.getString("target_uid"), result.getInt("target_logical_clock"),
                 result.getInt("points"), result.getLong("transaction_timestamp"),
                 result.getInt("type"));
 

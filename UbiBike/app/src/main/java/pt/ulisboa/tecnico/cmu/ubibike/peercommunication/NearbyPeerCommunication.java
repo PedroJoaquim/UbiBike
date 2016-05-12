@@ -168,13 +168,13 @@ public class NearbyPeerCommunication {
 
 
         if(transactionJSON == null){
-            return "";
+            return "\n";
         }
 
         int points = PointsTransactionUtils.validateTransaction(transactionJSON);
 
         if(points == -1){
-            return "";
+            return "\n";
         }
 
         int targetLogicalClock = data.getNextLogicalClock();

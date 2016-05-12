@@ -38,10 +38,16 @@ public class IncomingCommunicationTask extends AsyncTask<Void, String, Void> {
                     BufferedReader sockIn = new BufferedReader(
                             new InputStreamReader(sock.getInputStream()));
 
-                    String st = sockIn.readLine();
-                    String response = NearbyPeerCommunication.processReceivedMessage(st);
+                    String content = "";
+                    String st = "";
 
-                    sock.getOutputStream().write(response.getBytes());
+                    while ((st = sockIn.readLine()) != null){
+                        content += st + '\n';
+                    }
+
+                    content = content.substring(0, content.length()-1);
+                    String response = NearbyPeerCommunication.processReceivedMessage(content);
+                    sock.getOutputStream().write((response + "\n").getBytes());
                 }
                 catch (IOException e) {
                     Log.d("Error reading socket:", e.getMessage());

@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks;
 
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -64,26 +65,20 @@ public class SendPointsCommunicationTask extends AsyncTask<String, Void, String>
             String[] splittedAddr = virtualAddress.split(":");
 
             clientSocket = new SimWifiP2pSocket(splittedAddr[0], Integer.parseInt(splittedAddr[1]));
+            BufferedReader sockIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
 
             clientSocket.getOutputStream().write((finalMessage + "\n").getBytes());
+            clientSocket.close();
 
-            BufferedReader sockIn = new BufferedReader(
-                    new InputStreamReader(clientSocket.getInputStream()));
 
             targetLogicalClock = sockIn.readLine();
+            targetLogicalClock.replace("\n", "");
 
         } catch (UnknownHostException e) {
             return -1;
         } catch (IOException e) {
             return -1;
-        } finally {
-            try{
-                if(clientSocket != null){
-                    clientSocket.close();
-                }
-            } catch (IOException e) {
-                //ignore
-            }
         }
 
         return Integer.valueOf(targetLogicalClock);

@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 
 public class PointsTransactionBaseInfo {
 
-    private int sourceUid;
-    private int targetUid;
+    private String sourceUsername;
+    private String targetUsername;
     private int points;
     private long timestamp;
     private int sourceLogialClock;
@@ -14,32 +14,32 @@ public class PointsTransactionBaseInfo {
     public PointsTransactionBaseInfo() {
     }
 
-    public PointsTransactionBaseInfo(int sourceUid, int targetUid, int points, long timestamp) {
-        this.sourceUid = sourceUid;
-        this.targetUid = targetUid;
+    public PointsTransactionBaseInfo(String sourceUsername, String targetUsername, int points, long timestamp) {
+        this.sourceUsername = sourceUsername;
+        this.targetUsername = targetUsername;
         this.points = points;
         this.timestamp = timestamp;
     }
 
 
     @JsonGetter("source_uid")
-    public int getSourceUid() {
-        return sourceUid;
+    public String getSourceUsername() {
+        return sourceUsername;
     }
 
     @JsonSetter("source_uid")
-    public void setSourceUid(int sourceUid) {
-        this.sourceUid = sourceUid;
+    public void setSourceUsername(String sourceUsername) {
+        this.sourceUsername = sourceUsername;
     }
 
     @JsonGetter("target_uid")
-    public int getTargetUid() {
-        return targetUid;
+    public String getTargetUsername() {
+        return targetUsername;
     }
 
     @JsonSetter("target_uid")
-    public void setTargetUid(int targetUid) {
-        this.targetUid = targetUid;
+    public void setTargetUsername(String targetUsername) {
+        this.targetUsername = targetUsername;
     }
 
     @JsonGetter("points")
