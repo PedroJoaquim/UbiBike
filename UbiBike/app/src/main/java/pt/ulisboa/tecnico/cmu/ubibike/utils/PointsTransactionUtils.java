@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmu.ubibike.utils;
 
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.security.PrivateKey;
@@ -42,4 +43,40 @@ public class PointsTransactionUtils {
         return CipherManager.encodeToBase64String(encodedDataHash);
     }
 
+    public static int validateTransaction(JSONObject transactionJSON) {
+
+        try {
+            String validationToken = transactionJSON.getString(JsonParser.VALIDATION_TOKEN);
+            String sourcePublicKeyToken = transactionJSON.getString(JsonParser.SOURCE_PUBLIC_KEY_TOKEN);
+            String originalJSONBase64 = transactionJSON.getString(JsonParser.ORIGINAL_JSON_BASE_64);
+            String originalJSON = new String(CipherManager.decodeFromBase64String(originalJSONBase64));
+
+            JSONObject baseTransactionInfo = JsonParser.parseBasePointsTransaction(originalJSON);
+
+            String sourceUsername = baseTransactionInfo.getString(JsonParser.SOURCE_USERNAME);
+            String targetUsername = baseTransactionInfo.getString(JsonParser.TARGET_USERNAME);
+            int sourceLogicalClock = baseTransactionInfo.getInt(JsonParser.SOURCE_LOGICAL_CLOCK);
+            int points = baseTransactionInfo.getInt(JsonParser.POINTS);
+            long timestamp = baseTransactionInfo.getLong(JsonParser.TIMESTAMP);
+
+
+            JSONObject publicKeyToken = readPublicKeyToken(sourcePublicKeyToken);
+
+
+
+        } catch (JSONException e) {
+            return -1;
+        }
+
+        return -1;
+    }
+
+    private static JSONObject readPublicKeyToken(String sourcePublicKeyToken) {
+
+
+        byte[] encodedToken = CipherManager.decodeFromBase64String(sourcePublicKeyToken);
+        byte[] plainToken = CipherManager.decipher()
+
+
+    }
 }

@@ -57,7 +57,7 @@ public class JsonParser {
     private static final String START_TIME = "start_timestamp";
     private static final String END_TIME = "end_timestamp";
 
-    private static final String POINTS = "points";
+    public static final String POINTS = "points";
     private static final String GLOBAl_RANK = "rank";
 
     private static final String LOGICAL_CLOCK = "logical_clock";
@@ -80,14 +80,14 @@ public class JsonParser {
     public static final String ERROR = "error";
 
 
-    private static final String SOURCE_USERNAME = "source_uid";
-    private static final String TARGET_USERNAME = "target_uid";
-    private static final String SOURCE_LOGICAL_CLOCK = "source_logical_clock";
-    private static final String TIMESTAMP = "timestamp";
-    private static final String VALIDATION_TOKEN = "validation_token";
-    private static final String SOURCE_PUBLIC_KEY_TOKEN = "source_public_key_token";
-    private static final String ORIGINAL_JSON_BASE_64 = "original_json_base_64";
-    private static final String TARGET_LOGICAL_CLOCK = "target_logical_clock";
+    public static final String SOURCE_USERNAME = "source_uid";
+    public static final String TARGET_USERNAME = "target_uid";
+    public static final String SOURCE_LOGICAL_CLOCK = "source_logical_clock";
+    public static final String TIMESTAMP = "timestamp";
+    public static final String VALIDATION_TOKEN = "validation_token";
+    public static final String SOURCE_PUBLIC_KEY_TOKEN = "source_public_key_token";
+    public static final String ORIGINAL_JSON_BASE_64 = "original_json_base_64";
+    public static final String TARGET_LOGICAL_CLOCK = "target_logical_clock";
 
 
     /************************************************************************************************************************
@@ -647,5 +647,41 @@ public class JsonParser {
             Log.e("Uncaught exception", e.toString());
             return null;
         }
+    }
+
+    public static JSONObject parsePointsTransaction(String json) {
+
+        try{
+
+            JSONObject result = new JSONObject(json);
+
+            if(!result.has(VALIDATION_TOKEN) || !result.has(SOURCE_PUBLIC_KEY_TOKEN) || !result.has(ORIGINAL_JSON_BASE_64)){
+                return null;
+            }
+
+            return result;
+
+        } catch (JSONException e) {
+            return null;
+        }
+    }
+
+    public static JSONObject parseBasePointsTransaction(String json) {
+
+        try{
+
+            JSONObject result = new JSONObject(json);
+
+            if(!result.has(SOURCE_USERNAME) || !result.has(TARGET_USERNAME) || !result.has(SOURCE_LOGICAL_CLOCK) ||
+                    !result.has(POINTS) || !result.has(TIMESTAMP)){
+                return null;
+            }
+
+            return result;
+
+        } catch (JSONException e) {
+            return null;
+        }
+
     }
 }

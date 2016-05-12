@@ -2,6 +2,8 @@ package pt.ulisboa.tecnico.cmu.ubibike.peercommunication;
 
 import android.os.AsyncTask;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,6 +15,8 @@ import pt.inesc.termite.wifidirect.SimWifiP2pDeviceList;
 import pt.inesc.termite.wifidirect.SimWifiP2pInfo;
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.OutgoingCommunicationTask;
+import pt.ulisboa.tecnico.cmu.ubibike.utils.JsonParser;
+import pt.ulisboa.tecnico.cmu.ubibike.utils.PointsTransactionUtils;
 
 
 public class NearbyPeerCommunication {
@@ -153,7 +157,25 @@ public class NearbyPeerCommunication {
     }
 
     private static void processPointsTransactionMessage(String received) {
-        //todo
+
+        String[] receivedParts = received.split(SEPARATOR);
+
+        String json = receivedParts[1];
+
+        JSONObject transactionJSON = JsonParser.parsePointsTransaction(json);
+
+
+        if(transactionJSON == null){
+            return;
+        }
+
+        int points = PointsTransactionUtils.validateTransaction(transactionJSON);
+
+        if(points == -1){
+            return;
+        }
+
+
     }
 
     public static void processIndividualChatMessage(String received){
