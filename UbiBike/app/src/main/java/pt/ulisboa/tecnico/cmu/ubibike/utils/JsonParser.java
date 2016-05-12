@@ -10,6 +10,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.connection.PendingRequest;
@@ -27,7 +29,7 @@ public class JsonParser {
 
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
-    private static final String PUBLIC_KEY = "public_key";
+    public static final String PUBLIC_KEY = "public_key";
     public static final String USER_ID = "uid";
     private static final String SESSION_TOKEN = "session_token";
     private static final String PUBLIC_KEY_TOKEN = "public_key_token";
@@ -88,6 +90,7 @@ public class JsonParser {
     public static final String SOURCE_PUBLIC_KEY_TOKEN = "source_public_key_token";
     public static final String ORIGINAL_JSON_BASE_64 = "original_json_base_64";
     public static final String TARGET_LOGICAL_CLOCK = "target_logical_clock";
+    public static final String TTL = "ttl";
 
 
     /************************************************************************************************************************
@@ -438,10 +441,11 @@ public class JsonParser {
             long totalPoints = json.getLong(POINTS);
             int logicalClock = json.getInt(LOGICAL_CLOCK);
 
+            HashMap<String, List<Long>> transactionLog = new HashMap<>();
 
             return new Data(uid, username, sessionToken, publicKeyToken, bookedBike, bikePickupStations,
                     trajectories, lastPosition, lastUserInfoUpdated, lastStationsUpdated, totalPoints,
-                    globalRank, logicalClock);
+                    globalRank, logicalClock, transactionLog);
 
         }
         catch(Exception e){
@@ -683,5 +687,21 @@ public class JsonParser {
             return null;
         }
 
+    }
+
+    public static JSONObject parsePublicKeyToken(String json) {
+        try{
+
+            JSONObject result = new JSONObject(json);
+
+            if(!result.has(USER_ID) || !result.has(USERNAME) || !result.has(PUBLIC_KEY) || !result.has(TTL)){
+                return null;
+            }
+
+            return result;
+
+        } catch (JSONException e) {
+            return null;
+        }
     }
 }

@@ -5,6 +5,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.sql.Array;
+import java.util.Arrays;
 
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.CipherManager;
@@ -55,28 +58,78 @@ public class PointsTransactionUtils {
 
             String sourceUsername = baseTransactionInfo.getString(JsonParser.SOURCE_USERNAME);
             String targetUsername = baseTransactionInfo.getString(JsonParser.TARGET_USERNAME);
-            int sourceLogicalClock = baseTransactionInfo.getInt(JsonParser.SOURCE_LOGICAL_CLOCK);
             int points = baseTransactionInfo.getInt(JsonParser.POINTS);
             long timestamp = baseTransactionInfo.getLong(JsonParser.TIMESTAMP);
 
 
             JSONObject publicKeyToken = readPublicKeyToken(sourcePublicKeyToken);
 
+            if(publicKeyToken == null){
+                return -1;
+            }
 
+            if(validPublicKeyToken(publicKeyToken, sourceUsername)){
+                return -1;
+            }
+
+
+            PublicKey sourcePublicKey = readPublicKeyFromToken(publicKeyToken);
+
+            //check data integrity
+            if(!checkValidationToken(validationToken, originalJSON, sourcePublicKey)){
+                return -1;
+            }
+
+            //check freshness
+            if(ApplicationContext.getInstance().getData().doesTransactionExist(sourceUsername, timestamp)){
+                return -1;
+            }
+
+            //check im the intended target user
+            if(!targetUsername.equals(ApplicationContext.getInstance().getData().getUsername())){
+                return -1;
+            }
+
+            ApplicationContext.getInstance().getData().addTransactionLog(sourceUsername, timestamp);
+            
+            //finally return the points
+            return points;
 
         } catch (JSONException e) {
             return -1;
         }
+    }
 
-        return -1;
+    private static boolean checkValidationToken(String validationToken, String originalJSON, PublicKey sourcePublicKey) {
+
+        byte[] hash1 = CipherManager.decipher(CipherManager.decodeFromBase64String(validationToken), sourcePublicKey);
+        byte[] hash2 = CipherManager.getSHA2Digest(originalJSON.getBytes());
+
+        return Arrays.equals(hash1, hash2);
+    }
+
+    private static PublicKey readPublicKeyFromToken(JSONObject publicKeyToken) throws JSONException {
+        String publicKey = publicKeyToken.getString(JsonParser.PUBLIC_KEY);
+        byte[] encodedSourcePublicKey = CipherManager.decodeFromBase64String(publicKey);
+
+        return CipherManager.getPublicKeyFromBytes(encodedSourcePublicKey);
+    }
+
+    private static boolean validPublicKeyToken(JSONObject publicKeyToken, String sourceUsername) throws JSONException {
+
+        String username = publicKeyToken.getString(JsonParser.USERNAME);
+        long ttl = Long.valueOf(publicKeyToken.getString(JsonParser.TTL));
+
+        return username.equals(sourceUsername) &&
+                ttl >= System.currentTimeMillis();
     }
 
     private static JSONObject readPublicKeyToken(String sourcePublicKeyToken) {
 
 
         byte[] encodedToken = CipherManager.decodeFromBase64String(sourcePublicKeyToken);
-        byte[] plainToken = CipherManager.decipher()
+        byte[] plainToken = CipherManager.decipher(encodedToken, ApplicationContext.getInstance().getData().getServerPublicKey());
 
-
+        return JsonParser.parsePublicKeyToken(new String(plainToken));
     }
 }
