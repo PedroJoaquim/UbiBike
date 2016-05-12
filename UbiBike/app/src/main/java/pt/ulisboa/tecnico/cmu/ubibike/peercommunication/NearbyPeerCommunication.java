@@ -17,6 +17,7 @@ import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.OutgoingCommunicat
 
 public class NearbyPeerCommunication {
 
+
     private String mDeviceName;
 
     private SimWifiP2pDeviceList mNearbyDevices;
@@ -29,6 +30,8 @@ public class NearbyPeerCommunication {
     public static final String MESSAGE_TYPE_GROUP = "[group]";
     public static final String USERNAME_BROADCAST = "[username]";
     public static final String GROUPOWNER_BROADCAST = "[groupowner]";
+    private static final String POINTS_MESSAGE = "[points]";
+
     public static final String SEPARATOR = "ZABOLOTNYY";
 
 
@@ -128,6 +131,11 @@ public class NearbyPeerCommunication {
         return isGO ? GROUPOWNER_BROADCAST + SEPARATOR + msg : msg;
     }
 
+    public static String buildPointsTransactionMessage(String transactionJSON){
+
+        return POINTS_MESSAGE + SEPARATOR + transactionJSON;
+    }
+
     
     /**
      * Parsing messages received from peers
@@ -139,8 +147,13 @@ public class NearbyPeerCommunication {
             case MESSAGE_TYPE_GROUP: processGroupChatMessage(received); break;
             case USERNAME_BROADCAST: processUsernameBroadcastMessage(received); break;
             case GROUPOWNER_BROADCAST: processGroupOwnerBroadcastMessage(received); break;
+            case POINTS_MESSAGE: processPointsTransactionMessage(received); break;
         }
 
+    }
+
+    private static void processPointsTransactionMessage(String received) {
+        //todo
     }
 
     public static void processIndividualChatMessage(String received){

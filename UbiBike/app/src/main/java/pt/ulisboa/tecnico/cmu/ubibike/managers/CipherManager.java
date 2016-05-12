@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.cmu.ubibike.managers;
 import android.util.Base64;
 import android.util.Log;
 
+import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -13,6 +14,8 @@ import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.logging.Level;
+
+import javax.crypto.Cipher;
 
 /**
  * Created by andriy on 13.04.2016.
@@ -131,4 +134,37 @@ public class CipherManager {
             return null;
         }
     }
+
+    /*
+     * Cipher and Decipher Function
+     */
+
+    public static byte[] cipher(byte[] plainData, Key key){
+
+        try{
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+
+            return cipher.doFinal(plainData);
+
+        } catch (Exception e){
+            return null;
+        }
+    }
+
+    public static byte[] decipher(byte[] cipheredData, Key key){
+
+        try{
+
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.DECRYPT_MODE, key);
+
+            return cipher.doFinal(cipheredData);
+
+        } catch (Exception e){
+            return null;
+        }
+
+    }
+
 }

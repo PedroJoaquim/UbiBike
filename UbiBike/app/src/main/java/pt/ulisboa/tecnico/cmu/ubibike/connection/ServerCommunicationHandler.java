@@ -23,6 +23,7 @@ import pt.ulisboa.tecnico.cmu.ubibike.utils.JsonParser;
 public class ServerCommunicationHandler {
 
 
+
     private int uid;
     private String sessionToken;
 
@@ -48,6 +49,7 @@ public class ServerCommunicationHandler {
     private static final int REQUEST_TRAJECTORY_POST = 4;
     private static final int REQUEST_BIKE_BOOK = 5;
     private static final int REQUEST_BIKE_UNBOOK = 6;
+    private static final int REQUEST_POINTS_TRANSACTION = 7;
 
     private static final boolean AUTH_REQUEST = true;
     private static final boolean NON_AUTH_REQUEST = false;
@@ -151,6 +153,11 @@ public class ServerCommunicationHandler {
     }
 
 
+    public void performPointsTransactionRequest(JSONObject jsonContent){
+        String url = buildUrl(URL_POINTS_TRANSACTION, AUTH_REQUEST);
+
+        performGenericRequest(url, REQUEST_POINTS_TRANSACTION, jsonContent, true, null);
+    }
 
     public void performPublicKeyTokenRequest(){
         String url = buildUrl(URL_PUBLIC_KEY_TOKEN, AUTH_REQUEST);
@@ -477,6 +484,9 @@ public class ServerCommunicationHandler {
     private void finishSuccessfulRequest(int requestType) {
         if(requestType == REQUEST_BIKE_UNBOOK){
             ApplicationContext.getInstance().getData().setBikeBooked(null);
+            Toast.makeText(ApplicationContext.getInstance(), "Success at bike unbooking request.", Toast.LENGTH_SHORT).show();
+        } else if( requestType == REQUEST_POINTS_TRANSACTION) {
+
             Toast.makeText(ApplicationContext.getInstance(), "Success at bike unbooking request.", Toast.LENGTH_SHORT).show();
         }
     }

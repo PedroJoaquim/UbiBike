@@ -4,9 +4,7 @@ import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -14,25 +12,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONObject;
-
-import java.security.PrivateKey;
-
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.R;
 import pt.ulisboa.tecnico.cmu.ubibike.adapters.MessageListAdapter;
-import pt.ulisboa.tecnico.cmu.ubibike.managers.CipherManager;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.ChatMessage;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.NearbyPeerCommunication;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.OutgoingCommunicationTask;
+import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.SendPointsCommunicationTask;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.AndroidUtil;
-import pt.ulisboa.tecnico.cmu.ubibike.utils.DigitalSignature;
-import pt.ulisboa.tecnico.cmu.ubibike.utils.JsonParser;
 
 /**
  * Created by ASUS on 11/05/2016.
@@ -82,7 +73,7 @@ public class IndividualChatFragment extends ChatFragment {
             @Override
             public void onClick(View v) {
 
-                long myPoints = ApplicationContext.getInstance().getData().getTotalPoints();
+                final long myPoints = ApplicationContext.getInstance().getData().getTotalPoints();
 
                 final AlertDialog.Builder inputAlert = new AlertDialog.Builder(getActivity());
                 inputAlert.setTitle("Points Exchange");
@@ -130,9 +121,15 @@ public class IndividualChatFragment extends ChatFragment {
                                 try {
                                     int points = Integer.parseInt(userInputValue);
 
-                                    Toast.makeText(getActivity(), "" + points, Toast.LENGTH_SHORT).show();
+                                    if(points > myPoints){
+                                        Toast.makeText(getActivity(), "You do not have enough points!" + points, Toast.LENGTH_SHORT).show();
 
-                                    //TODO send points here
+                                    } else{
+
+                                        Toast.makeText(getActivity(), "" + points, Toast.LENGTH_SHORT).show();
+
+                                        new SendPointsCommunicationTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mDeviceName, mUsername, Integer.toString(points));
+                                    }
                                 }
                                 catch(Exception e){
                                     Toast.makeText(getActivity(), "Invalid Number", Toast.LENGTH_SHORT).show();
@@ -197,41 +194,5 @@ public class IndividualChatFragment extends ChatFragment {
             Toast.makeText(getActivity(), "User out of range. Chat unavailable.", Toast.LENGTH_SHORT).show();
             getParentActivity().onBackPressed();
         }
-    }
-
-    private void sendPoints(long points) throws Exception {
-        String fromClientId = ApplicationContext.getInstance().getData().getUsername();
-        PrivateKey privateKey = CipherManager.getPrivateKey(); //TODO
-
-        // ideias do jaquim
-        // { from_client_id: 1, to_client_id : 2 , points : 230, points_source: "ride" points_source_id : "ride_client_id", nounce: 3}
-        // { uid: 1 , username: "lol" , public_key : "string da chave", ttl : timestamp de validade }
-
-        // TODO: hardcoded next variables
-        String toClientId = "";
-        String pointsSource = "";
-        String pointsSourceId = "";
-        int nounce = -1;
-        int ttl = -1;
-
-        JSONObject pointsTransactionData = JsonParser.buildPointsTransactionDataJson(
-                fromClientId, toClientId, points, pointsSource, pointsSourceId, nounce, ttl);
-        //TODO: buildPointsTransactionDataJson
-
-        byte[] signature = DigitalSignature.signData(
-                CipherManager.getSHA2Digest(
-                        pointsTransactionData.toString().getBytes()), privateKey);
-
-        String base64publicKey = ApplicationContext.getInstance().getData().getPublicToken(); // representing publicKey
-
-        // create final json
-        JSONObject pointsTransaction =
-                JsonParser.buildPointsTransactionJson(
-                        pointsTransactionData, signature, base64publicKey);
-
-        String deviceName = toClientId; // TODO: is the same?
-
-        // send points
-        getParentActivity().wifiP2pSendMessageToPeer(deviceName, pointsTransaction.toString());
     }
 }

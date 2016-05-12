@@ -4,6 +4,7 @@ import android.text.format.DateUtils;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -35,6 +36,8 @@ public class Data {
     private long mTotalTime;
 
     private Trajectory mLongestRide;
+    private int mLogicalClock;
+    private PrivateKey mPrivateKey;
 
 
     public Data(int id, String usrn) {
@@ -48,6 +51,7 @@ public class Data {
         mGlobalRank = -1;
         mTotalDistance = 0.0;
         mTotalTime = 0;
+        mLogicalClock = 0;
     }
 
     public Data(int uid, String username, String sessionToken, String publicKeyToken, Bike bookedBike,
@@ -275,6 +279,11 @@ public class Data {
         return ++maxId;
     }
 
+    public void addPoints(int points) {mTotalPoints += points;}
+
+    public void removePoints(int points) {mTotalPoints -= points;}
+
+
     public void setTotalPoints(long points){
         mTotalPoints = points;
     }
@@ -305,5 +314,13 @@ public class Data {
 
     public void setGlobalRank(int rank) {
         mGlobalRank = rank;
+    }
+
+    public synchronized int getNextLogicalClock() {
+        return ++mLogicalClock;
+    }
+
+    public PrivateKey getPrivateKey() {
+        return mPrivateKey;
     }
 }

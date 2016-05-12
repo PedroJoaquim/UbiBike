@@ -77,11 +77,15 @@ public class JsonParser {
 
     public static final String ERROR = "error";
 
-    private static final String POINTS_TRANSACTION_DATA = "points_transaction_data";
-    private static final String SIGNATURE = "signature";
-    private static final String BASE64_PUBLIC_KEY = "base64_public_key";
 
-
+    private static final String SOURCE_USERNAME = "source_uid";
+    private static final String TARGET_USERNAME = "target_uid";
+    private static final String SOURCE_LOGICAL_CLOCK = "source_logical_clock";
+    private static final String TIMESTAMP = "timestamp";
+    private static final String VALIDATION_TOKEN = "validation_token";
+    private static final String SOURCE_PUBLIC_KEY_TOKEN = "source_public_key_token";
+    private static final String ORIGINAL_JSON_BASE_64 = "original_json_base_64";
+    private static final String TARGET_LOGICAL_CLOCK = "target_logical_clock";
 
 
     /************************************************************************************************************************
@@ -210,7 +214,6 @@ public class JsonParser {
 
         ArrayList<Trajectory> trajectories = parseTrajectories(jsonObject);
         appData.setGlobalRank(jsonObject.getInt(GLOBAl_RANK));
-        appData.setTotalPoints(jsonObject.getLong(POINTS));
         appData.setTrajectories(trajectories);
         appData.setLastUserInfoUpdated(new Date());
 
@@ -602,13 +605,13 @@ public class JsonParser {
         return true;
     }
 
-    public static JSONObject buildPointsTransactionJson(JSONObject pointsTransactionData, byte[] signature, String base64publicKey) {
+    public static JSONObject buildPointsTransactionFinalJson(String originalJSONBase64, String publicKeyToken, String validationToken) {
         try{
             JSONObject json = new JSONObject();
 
-            json.put(POINTS_TRANSACTION_DATA, pointsTransactionData);
-            json.put(SIGNATURE, CipherManager.encodeToBase64String(signature));
-            json.put(BASE64_PUBLIC_KEY, base64publicKey);
+            json.put(VALIDATION_TOKEN, validationToken);
+            json.put(SOURCE_PUBLIC_KEY_TOKEN, publicKeyToken);
+            json.put(ORIGINAL_JSON_BASE_64, originalJSONBase64);
 
             return json;
         }
@@ -618,7 +621,32 @@ public class JsonParser {
         }
     }
 
-    public static JSONObject buildPointsTransactionDataJson(String fromClientId, String toClientId, long points, String pointsSource, String pointsSourceId, int nounce, int ttl) {
-        return null;
+    public static JSONObject buildPointsTransactionDataJson(String sourceUsername, String targetUsername, int sourceLogicalClock, int points, long timestamp) {
+        try{
+            JSONObject json = new JSONObject();
+
+            json.put(SOURCE_USERNAME, sourceUsername);
+            json.put(TARGET_USERNAME, targetUsername);
+            json.put(SOURCE_LOGICAL_CLOCK, sourceLogicalClock);
+            json.put(POINTS, points);
+            json.put(TIMESTAMP, timestamp);
+
+            return json;
+        }
+        catch(Exception e){
+            Log.e("Uncaught exception", e.toString());
+            return null;
+        }
+    }
+
+    public static JSONObject buildPointsTransactionServerJSON(JSONObject json, int targetLogicalClock) {
+        try{
+            json.put(TARGET_LOGICAL_CLOCK, targetLogicalClock);
+            return json;
+        }
+        catch(Exception e){
+            Log.e("Uncaught exception", e.toString());
+            return null;
+        }
     }
 }
