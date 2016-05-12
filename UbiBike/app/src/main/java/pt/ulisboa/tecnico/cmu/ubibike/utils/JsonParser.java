@@ -60,6 +60,8 @@ public class JsonParser {
     private static final String POINTS = "points";
     private static final String GLOBAl_RANK = "rank";
 
+    private static final String LOGICAL_CLOCK = "logical_clock";
+
     private static final String LAST_POSITION = "last_position";
     private static final String LAST_USER_INFO_UPDATED = "last_user_info_updated";
     private static final String LAST_STATIONS_UPDATED = "last_stations_updated";
@@ -266,6 +268,7 @@ public class JsonParser {
             json.put(PUBLIC_KEY_TOKEN, appData.getPublicToken());
             json.put(POINTS, appData.getTotalPoints());
             json.put(GLOBAl_RANK, appData.getGlobalRank());
+            json.put(LOGICAL_CLOCK, appData.getLogicalClock());
 
             //adding booked bike
             Bike bikeBooked = appData.getBikeBooked();
@@ -431,18 +434,14 @@ public class JsonParser {
                 lastStationsUpdated = new Date(json.getLong(LAST_STATIONS_UPDATED));
             }
 
-            int globalRank = -1;
-            long totalPoints = -1;
-            try {
-                globalRank = json.getInt(GLOBAl_RANK);
-                totalPoints = json.getLong(POINTS);
-            } catch (Exception e) {
-                Log.e("Uncaught exception", e.toString());
-            }
+            int globalRank = json.getInt(GLOBAl_RANK);
+            long totalPoints = json.getLong(POINTS);
+            int logicalClock = json.getInt(LOGICAL_CLOCK);
+
 
             return new Data(uid, username, sessionToken, publicKeyToken, bookedBike, bikePickupStations,
                     trajectories, lastPosition, lastUserInfoUpdated, lastStationsUpdated, totalPoints,
-                    globalRank);
+                    globalRank, logicalClock);
 
         }
         catch(Exception e){

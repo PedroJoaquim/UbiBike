@@ -57,7 +57,7 @@ public class Data {
     public Data(int uid, String username, String sessionToken, String publicKeyToken, Bike bookedBike,
                 ArrayList<BikePickupStation> bikeStations, ArrayList<Trajectory> trajectories,
                 LatLng lastPosition, Date dateUserInfoUpdated, Date dateStationsUpdated,
-                long totalPoints, int globalRank) {
+                long totalPoints, int globalRank, int logicalClock) {
 
         HashMap<Integer, BikePickupStation> stations = new HashMap<>();
 
@@ -87,6 +87,7 @@ public class Data {
 
         mTotalPoints = totalPoints;
         mGlobalRank = globalRank;
+        mLogicalClock = logicalClock;
     }
 
 
@@ -283,7 +284,6 @@ public class Data {
 
     public void removePoints(int points) {mTotalPoints -= points;}
 
-
     public void setTotalPoints(long points){
         mTotalPoints = points;
     }
@@ -316,11 +316,19 @@ public class Data {
         mGlobalRank = rank;
     }
 
+    public int getLogicalClock(){
+        return mLogicalClock;
+    }
+
     public synchronized int getNextLogicalClock() {
         return ++mLogicalClock;
     }
 
     public PrivateKey getPrivateKey() {
         return mPrivateKey;
+    }
+
+    public void setPrivateKey(PrivateKey privateKey) {
+        mPrivateKey = privateKey;
     }
 }

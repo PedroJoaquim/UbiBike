@@ -177,6 +177,7 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
                 return true;
 
             case R.id.action_logout:
+                ApplicationContext.getInstance().storeCurrentAppDataOnDB();
                 mSessionManager.logoutUser();
                 showLogin();
                 return true;

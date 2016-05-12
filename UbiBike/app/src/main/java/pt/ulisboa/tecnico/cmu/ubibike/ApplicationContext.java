@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.cmu.ubibike;
 import android.app.Application;
 
 import java.lang.reflect.Array;
+import java.security.PrivateKey;
 import java.util.ArrayList;
 
 import pt.ulisboa.tecnico.cmu.ubibike.connection.PendingRequest;
@@ -59,6 +60,9 @@ public class ApplicationContext extends Application {
 
                 Data data = mStorageManager.getAppDataFromDB(mUid);
 
+                PrivateKey sKey = mStorageManager.getClientPrivateKeyFromDB(mUid);
+                data.setPrivateKey(sKey);
+
                 mPendingRequests = mStorageManager.getPendingRequestFromDB(mUid);
 
                 mServerCommunicationHandler.setUid(data.getUID());
@@ -85,6 +89,10 @@ public class ApplicationContext extends Application {
         if (dataExists()) {
             mStorageManager.updateAppDataOnDB(mUid, getData());
         }
+    }
+
+    public void storeCurrentAppDataOnDB(){
+        mStorageManager.updateAppDataOnDB(mUid, mData);
     }
 
     public StorageManager getStorageManager() {

@@ -84,9 +84,6 @@ public class ServerCommunicationHandler {
         publicKey  = CipherManager.getPublicKey();
         privateKey = CipherManager.getPrivateKey();
 
-        int uid = ApplicationContext.getInstance().getData().getUID();
-        ApplicationContext.getInstance().getStorageManager().storeClientKeyPairOnBD(uid, publicKey, privateKey);
-
         String base64publicKey = CipherManager.encodeToBase64String(publicKey.getEncoded());
 
         new RegisterAccountRequestTask(url, username, password, base64publicKey).execute();
@@ -370,6 +367,9 @@ public class ServerCommunicationHandler {
                     }
 
                     JsonParser.parseRegisterAccountResponseFromJson(json, appData);
+
+                    int uid = ApplicationContext.getInstance().getData().getUID();
+                    ApplicationContext.getInstance().getStorageManager().storeClientKeyPairOnBD(uid, publicKey, privateKey);
 
                     ApplicationContext.getInstance().setData(appData);
                     ApplicationContext.getInstance().getActivity().finishLogin();
