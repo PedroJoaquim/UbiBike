@@ -67,6 +67,7 @@ public class JsonParser {
     private static final String BIKE_PICK = "bike_pick";
 
     private static final String BOOKED_BIKE = "booked_bike";
+    private static final String BOOKING = "booking";
 
     private static final String PENDING_REQUESTS = "pending_requests";
     private static final String PENDING_REQUEST_ID = "preq_id";
@@ -212,6 +213,18 @@ public class JsonParser {
         appData.setTotalPoints(jsonObject.getLong(POINTS));
         appData.setTrajectories(trajectories);
         appData.setLastUserInfoUpdated(new Date());
+
+        if(jsonObject.has(BOOKING)){
+            JSONObject bk = jsonObject.getJSONObject(BOOKING);
+
+            int bid = bk.getInt(BIKE_ID);
+            int sid = bk.getInt(STATION_ID);
+            String uuid = bk.getString(BIKE_ADDR);
+
+            Bike bike = new Bike(bid,uuid, sid);
+
+           appData.setBikeBooked(bike);
+        }
     }
 
     public static void parseStationsResponseFromJson(JSONObject jsonObject, Data appData) throws JSONException {

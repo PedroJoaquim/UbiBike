@@ -15,37 +15,54 @@
         android:stackFromBottom="true"
         android:listSelector="@android:color/transparent"
         android:cacheColorHint="@android:color/transparent"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentLeft="false"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/chat_message_editText"
-        />
+        android:visibility="visible"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/relativeLayout2" />
 
-    <EditText
-        android:layout_width="fill_parent"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/chat_message_editText"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentLeft="false"
         android:layout_alignParentStart="true"
-        android:hint="Write a message"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_toLeftOf="@+id/chat_send_button"
-        android:layout_toStartOf="@+id/chat_send_button" />
+        android:layout_alignParentBottom="true"
+        android:id="@+id/relativeLayout2">
 
-    <ImageButton
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/chat_send_button"
-        android:background="?android:attr/selectableItemBackground"
-        android:src="@drawable/ic_action"
-        android:layout_alignBottom="@+id/chat_message_editText"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/chat_message_editText"
-        android:scaleType="fitCenter"
-        android:layout_below="@+id/list"
-        android:focusable="true" />
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/chat_message_editText"
+            android:hint="Write a message"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/send_points_button" />
+
+        <ImageButton
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/send_points_button"
+            android:background="@drawable/points"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/chat_send_button"
+            android:layout_toStartOf="@+id/chat_send_button" />
+
+        <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/chat_send_button"
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@drawable/ic_action"
+            android:layout_alignBottom="@+id/chat_message_editText"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/chat_message_editText"
+            android:scaleType="fitCenter"
+            android:focusable="true" />
+
+    </RelativeLayout>
+
+
 
 </RelativeLayout>

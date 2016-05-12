@@ -48,6 +48,9 @@ public class GroupChatFragment extends ChatFragment{
         mListView = (ListView) view.findViewById(R.id.list);
         ImageButton send_button = (ImageButton) view.findViewById(R.id.chat_send_button);
         final EditText message_editText = (EditText) view.findViewById(R.id.chat_message_editText);
+        ImageButton send_points_button = (ImageButton) view.findViewById(R.id.send_points_button);
+
+        send_points_button.setVisibility(View.GONE);
 
         send_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
