@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import pt.ist.cmu.ubibike.httpserver.cipher.CipherManager;
 import pt.ist.cmu.ubibike.httpserver.cipher.CipherUtils;
+import pt.ist.cmu.ubibike.httpserver.consistency.ConsistencyManager;
 import pt.ist.cmu.ubibike.httpserver.model.PointsTransactionAllInfo;
 import pt.ist.cmu.ubibike.httpserver.model.PointsTransactionBaseInfo;
 import pt.ist.cmu.ubibike.httpserver.session.tokens.PublicKeyToken;
@@ -15,6 +16,8 @@ import java.security.PublicKey;
 import java.util.Arrays;
 
 public class PointsTransactionHandler extends AuthRequiredHandler {
+
+    private PointsTransactionAllInfo ptAllInfo;
 
     protected void continueActionValidation(HttpExchange httpExchange) throws Exception {
         if(!"post".equalsIgnoreCase(httpExchange.getRequestMethod())){
@@ -28,11 +31,9 @@ public class PointsTransactionHandler extends AuthRequiredHandler {
         }
 
         ObjectMapper mapper = new ObjectMapper();
-        PointsTransactionAllInfo pt = mapper.readValue(json, PointsTransactionAllInfo.class);
+        ptAllInfo = mapper.readValue(json, PointsTransactionAllInfo.class);
 
-
-        validatePointsTransaction(pt);
-
+        validatePointsTransaction(ptAllInfo);
     }
 
     private void validatePointsTransaction(PointsTransactionAllInfo ptAllInfo) {
@@ -54,7 +55,7 @@ public class PointsTransactionHandler extends AuthRequiredHandler {
         //integrity check
         requestIntegrityCheck(pkToken, originalJSON, validationToken);
 
-
+        //freshness check
         //finally check the user sending the request is either the source user or the target user
         if((ptBaseInfo.getSourceUid() != this.user.getUid()) && (ptBaseInfo.getTargetUid() != this.user.getUid())){
             throw new RuntimeException("user not in the reported transaction");
@@ -118,10 +119,10 @@ public class PointsTransactionHandler extends AuthRequiredHandler {
     }
 
     protected void executeAction(HttpExchange httpExchange) throws Exception {
-
+        ConsistencyManager.getInstance().addNewPointsTransaction(ptAllInfo);
     }
 
     protected String produceAnswer(HttpExchange httpExchange) throws Exception {
-        return null;
+        return "{}";
     }
 }

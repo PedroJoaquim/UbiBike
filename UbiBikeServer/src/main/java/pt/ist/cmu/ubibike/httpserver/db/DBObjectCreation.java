@@ -2,6 +2,7 @@ package pt.ist.cmu.ubibike.httpserver.db;
 
 import pt.ist.cmu.ubibike.httpserver.model.Coordinate;
 import pt.ist.cmu.ubibike.httpserver.model.PendingEvent;
+import pt.ist.cmu.ubibike.httpserver.model.PointsTransactionAllInfo;
 import pt.ist.cmu.ubibike.httpserver.model.Trajectory;
 import pt.ist.cmu.ubibike.httpserver.util.CoordinatesParser;
 
@@ -62,26 +63,39 @@ public class DBObjectCreation {
         return newId;
     }
 
-    public static int insertPointsTransaction(Connection conn, int senderUID, int receiverUID, int points) throws SQLException {
+    public static void insertPointsTransaction(Connection conn, PointsTransactionAllInfo pt) throws SQLException {
 
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO points_transactions(sender_uid, receiver_uid, points) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-        int newId;
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO points_transactions(source_uid, source_logical_clock, target_uid, target_logical_clock, points, transaction_timestamp) " +
+                                                       " VALUES (?, ?, ?, ?, ?, ?)");
 
-        stmt.setInt(1, senderUID);
-        stmt.setInt(2, receiverUID);
-        stmt.setInt(3, points);
+        stmt.setInt(1, pt.getSourceUid());
+        stmt.setInt(2, pt.getSourceLogialClock());
+        stmt.setInt(3, pt.getTargetUid());
+        stmt.setInt(4, pt.getSourceLogialClock());
+        stmt.setInt(5, pt.getPoints());
+        stmt.setLong(6, pt.getTimestamp());
 
         stmt.executeUpdate();
 
-        ResultSet result = stmt.getGeneratedKeys();
+        try{stmt.close();} catch (SQLException e) {/*ignore*/}
 
-        if(!result.next()){ throw new SQLException();}
+    }
 
-        newId = result.getInt(1);
+    public static void insertPointsTransaction(Connection conn, PendingEvent pe) throws SQLException {
 
-        try{result.close(); stmt.close();} catch (SQLException e) {/*ignore*/}
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO points_transactions(source_uid, source_logical_clock, target_uid, target_logical_clock, points, transaction_timestamp) " +
+                                                       " VALUES (?, ?, ?, ?, ?, ?)");
 
-        return newId;
+        stmt.setInt(1, pe.getSourceUID());
+        stmt.setInt(2, pe.getSourceLogicalClock());
+        stmt.setInt(3, pe.getTargetUID());
+        stmt.setInt(4, pe.getTargetLogicalClock());
+        stmt.setInt(5, pe.getPoints());
+        stmt.setLong(6, pe.getTransactionTimestamp());
+
+        stmt.executeUpdate();
+
+        try{stmt.close();} catch (SQLException e) {/*ignore*/}
     }
 
     public static void insertSession(Connection conn, int uid, int sessionID) throws SQLException{
@@ -120,7 +134,21 @@ public class DBObjectCreation {
         try{stmt.close();} catch (SQLException e) {/*ignore*/}
     }
 
-    public static void insertPendingEvent(Connection connection, PendingEvent pendingEvent) {
-        //todo - ignore pe_id
+    public static void insertPendingEvent(Connection connection, PendingEvent pe) throws SQLException {
+
+        PreparedStatement stmt = connection.prepareStatement("INSERT INTO pending_events(source_uid, source_logical_clock, target_uid, target_logical_clock, points, transaction_timestamp, type)  " +
+                                                             " VALUES(?, ?, ?, ?, ?, ?, ?)");
+
+        stmt.setInt(1, pe.getSourceUID());
+        stmt.setInt(2, pe.getSourceLogicalClock());
+        stmt.setInt(3, pe.getTargetUID());
+        stmt.setInt(4, pe.getTargetLogicalClock());
+        stmt.setInt(5, pe.getPoints());
+        stmt.setLong(6, pe.getTransactionTimestamp());
+        stmt.setInt(7, pe.getType());
+
+        stmt.executeUpdate();
+
+        try{stmt.close();} catch (SQLException e) {/*ignore*/}
     }
 }

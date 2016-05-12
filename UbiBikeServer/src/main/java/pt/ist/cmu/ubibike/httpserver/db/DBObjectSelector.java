@@ -116,44 +116,16 @@ public class DBObjectSelector {
         return resultList.toArray(new Trajectory[resultList.size()]);
     }
 
-    public static PointsTransactionAllInfo getPointsTransactionFromID(Connection conn, int ptid) throws SQLException {
 
-       /* Statement stmt = conn.createStatement();
-        ResultSet result = stmt.executeQuery("SELECT * FROM points_transactions WHERE ptid = " + ptid);
+    public static List<PointsTransactionBaseInfo> getPointsTransactionFromUser(Connection conn, int uid) throws SQLException {
 
-        if (!result.next()) {
-            return null;
-        }
-
-        PointsTransactionAllInfo pt = new PointsTransactionAllInfo(result.getInt("ptid"),
-                result.getInt("sender_uid"),
-                result.getInt("receiver_uid"),
-                result.getInt("points"),
-                result.getTimestamp("execution_timestamp"));
-
-        try {
-            result.close();
-            stmt.close();
-        } catch (SQLException e) {}
-
-        return pt */
-
-        return null;
-    }
-
-    public static PointsTransactionAllInfo[] getPointsTransactionFromUser(Connection conn, int uid) throws SQLException {
-
-       /* List<PointsTransactionAllInfo> resultList = new ArrayList<PointsTransactionAllInfo>();
+        List<PointsTransactionBaseInfo> resultList = new ArrayList<PointsTransactionBaseInfo>();
 
         Statement stmt = conn.createStatement();
-        ResultSet result = stmt.executeQuery("SELECT * FROM points_transactions WHERE sender_uid = " + uid + "OR receiver_uid = " + uid);
+        ResultSet result = stmt.executeQuery("SELECT * FROM points_transactions WHERE source_uid = "+ uid+" OR target_uid = " + uid);
 
         while (result.next()) {
-            resultList.add(new PointsTransactionAllInfo(result.getInt("ptid"),
-                    result.getInt("sender_uid"),
-                    result.getInt("receiver_uid"),
-                    result.getInt("points"),
-                    result.getTimestamp("execution_timestamp")));
+            resultList.add(new PointsTransactionBaseInfo(result.getInt("source_uid"), result.getInt("target_uid"), result.getInt("points"), result.getLong("transaction_timestamp")));
         }
 
         try {
@@ -161,9 +133,7 @@ public class DBObjectSelector {
             stmt.close();
         } catch (SQLException e) {}
 
-        return resultList.toArray(new PointsTransactionAllInfo[resultList.size()]);*/
-
-        return null;
+        return resultList;
     }
 
     public static Session getSessionFromUID(Connection conn, int uid) throws SQLException {
@@ -325,5 +295,53 @@ public class DBObjectSelector {
         } catch (SQLException e) {/*ignore*/}
 
         return resultList;
+    }
+
+    public static PointsTransactionBaseInfo getEquivalentPointsTransaction(Connection connection, PointsTransactionAllInfo pt) throws SQLException {
+
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM points_transactions WHERE source_uid = ? AND target_uid = ? AND transaction_timestamp = ?");
+        stmt.setInt(1, pt.getSourceUid());
+        stmt.setInt(2, pt.getTargetUid());
+        stmt.setLong(3, pt.getTimestamp());
+
+        ResultSet result = stmt.executeQuery();
+
+        if (!result.next()) {
+            return null;
+        }
+
+        PointsTransactionBaseInfo ptBase = new PointsTransactionBaseInfo(result.getInt("source_uid"), result.getInt("target_uid"), result.getInt("points"), result.getLong("transaction_timestamp"));
+
+        try {
+            result.close();
+            stmt.close();
+        } catch (SQLException e) {}
+
+        return ptBase;
+    }
+
+    public static PendingEvent getEquivalentPendingEvents(Connection connection, PointsTransactionAllInfo pt) throws SQLException {
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM pending_events WHERE source_uid = ? AND target_uid = ? AND transaction_timestamp = ?");
+        stmt.setInt(1, pt.getSourceUid());
+        stmt.setInt(2, pt.getTargetUid());
+        stmt.setLong(3, pt.getTimestamp());
+
+        ResultSet result = stmt.executeQuery();
+
+        if (!result.next()) {
+            return null;
+        }
+
+        PendingEvent pe = new PendingEvent(result.getInt("pe_id"), result.getInt("source_uid"), result.getInt("source_logical_clock"),
+                result.getInt("target_uid"), result.getInt("target_logical_clock"),
+                result.getInt("points"), result.getLong("transaction_timestamp"),
+                result.getInt("type"));
+
+        try {
+            result.close();
+            stmt.close();
+        } catch (SQLException e) {}
+
+        return pe;
     }
 }

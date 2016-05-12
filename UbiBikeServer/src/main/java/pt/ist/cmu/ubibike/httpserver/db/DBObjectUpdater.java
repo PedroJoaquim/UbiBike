@@ -25,13 +25,14 @@ public class DBObjectUpdater {
     }
 
     public static void updateUser(Connection conn, User u) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("UPDATE users SET username = ?, public_key = ?, password = ?, points = ?, logical_clock = ?");
+        PreparedStatement stmt = conn.prepareStatement("UPDATE users SET username = ?, public_key = ?, password = ?, points = ?, logical_clock = ? WHERE uid = ?");
 
         stmt.setString(1, u.getUsername());
         stmt.setString(2, u.getPublicKey());
         stmt.setBytes(3, u.getPassword());
         stmt.setInt(4, u.getPoints());
         stmt.setInt(5, u.getLogicalClock());
+        stmt.setInt(6, u.getUid());
 
         stmt.executeUpdate();
     }

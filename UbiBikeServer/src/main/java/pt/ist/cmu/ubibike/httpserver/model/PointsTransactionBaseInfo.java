@@ -8,11 +8,19 @@ public class PointsTransactionBaseInfo {
     private int sourceUid;
     private int targetUid;
     private int points;
-    private String timestamp;
+    private long timestamp;
     private int sourceLogialClock;
 
     public PointsTransactionBaseInfo() {
     }
+
+    public PointsTransactionBaseInfo(int sourceUid, int targetUid, int points, long timestamp) {
+        this.sourceUid = sourceUid;
+        this.targetUid = targetUid;
+        this.points = points;
+        this.timestamp = timestamp;
+    }
+
 
     @JsonGetter("source_uid")
     public int getSourceUid() {
@@ -45,12 +53,12 @@ public class PointsTransactionBaseInfo {
     }
 
     @JsonGetter("timestamp")
-    public String getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
     @JsonSetter("timestamp")
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 

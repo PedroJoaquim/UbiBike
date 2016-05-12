@@ -50,7 +50,7 @@ public class ConsistencyManager {
     }
 
 
-    public void addNewPointsTransaction(PointsTransactionAllInfo pt) throws SQLException {
+    public boolean addNewPointsTransaction(PointsTransactionAllInfo pt) throws SQLException {
 
         synchronized (getLockForUser(pt.getSourceUid())){
             synchronized (getLockForUser(pt.getTargetUid())){
@@ -58,6 +58,10 @@ public class ConsistencyManager {
                 User sourceUser = DBObjectSelector.getUserFromID(DBConnection.getConnection(), pt.getSourceUid());
                 User targetUser = DBObjectSelector.getUserFromID(DBConnection.getConnection(), pt.getTargetUid());
 
+
+                if(actionAlreadyPerformed(pt)){
+                    return false;
+                }
 
                 if((sourceUser.getLogicalClock() +1 == pt.getSourceLogialClock()) &&
                         (targetUser.getLogicalClock() +1 == pt.getTargetLogicalClock())){
@@ -69,6 +73,8 @@ public class ConsistencyManager {
                     sourceUser.removePoints(pt.getPoints());
                     targetUser.addPoints(pt.getPoints());
 
+                    DBObjectCreation.insertPointsTransaction(DBConnection.getConnection(), pt);
+
                     checkPendingEvents(sourceUser);
                     checkPendingEvents(targetUser);
                 } else{
@@ -78,10 +84,24 @@ public class ConsistencyManager {
                 }
             }
         }
+
+        return true;
     }
 
 
+    //do not consider the same request twice
+    private boolean actionAlreadyPerformed(PointsTransactionAllInfo pt) throws SQLException {
 
+        if(DBObjectSelector.getEquivalentPointsTransaction(DBConnection.getConnection(), pt) != null){
+            return true;
+        }
+
+        if(DBObjectSelector.getEquivalentPendingEvents(DBConnection.getConnection(), pt) != null){
+            return true;
+        }
+
+        return false;
+    }
 
 
     private void checkPendingEvents(User u) throws SQLException {
@@ -154,6 +174,7 @@ public class ConsistencyManager {
                     otherUser.removePoints(pendingEvent.getPoints());
                 }
 
+                DBObjectCreation.insertPointsTransaction(DBConnection.getConnection(), pendingEvent);
                 DBObjectRemove.removePendingEvent(DBConnection.getConnection(), pendingEvent.getPeID());
                 return otherUser;
             }

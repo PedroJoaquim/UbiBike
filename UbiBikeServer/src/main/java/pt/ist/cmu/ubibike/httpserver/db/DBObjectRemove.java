@@ -19,7 +19,8 @@ public class DBObjectRemove {
         stmt.executeUpdate("DELETE FROM bookings WHERE uid = " + uid);
     }
 
-    public static void removePendingEvent(Connection connection, int peID) {
-
+    public static void removePendingEvent(Connection connection, int peID) throws SQLException {
+        Statement stmt = connection.createStatement();
+        stmt.executeUpdate("DELETE FROM pending_events WHERE pe_id = " + peID);
     }
 }
