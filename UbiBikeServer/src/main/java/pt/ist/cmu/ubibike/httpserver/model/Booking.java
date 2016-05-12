@@ -6,13 +6,15 @@ public class Booking {
     private int bookingID;
     private int uid;
     private int bid;
+    private int sourceSid;
     private boolean active;
     private long bookTimestamp;
 
-    public Booking(int bookingID, int uid, int bid, long bookTimestamp, boolean active) {
+    public Booking(int bookingID, int uid, int bid, int sourceSid, long bookTimestamp, boolean active) {
         this.bookingID = bookingID;
         this.uid = uid;
         this.bid = bid;
+        this.sourceSid = sourceSid;
         this.active = active;
         this.bookTimestamp = bookTimestamp;
     }
@@ -51,5 +53,13 @@ public class Booking {
 
     public void setBookingID(int bookingID) {
         this.bookingID = bookingID;
+    }
+
+    public int getSourceSid() {
+        return sourceSid;
+    }
+
+    public void setSourceSid(int sourceSid) {
+        this.sourceSid = sourceSid;
     }
 }

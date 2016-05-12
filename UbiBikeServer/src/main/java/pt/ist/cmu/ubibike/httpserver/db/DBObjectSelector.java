@@ -196,6 +196,26 @@ public class DBObjectSelector {
         return resultList.toArray(new Station[resultList.size()]);
     }
 
+    public static Bike getBikeFromBid(Connection conn, int bid, int sid) throws SQLException {
+
+        Statement stmt = conn.createStatement();
+        ResultSet result = stmt.executeQuery("SELECT * FROM bikes WHERE bid = " + bid);
+
+        if (!result.next()) {
+            return null;
+        }
+
+        Bike b = new Bike(result.getInt("bid"), result.getString("bike_addr"), sid);
+
+        try {
+            result.close();
+            stmt.close();
+        } catch (SQLException e) {/*ignore*/}
+
+        return b;
+    }
+
+
     public static Bike[] getAvailableBikesFromStation(Connection conn, int sid) throws SQLException {
 
         List<Bike> resultList = new ArrayList<Bike>();
@@ -215,7 +235,7 @@ public class DBObjectSelector {
         return  resultList.toArray(new Bike[resultList.size()]);
     }
 
-    public static Bike[] getBikesFromStation(Connection conn, int sid) throws SQLException {
+    public static List<Bike> getBikesFromStation(Connection conn, int sid) throws SQLException {
 
         List<Bike> resultList = new ArrayList<Bike>();
 
@@ -231,7 +251,7 @@ public class DBObjectSelector {
             stmt.close();
         } catch (SQLException e) {/*ignore*/}
 
-        return  resultList.toArray(new Bike[resultList.size()]);
+        return  resultList;
     }
 
     public static Booking getBookingFromUID(Connection conn, int uid) throws SQLException {
@@ -249,7 +269,7 @@ public class DBObjectSelector {
             return null;
         }
 
-        Booking b = new Booking(result.getInt("booking_id"), result.getInt("uid"), result.getInt("bid"), result.getLong("booking_timestamp"), result.getBoolean("active"));
+        Booking b = new Booking(result.getInt("booking_id"), result.getInt("uid"), result.getInt("bid"), result.getInt("source_sid"), result.getLong("booking_timestamp"), result.getBoolean("active"));
 
         try {
             result.close();

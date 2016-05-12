@@ -19,6 +19,7 @@ public class User {
     private int points;
     private int globalRank;
     private int logicalClock;
+    private Bike booking;
 
     public User(int uid, String username, String public_key, byte[] password, int points, int logicalClock) {
         this.uid = uid;
@@ -117,6 +118,16 @@ public class User {
     @JsonSetter("logical_clock")
     public void setLogicalClock(int logicalClock) {
         this.logicalClock = logicalClock;
+    }
+
+    @JsonGetter("booking")
+    public Bike getBooking() {
+        return booking;
+    }
+
+    @JsonSetter("booking")
+    public void setBooking(Bike booking) {
+        this.booking = booking;
     }
 
     public void incLogicalClock() {

@@ -17,6 +17,7 @@ public class BikeBookingHandler extends AuthRequiredHandler {
     private static final String STATION_SID_ATTR = "sid";
     private Bike[] availableBikes;
     private Bike bike;
+    private int sid;
 
     public BikeBookingHandler() {
         super();
@@ -36,7 +37,7 @@ public class BikeBookingHandler extends AuthRequiredHandler {
             throw new RuntimeException("No station selected");
         }
 
-        int sid = Integer.valueOf(urlQueyParams.get(STATION_SID_ATTR));
+        this.sid = Integer.valueOf(urlQueyParams.get(STATION_SID_ATTR));
 
         if((this.availableBikes = DBObjectSelector.getAvailableBikesFromStation(DBConnection.getConnection(), sid)).length == 0){
             throw new RuntimeException("The selected station has no bikes available for booking");
@@ -47,7 +48,7 @@ public class BikeBookingHandler extends AuthRequiredHandler {
     protected void executeAction(HttpExchange httpExchange) throws Exception {
 
         this.bike = availableBikes[new Random().nextInt(availableBikes.length)];
-        DBObjectCreation.insertBikeBooking(DBConnection.getConnection(), this.user.getUid(), bike.getBid());
+        DBObjectCreation.insertBikeBooking(DBConnection.getConnection(), this.user.getUid(), bike.getBid(), sid);
 
     }
 

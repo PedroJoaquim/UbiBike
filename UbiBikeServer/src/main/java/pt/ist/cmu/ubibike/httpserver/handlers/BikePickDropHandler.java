@@ -4,10 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import pt.ist.cmu.ubibike.httpserver.db.*;
+import pt.ist.cmu.ubibike.httpserver.model.Bike;
 import pt.ist.cmu.ubibike.httpserver.model.Booking;
 import pt.ist.cmu.ubibike.httpserver.util.JSONSchemaValidation;
 
+import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.List;
 
 public class BikePickDropHandler extends AuthRequiredHandler {
 
@@ -52,7 +55,7 @@ public class BikePickDropHandler extends AuthRequiredHandler {
         }
 
         if(bickePick){
-            if(!Arrays.asList(DBObjectSelector.getBikesFromStation(DBConnection.getConnection(), this.sid)).contains(this.bid)){
+            if(!bikeIsOnStation(this.bid, this.sid)){
                 throw new RuntimeException("The selected bike is not in the selected station");
             }
         }
@@ -66,6 +69,18 @@ public class BikePickDropHandler extends AuthRequiredHandler {
         if(b.getBid() != this.bid){
             throw new RuntimeException("The requested bid does not match your booking's bid");
         }
+    }
+
+    private boolean bikeIsOnStation(int bid, int sid) throws SQLException {
+        List<Bike> bikesFromStation = DBObjectSelector.getBikesFromStation(DBConnection.getConnection(), this.sid);
+
+        for (Bike b: bikesFromStation) {
+            if(b.getBid() == bid){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
