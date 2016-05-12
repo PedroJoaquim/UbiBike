@@ -63,12 +63,12 @@ public class PointsTransactionAllInfo {
         this.originalJSONBase64 = originalJSONBase64;
     }
 
-    public int getSourceUid() {
-        return this.transactionInfo.getSourceUid();
+    public String getSourceUsername() {
+        return this.transactionInfo.getSourceUsername();
     }
 
-    public int getTargetUid() {
-        return this.transactionInfo.getTargetUid();
+    public String getTargetUsername() {
+        return this.transactionInfo.getTargetUsername();
     }
 
     public int getPoints() {
@@ -84,7 +84,7 @@ public class PointsTransactionAllInfo {
     }
 
     public PendingEvent toPendingEvent() {
-        return new PendingEvent(-1, getSourceUid(), getSourceLogialClock(), getTargetUid(), getTargetLogicalClock(),
+        return new PendingEvent(-1, getSourceUsername(), getSourceLogialClock(), getTargetUsername(), getTargetLogicalClock(),
                                 getPoints(), getTimestamp(), PendingEvent.TRANSACTION_TYPE);
     }
 

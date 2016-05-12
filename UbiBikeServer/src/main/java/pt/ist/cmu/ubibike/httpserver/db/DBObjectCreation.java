@@ -68,9 +68,9 @@ public class DBObjectCreation {
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO points_transactions(source_uid, source_logical_clock, target_uid, target_logical_clock, points, transaction_timestamp) " +
                                                        " VALUES (?, ?, ?, ?, ?, ?)");
 
-        stmt.setInt(1, pt.getSourceUid());
+        stmt.setString(1, pt.getSourceUsername());
         stmt.setInt(2, pt.getSourceLogialClock());
-        stmt.setInt(3, pt.getTargetUid());
+        stmt.setString(3, pt.getTargetUsername());
         stmt.setInt(4, pt.getSourceLogialClock());
         stmt.setInt(5, pt.getPoints());
         stmt.setLong(6, pt.getTimestamp());
@@ -86,9 +86,9 @@ public class DBObjectCreation {
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO points_transactions(source_uid, source_logical_clock, target_uid, target_logical_clock, points, transaction_timestamp) " +
                                                        " VALUES (?, ?, ?, ?, ?, ?)");
 
-        stmt.setInt(1, pe.getSourceUID());
+        stmt.setString(1, pe.getSourceUsername());
         stmt.setInt(2, pe.getSourceLogicalClock());
-        stmt.setInt(3, pe.getTargetUID());
+        stmt.setString(3, pe.getTargetUsername());
         stmt.setInt(4, pe.getTargetLogicalClock());
         stmt.setInt(5, pe.getPoints());
         stmt.setLong(6, pe.getTransactionTimestamp());
@@ -140,9 +140,9 @@ public class DBObjectCreation {
         PreparedStatement stmt = connection.prepareStatement("INSERT INTO pending_events(source_uid, source_logical_clock, target_uid, target_logical_clock, points, transaction_timestamp, type)  " +
                                                              " VALUES(?, ?, ?, ?, ?, ?, ?)");
 
-        stmt.setInt(1, pe.getSourceUID());
+        stmt.setString(1, pe.getSourceUsername());
         stmt.setInt(2, pe.getSourceLogicalClock());
-        stmt.setInt(3, pe.getTargetUID());
+        stmt.setString(3, pe.getTargetUsername());
         stmt.setInt(4, pe.getTargetLogicalClock());
         stmt.setInt(5, pe.getPoints());
         stmt.setLong(6, pe.getTransactionTimestamp());

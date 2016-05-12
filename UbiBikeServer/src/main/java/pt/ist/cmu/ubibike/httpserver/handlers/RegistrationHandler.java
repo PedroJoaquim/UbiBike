@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.net.httpserver.HttpExchange;
 import pt.ist.cmu.ubibike.httpserver.cipher.CipherUtils;
+import pt.ist.cmu.ubibike.httpserver.cipher.PublicKeyReader;
 import pt.ist.cmu.ubibike.httpserver.db.DBConnection;
 import pt.ist.cmu.ubibike.httpserver.db.DBObjectCreation;
 import pt.ist.cmu.ubibike.httpserver.db.DBObjectSelector;
@@ -30,6 +31,7 @@ public class RegistrationHandler extends BaseHandler {
     private int uid;
     private String sessionToken;
     private String publicKeyToken;
+    private String encodedPublicKey;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -69,6 +71,7 @@ public class RegistrationHandler extends BaseHandler {
 
         this.publicKeyToken = TokenHandler.generatePublicKeyToken(u);
         this.sessionToken = SessionManager.startSession(u);
+        this.encodedPublicKey = CipherUtils.encodeToBase64String(PublicKeyReader.getKey().getEncoded());
     }
 
     @Override
@@ -80,6 +83,7 @@ public class RegistrationHandler extends BaseHandler {
         jNode.put("session_token", this.sessionToken);
         jNode.put("public_key_token", this.publicKeyToken);
         jNode.put("uid", this.uid);
+        jNode.put("server_public_key", this.encodedPublicKey);
 
         return jNode.toString();
     }

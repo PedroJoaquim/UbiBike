@@ -103,7 +103,7 @@ public class IndividualChatFragment extends ChatFragment {
                 });
 
 
-                AlertDialog alertDialog = inputAlert.create();
+                final AlertDialog alertDialog = inputAlert.create();
 
                 alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
 
@@ -122,7 +122,10 @@ public class IndividualChatFragment extends ChatFragment {
                                     int points = Integer.parseInt(userInputValue);
 
                                     if(points > myPoints){
-                                        Toast.makeText(getActivity(), "You do not have enough points!" + points, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getActivity(), "You do not have enough points!", Toast.LENGTH_SHORT).show();
+
+                                    } else if (points <= 0) {
+                                        Toast.makeText(getActivity(), "The input value must be greater than zero!", Toast.LENGTH_SHORT).show();
 
                                     } else{
 
@@ -134,6 +137,8 @@ public class IndividualChatFragment extends ChatFragment {
                                 catch(Exception e){
                                     Toast.makeText(getActivity(), "Invalid Number", Toast.LENGTH_SHORT).show();
                                 }
+
+                                alertDialog.dismiss();
 
                             }
                         });

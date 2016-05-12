@@ -6,7 +6,7 @@ CREATE TABLE users (
   username   VARCHAR(30)   NOT NULL,
   public_key VARCHAR(2048) NOT NULL,
   password   BINARY(32)    NOT NULL,
-  points     INT           NOT NULL DEFAULT 0,
+  points     INT           NOT NULL DEFAULT 500,
   logical_clock INT        NOT NULL DEFAULT 0,
   PRIMARY KEY (uid),
   UNIQUE (username)
@@ -14,9 +14,9 @@ CREATE TABLE users (
 
 DROP TABLE IF EXISTS points_transactions;
 CREATE TABLE points_transactions (
-  source_uid           INT NOT NULL,
+  source_uid           VARCHAR(30)   NOT NULL,
   source_logical_clock INT NOT NULL,
-  target_uid           INT NOT NULL,
+  target_uid           VARCHAR(30)   NOT NULL,
   target_logical_clock INT NOT NULL,
   points               INT NOT NULL,
   transaction_timestamp LONG NOT NULL
@@ -25,9 +25,9 @@ CREATE TABLE points_transactions (
 DROP TABLE IF EXISTS pending_events;
 CREATE TABLE pending_events (
   pe_id                INT NOT NULL AUTO_INCREMENT,
-  source_uid           INT NOT NULL,
+  source_uid           VARCHAR(30)   NOT NULL,
   source_logical_clock INT NOT NULL,
-  target_uid           INT NOT NULL,
+  target_uid           VARCHAR(30)   NOT NULL,
   target_logical_clock INT NOT NULL,
   points               INT NOT NULL,
   transaction_timestamp LONG NOT NULL,

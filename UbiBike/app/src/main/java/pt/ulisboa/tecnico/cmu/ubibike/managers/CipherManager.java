@@ -54,9 +54,7 @@ public class CipherManager {
         try {
 
             X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
-            KeyFactory kf = null;
-
-            kf = KeyFactory.getInstance("RSA");
+            KeyFactory kf = KeyFactory.getInstance("RSA");
 
             publicKey = kf.generatePublic(spec);
             return publicKey;

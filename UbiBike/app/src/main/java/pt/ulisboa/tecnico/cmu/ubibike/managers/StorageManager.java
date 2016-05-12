@@ -26,6 +26,7 @@ import pt.ulisboa.tecnico.cmu.ubibike.utils.Password;
  */
 public class StorageManager extends SQLiteOpenHelper {
 
+
     private Context context;
 
     private SQLiteDatabase readableDatabase;
@@ -44,7 +45,7 @@ public class StorageManager extends SQLiteOpenHelper {
     private static final String COLUMN_DATA = "data";
     private static final String COLUMN_PUBLIC_KEY = "public_key";
     private static final String COLUMN_PRIVATE_KEY = "private_key";
-
+    private static final String COLUMN_SERVER_PUBLIC_KEY = "server_public_key";
 
     public StorageManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -65,7 +66,8 @@ public class StorageManager extends SQLiteOpenHelper {
                         + COLUMN_CLIENT_ID + " TEXT,"
                         + COLUMN_DATA + " TEXT, "
                         + COLUMN_PUBLIC_KEY + " BLOB,"
-                        + COLUMN_PRIVATE_KEY + " BLOB"
+                        + COLUMN_PRIVATE_KEY + " BLOB,"
+                        + COLUMN_SERVER_PUBLIC_KEY + " BLOB"
                         + ");"
         );
     }
@@ -255,6 +257,16 @@ public class StorageManager extends SQLiteOpenHelper {
         writableDatabase.update(APP_DATA_TABLE_NAME, contentValues, COLUMN_CLIENT_ID + "= \"" + clientID + "\"", null);
     }
 
+
+    public void storeServerPublicKeyOnDB(int clientID, PublicKey serverPublicKey) {
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(COLUMN_SERVER_PUBLIC_KEY, serverPublicKey.getEncoded());
+
+        writableDatabase.update(APP_DATA_TABLE_NAME, contentValues, COLUMN_CLIENT_ID + "= \"" + clientID + "\"", null);
+    }
+
+
     /**
      * Retrieves client's public key from DB
      *
@@ -268,6 +280,22 @@ public class StorageManager extends SQLiteOpenHelper {
         cursor.moveToFirst();
 
         byte[] publicKeyBytes = cursor.getBlob(cursor.getColumnIndex(COLUMN_PUBLIC_KEY));
+
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+
+        return CipherManager.getPublicKeyFromBytes(publicKeyBytes);
+    }
+
+
+    public PublicKey getServerPublicKeyFromDB(int clientID){
+
+        String sqlQuery = "SELECT * FROM " + APP_DATA_TABLE_NAME + " WHERE " + COLUMN_CLIENT_ID + " = \"" + clientID + "\";";
+        Cursor cursor = readableDatabase.rawQuery(sqlQuery, null);
+        cursor.moveToFirst();
+
+        byte[] publicKeyBytes = cursor.getBlob(cursor.getColumnIndex(COLUMN_SERVER_PUBLIC_KEY));
 
         if (!cursor.isClosed()) {
             cursor.close();
@@ -385,10 +413,6 @@ public class StorageManager extends SQLiteOpenHelper {
 
         return result;
     }
-
-
-
-
 
 
 

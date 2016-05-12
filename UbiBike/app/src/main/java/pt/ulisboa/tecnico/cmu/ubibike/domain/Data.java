@@ -5,10 +5,12 @@ import android.text.format.DateUtils;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by andriy on 12.03.2016.
@@ -38,7 +40,9 @@ public class Data {
     private Trajectory mLongestRide;
     private int mLogicalClock;
     private PrivateKey mPrivateKey;
+    private PublicKey mServerPublicKey;
 
+    private HashMap<String, List<Long>> mTransactionLog;
 
     public Data(int id, String usrn) {
         mUID = id;
@@ -47,17 +51,18 @@ public class Data {
         mBikeStations = new HashMap<>();
         mTrajectories = new ArrayList<>();
         mLastPosition = new LatLng(38.737681, -9.138382);
-        mTotalPoints = 0;
+        mTotalPoints = 500;
         mGlobalRank = -1;
         mTotalDistance = 0.0;
         mTotalTime = 0;
         mLogicalClock = 0;
+        mTransactionLog = new HashMap<>();
     }
 
     public Data(int uid, String username, String sessionToken, String publicKeyToken, Bike bookedBike,
                 ArrayList<BikePickupStation> bikeStations, ArrayList<Trajectory> trajectories,
                 LatLng lastPosition, Date dateUserInfoUpdated, Date dateStationsUpdated,
-                long totalPoints, int globalRank, int logicalClock) {
+                long totalPoints, int globalRank, int logicalClock, HashMap<String, List<Long>> transactionLog) {
 
         HashMap<Integer, BikePickupStation> stations = new HashMap<>();
 
@@ -88,6 +93,30 @@ public class Data {
         mTotalPoints = totalPoints;
         mGlobalRank = globalRank;
         mLogicalClock = logicalClock;
+        mTransactionLog = transactionLog;
+    }
+
+
+
+
+    public synchronized boolean doesTransactionExist(String username, long timestamp){
+
+        if(!mTransactionLog.containsKey(username)){
+            return false;
+        }
+
+        List<Long> timestamps = mTransactionLog.get(username);
+
+        return timestamps.contains(timestamp);
+    }
+
+    public synchronized void addTransactionLog(String username, long timestamp){
+
+        if(!mTransactionLog.containsKey(username)){
+            mTransactionLog.put(username, new ArrayList<Long>());
+        }
+
+        mTransactionLog.get(username).add(timestamp);
     }
 
 
@@ -331,5 +360,21 @@ public class Data {
 
     public void setPrivateKey(PrivateKey privateKey) {
         mPrivateKey = privateKey;
+    }
+
+    public PublicKey getServerPublicKey() {
+        return mServerPublicKey;
+    }
+
+    public void setServerPublicKey(PublicKey mServerPublicKey) {
+        this.mServerPublicKey = mServerPublicKey;
+    }
+
+    public HashMap<String, List<Long>> getTransactionLog() {
+        return mTransactionLog;
+    }
+
+    public void setTransactionLog(HashMap<String, List<Long>> mTransactionLog) {
+        this.mTransactionLog = mTransactionLog;
     }
 }

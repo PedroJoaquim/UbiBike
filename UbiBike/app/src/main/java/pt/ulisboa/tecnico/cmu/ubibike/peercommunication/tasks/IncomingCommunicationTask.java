@@ -21,8 +21,6 @@ public class IncomingCommunicationTask extends AsyncTask<Void, String, Void> {
     @Override
     protected Void doInBackground(Void... params) {
 
-        String receivedContent = "";
-
         try {
 
             serverSocket = new SimWifiP2pSocketServer(10001);
@@ -39,12 +37,17 @@ public class IncomingCommunicationTask extends AsyncTask<Void, String, Void> {
                 try {
                     BufferedReader sockIn = new BufferedReader(
                             new InputStreamReader(sock.getInputStream()));
-                    String st = sockIn.readLine();
-                    receivedContent += st;
-                    sock.getOutputStream().write(("\n").getBytes());
 
-                    NearbyPeerCommunication.processReceivedMessage(receivedContent);
-                    receivedContent = "";
+                    String content = "";
+                    String st = "";
+
+                    while ((st = sockIn.readLine()) != null){
+                        content += st + '\n';
+                    }
+
+                    content = content.substring(0, content.length()-1);
+                    String response = NearbyPeerCommunication.processReceivedMessage(content);
+                    sock.getOutputStream().write((response + "\n").getBytes());
                 }
                 catch (IOException e) {
                     Log.d("Error reading socket:", e.getMessage());

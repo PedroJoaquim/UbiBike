@@ -7,19 +7,19 @@ public class PendingEvent {
     public static final int TRANSACTION_TYPE = 2;
 
     private int peID;
-    private int sourceUID;
+    private String sourceUsername;
     private int sourceLogicalClock;
-    private int targetUID;
+    private String targetUsername;
     private int targetLogicalClock;
     private int points;
     private long transactionTimestamp;
     private int type;
 
-    public PendingEvent(int peID, int sourceUID, int sourceLogicalClock, int targetUID, int targetLogicalClock, int points, long transactionTimestamp, int type) {
+    public PendingEvent(int peID, String sourceUsername, int sourceLogicalClock, String targetUsername, int targetLogicalClock, int points, long transactionTimestamp, int type) {
         this.peID = peID;
-        this.sourceUID = sourceUID;
+        this.sourceUsername = sourceUsername;
         this.sourceLogicalClock = sourceLogicalClock;
-        this.targetUID = targetUID;
+        this.targetUsername = targetUsername;
         this.targetLogicalClock = targetLogicalClock;
         this.points = points;
         this.transactionTimestamp = transactionTimestamp;
@@ -34,12 +34,20 @@ public class PendingEvent {
         this.peID = peID;
     }
 
-    public int getSourceUID() {
-        return sourceUID;
+    public String getSourceUsername() {
+        return sourceUsername;
     }
 
-    public void setSourceUID(int sourceUID) {
-        this.sourceUID = sourceUID;
+    public void setSourceUsername(String sourceUsername) {
+        this.sourceUsername = sourceUsername;
+    }
+
+    public String getTargetUsername() {
+        return targetUsername;
+    }
+
+    public void setTargetUsername(String targetUsername) {
+        this.targetUsername = targetUsername;
     }
 
     public int getSourceLogicalClock() {
@@ -50,13 +58,6 @@ public class PendingEvent {
         this.sourceLogicalClock = sourceLogicalClock;
     }
 
-    public int getTargetUID() {
-        return targetUID;
-    }
-
-    public void setTargetUID(int targetUID) {
-        this.targetUID = targetUID;
-    }
 
     public int getTargetLogicalClock() {
         return targetLogicalClock;
@@ -90,8 +91,8 @@ public class PendingEvent {
         this.transactionTimestamp = transactionTimestamp;
     }
 
-    public int getLogicalClockForUid(int uid){
-        if(sourceUID == uid){
+    public int getLogicalClockForUid(String username){
+        if(sourceUsername.equals(username)){
             return this.sourceLogicalClock;
         }
         else{

@@ -2,6 +2,8 @@ package pt.ulisboa.tecnico.cmu.ubibike.peercommunication;
 
 import android.os.AsyncTask;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,7 +14,10 @@ import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
 import pt.inesc.termite.wifidirect.SimWifiP2pDeviceList;
 import pt.inesc.termite.wifidirect.SimWifiP2pInfo;
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
+import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.OutgoingCommunicationTask;
+import pt.ulisboa.tecnico.cmu.ubibike.utils.JsonParser;
+import pt.ulisboa.tecnico.cmu.ubibike.utils.PointsTransactionUtils;
 
 
 public class NearbyPeerCommunication {
@@ -140,20 +145,46 @@ public class NearbyPeerCommunication {
     /**
      * Parsing messages received from peers
      */
-    public static void processReceivedMessage(String received){
+    public static String processReceivedMessage(String received){
 
         switch(received.split(SEPARATOR)[0]){
             case MESSAGE_TYPE_INDIVIDUAL: processIndividualChatMessage(received); break;
             case MESSAGE_TYPE_GROUP: processGroupChatMessage(received); break;
             case USERNAME_BROADCAST: processUsernameBroadcastMessage(received); break;
             case GROUPOWNER_BROADCAST: processGroupOwnerBroadcastMessage(received); break;
-            case POINTS_MESSAGE: processPointsTransactionMessage(received); break;
+            case POINTS_MESSAGE: return processPointsTransactionMessage(received);
         }
 
+        return "ok";
     }
 
-    private static void processPointsTransactionMessage(String received) {
-        //todo
+    private static String processPointsTransactionMessage(String received) {
+
+        String[] receivedParts = received.split(SEPARATOR);
+        Data data = ApplicationContext.getInstance().getData();
+        String json = receivedParts[1];
+
+        JSONObject transactionJSON = JsonParser.parsePointsTransaction(json);
+
+
+        if(transactionJSON == null){
+            return "\n";
+        }
+
+        int points = PointsTransactionUtils.validateTransaction(transactionJSON);
+
+        if(points == -1){
+            return "\n";
+        }
+
+        int targetLogicalClock = data.getNextLogicalClock();
+        data.addPoints(points);
+
+        //send points to server
+        JSONObject pointsTransactionServer = JsonParser.buildPointsTransactionServerJSON(transactionJSON, targetLogicalClock);
+        ApplicationContext.getInstance().getServerCommunicationHandler().performPointsTransactionRequest(pointsTransactionServer);
+
+        return "" + targetLogicalClock;
     }
 
     public static void processIndividualChatMessage(String received){
