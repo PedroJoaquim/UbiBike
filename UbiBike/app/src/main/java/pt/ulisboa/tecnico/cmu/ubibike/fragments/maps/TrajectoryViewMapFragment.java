@@ -44,6 +44,19 @@ public class TrajectoryViewMapFragment extends MapFragment {
 
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        ApplicationContext.getInstance().setCurrentFragment(this);
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+
+        ApplicationContext.getInstance().setCurrentFragment(null);
+    }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {

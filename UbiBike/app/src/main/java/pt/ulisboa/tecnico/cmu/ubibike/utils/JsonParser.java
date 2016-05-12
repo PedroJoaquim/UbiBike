@@ -66,6 +66,8 @@ public class JsonParser {
 
     private static final String BIKE_PICK = "bike_pick";
 
+    private static final String BOOKED_BIKE = "booked_bike";
+
     private static final String PENDING_REQUESTS = "pending_requests";
     private static final String PENDING_REQUEST_ID = "preq_id";
     private static final String PENDING_REQUEST_URL = "preq_url";
@@ -249,6 +251,19 @@ public class JsonParser {
             json.put(POINTS, appData.getTotalPoints());
             json.put(GLOBAl_RANK, appData.getGlobalRank());
 
+            //adding booked bike
+            Bike bikeBooked = appData.getBikeBooked();
+            if(bikeBooked != null){
+
+                JSONObject bk = new JSONObject();
+
+                bk.put(BIKE_ID, bikeBooked.getBid());
+                bk.put(STATION_ID, bikeBooked.getSid());
+                bk.put(BIKE_ADDR, bikeBooked.getUuid());
+
+                json.put(BOOKED_BIKE, bk);
+            }
+
             //adding bikeStations
             JSONArray bikeStations = new JSONArray();
             for (BikePickupStation station : appData.getBikeStations()) {
@@ -364,6 +379,22 @@ public class JsonParser {
                 publicKeyToken = json.getString(PUBLIC_KEY_TOKEN);
             }
 
+
+            //getting booked bike
+            Bike bookedBike = null;
+            if(json.has(BOOKED_BIKE)){
+                JSONObject bk = json.getJSONObject(BOOKED_BIKE);
+
+                int bid = bk.getInt(BIKE_ID);
+                int sid = bk.getInt(STATION_ID);
+                String uuid = bk.getString(BIKE_ADDR);
+
+                 bookedBike = new Bike(bid, uuid, sid);
+
+
+            }
+
+
             ArrayList<BikePickupStation> bikePickupStations = parseStations(json);
             ArrayList<Trajectory> trajectories = parseTrajectories(json);
 
@@ -393,7 +424,7 @@ public class JsonParser {
                 Log.e("Uncaught exception", e.toString());
             }
 
-            return new Data(uid, username, sessionToken, publicKeyToken, bikePickupStations,
+            return new Data(uid, username, sessionToken, publicKeyToken, bookedBike, bikePickupStations,
                     trajectories, lastPosition, lastUserInfoUpdated, lastStationsUpdated, totalPoints,
                     globalRank);
 

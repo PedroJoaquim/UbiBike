@@ -8,17 +8,11 @@ import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Bike;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.UpdatableUI;
-import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.NearbyPeerCommunication;
-import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks.OutgoingCommunicationTask;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.widget.Toast;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
     private UbiBike mActivity;

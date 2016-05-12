@@ -50,7 +50,7 @@ public class Data {
         mTotalTime = 0;
     }
 
-    public Data(int uid, String username, String sessionToken, String publicKeyToken,
+    public Data(int uid, String username, String sessionToken, String publicKeyToken, Bike bookedBike,
                 ArrayList<BikePickupStation> bikeStations, ArrayList<Trajectory> trajectories,
                 LatLng lastPosition, Date dateUserInfoUpdated, Date dateStationsUpdated,
                 long totalPoints, int globalRank) {
@@ -66,6 +66,7 @@ public class Data {
         mSessionToken = sessionToken;
         mPublicToken = publicKeyToken;
 
+        mBikeBooked = bookedBike;
         mBikeStations = stations;
         mTrajectories = trajectories;
         mLastPosition = lastPosition;

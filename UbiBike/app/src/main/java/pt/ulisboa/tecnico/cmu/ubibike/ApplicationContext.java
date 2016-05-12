@@ -196,4 +196,11 @@ public class ApplicationContext extends Application {
             }
         }
     }
+
+
+    public void updateUI(){
+        if(getCurrentFragment() != null){
+            getCurrentFragment().updateUI();
+        }
+    }
 }

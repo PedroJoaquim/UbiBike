@@ -39,6 +39,20 @@ public class StationsNearbyMapFragment extends MapFragment {
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+
+        ApplicationContext.getInstance().setCurrentFragment(this);
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+
+        ApplicationContext.getInstance().setCurrentFragment(null);
+    }
+
+    @Override
     protected void setUIElements() {
 
         FrameLayout nextTrajectory = (FrameLayout) mView.findViewById(R.id.next_trajectory_frame);
@@ -108,6 +122,8 @@ public class StationsNearbyMapFragment extends MapFragment {
         MenuItem item = menu.findItem(R.id.action_upload_trajectory);
         item.setVisible(false); //TODO
     }
+
+
 
 
 

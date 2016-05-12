@@ -102,38 +102,11 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
             startService(i);
         }
 
+        //to guarantee that method is not invoked again on activity recreation
+        if(savedInstanceState == null) {
+            wifiP2pTurnOn();
+        }
 
-        wifiP2pTurnOn();
-
-
-        /*//TODO delete this hardcoded
-        ApplicationContext.getInstance().getNearbyPeerCommunication().addDeviceNearby("test", "...");
-        ApplicationContext.getInstance().getNearbyPeerCommunication().addDeviceNearby("test1", "...");
-        ApplicationContext.getInstance().getNearbyPeerCommunication().addDeviceNearby("test2", "...");
-        ApplicationContext.getInstance().getNearbyPeerCommunication().getDeviceNearby("test").setUsername("folano");
-        ApplicationContext.getInstance().getNearbyPeerCommunication().getDeviceNearby("test1").setUsername("gatuno");
-        ApplicationContext.getInstance().getNearbyPeerCommunication().getDeviceNearby("test2").setUsername("invalido");
-        ApplicationContext.getInstance().getNearbyPeerCommunication().addIndividualChat("folano");
-        ApplicationContext.getInstance().getNearbyPeerCommunication().addIndividualChat("gatuno");
-        ApplicationContext.getInstance().getNearbyPeerCommunication().addIndividualChat("invalido");
-
-        Chat chat = ApplicationContext.getInstance().getNearbyPeerCommunication().getIndividualChat("gatuno");
-        chat.addNewMessage(new ChatMessage(true, "gatuno", "Helloo"));
-        chat.addNewMessage(new ChatMessage(false, "me", "Hi there!"));
-        chat.addNewMessage(new ChatMessage(true, "gatuno", "bla bla bla..."));
-
-
-        GroupChat group = ApplicationContext.getInstance().getNearbyPeerCommunication().getGroupChat();
-        group.addMember("folano");
-        group.addMember("gatuno");
-        group.addMember("invalido");
-        group.setOwner("'gatuno'");
-        Chat groupChat = ApplicationContext.getInstance().getNearbyPeerCommunication().getGroupChat().getChat();
-        groupChat.addNewMessage(new ChatMessage(true, "folano", "Oii"));
-        groupChat.addNewMessage(new ChatMessage(true, "gatuno", "Hola"));
-        groupChat.addNewMessage(new ChatMessage(true, "invalido", "Wazzzaaaaaa"));
-        groupChat.addNewMessage(new ChatMessage(true, "gatuno", "Wazzzaaaaaaaaaaaaa"));7
-        */
 
     }
 
@@ -186,11 +159,13 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         }
     }
 
+
     @Override
-    protected void onStop() {
+    protected void onDestroy() {
+        super.onDestroy();
+
         unregisterReceiver(mReceiver);
         wifiP2pTurnOff();
-        super.onStop();
     }
 
     @Override

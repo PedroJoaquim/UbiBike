@@ -101,17 +101,21 @@ public class ServerCommunicationHandler {
         try {
 
             String methodName = getResponseParseMethodName(requestType);
-            Method parseMethod = JsonParser.class.getMethod(methodName, new Class[]{ JSONObject.class, Data.class });
+            Method parseMethod = null;
+
+            if(methodName != null) {
+               parseMethod = JsonParser.class.getMethod(methodName, new Class[]{JSONObject.class, Data.class});
+            }
 
             if(ApplicationContext.getInstance().isInternetConnected()) {
                 new GenericRequestTask(url, parseMethod, requestType, json, pendingRequestID).execute();
             }
-            else{
+            else if(store){
                 storePendingRequest(url, requestType, json);
             }
 
         } catch (NoSuchMethodException e) {
-            new GenericRequestTask(url, null, requestType, json, null).execute();
+            //won't happen, I promise :)
         }
     }
 
@@ -193,7 +197,7 @@ public class ServerCommunicationHandler {
     }
 
     public void performBikeUnbookRequest(){
-        String url = buildUrl(URL_BIKE_BOOK, AUTH_REQUEST);
+        String url = buildUrl(URL_BIKE_UNBOOKING, AUTH_REQUEST);
 
         performGenericRequest(url, REQUEST_BIKE_UNBOOK, null, true, null);
     }
@@ -420,8 +424,14 @@ public class ServerCommunicationHandler {
         @Override
         protected void onPostExecute(String jsonStr) {
 
-            if (jsonStr == null || jsonStr.equals("[]") || jsonStr.equals("{}")){   //null or empty
+            if(jsonStr == null){
+                String msg = "Couldn't perform " + getRequestType(requestType) + " request.";
+                Toast.makeText(ApplicationContext.getInstance(), msg, Toast.LENGTH_SHORT).show();
                 return;
+            }
+            else if (jsonStr.equals("{}")){   //null or empty
+                finishSuccessfulRequest(requestType);
+                ApplicationContext.getInstance().updateUI();
             }
             else {
 
@@ -438,6 +448,8 @@ public class ServerCommunicationHandler {
                         Data appData = ApplicationContext.getInstance().getData();
 
                         parseMethod.invoke(null, new Object[]{json, appData});
+
+                        ApplicationContext.getInstance().updateUI();
 
                         Toast.makeText(ApplicationContext.getInstance(),
                                 "Success at " + getRequestType(requestType) + " request.", Toast.LENGTH_SHORT).show();
@@ -459,6 +471,13 @@ public class ServerCommunicationHandler {
                 String msg = "Pending request [id=" + pendentRequestID + "] executed with success.";
                 Toast.makeText(ApplicationContext.getInstance(), msg , Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    private void finishSuccessfulRequest(int requestType) {
+        if(requestType == REQUEST_BIKE_UNBOOK){
+            ApplicationContext.getInstance().getData().setBikeBooked(null);
+            Toast.makeText(ApplicationContext.getInstance(), "Success at bike unbooking request.", Toast.LENGTH_SHORT).show();
         }
     }
 
