@@ -84,6 +84,9 @@ public class ServerCommunicationHandler {
         publicKey  = CipherManager.getPublicKey();
         privateKey = CipherManager.getPrivateKey();
 
+        int uid = ApplicationContext.getInstance().getData().getUID();
+        ApplicationContext.getInstance().getStorageManager().storeClientKeyPairOnBD(uid, publicKey, privateKey);
+
         String base64publicKey = CipherManager.encodeToBase64String(publicKey.getEncoded());
 
         new RegisterAccountRequestTask(url, username, password, base64publicKey).execute();
