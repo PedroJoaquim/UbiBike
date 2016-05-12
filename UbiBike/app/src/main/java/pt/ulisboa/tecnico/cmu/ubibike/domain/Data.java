@@ -46,7 +46,7 @@ public class Data {
 
         mBikeStations = new HashMap<>();
         mTrajectories = new ArrayList<>();
-        mLastPosition = new LatLng(0.0, 0.0); //TODO last position
+        mLastPosition = new LatLng(38.737681, -9.138382);
         mTotalPoints = 0;
         mGlobalRank = -1;
         mTotalDistance = 0.0;
@@ -174,7 +174,7 @@ public class Data {
      * @return - last GPS synced position
      */
     public LatLng getLastPosition() {
-        return new LatLng(38.737681, -9.138382);    //TODO hardcoded
+        return mLastPosition;
     }
 
     /**
@@ -258,6 +258,7 @@ public class Data {
 
     public void setLastTrackedTrajectory(Trajectory lastTrackedTrajectory) {
         mLastTrackedTrajectory = lastTrackedTrajectory;
+        addTrajectory(lastTrackedTrajectory);
     }
 
     public void setBikeStations(ArrayList<BikePickupStation> bikeStations) {

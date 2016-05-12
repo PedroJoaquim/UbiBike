@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -46,6 +47,7 @@ public class TrajectoryTracker extends Service implements LocationListener {
     private boolean mFinishTracking = false;
     private boolean mStopTracking = false;
     private StopTrajectoryTrackingReceiver mStopTrackingReceiver;
+    private NearBookedBikeReceiver mNearBikeReceiver;
 
     private Trajectory mTrajectory;
 
@@ -72,17 +74,25 @@ public class TrajectoryTracker extends Service implements LocationListener {
         }
 
 
-        //registering receiver
-        IntentFilter filter = new IntentFilter(StopTrajectoryTrackingReceiver.STOP);
-        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        //registering stop receiver
+        IntentFilter filterStop = new IntentFilter(StopTrajectoryTrackingReceiver.STOP);
+        filterStop.addCategory(Intent.CATEGORY_DEFAULT);
         mStopTrackingReceiver = new StopTrajectoryTrackingReceiver();
-        registerReceiver(mStopTrackingReceiver, filter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mStopTrackingReceiver, filterStop);
+
+        //registering near booked bike receiver
+        IntentFilter filterNearby = new IntentFilter(NearBookedBikeReceiver.NEAR_BOOKED_BIKE);
+        filterNearby.addCategory(Intent.CATEGORY_DEFAULT);
+        mNearBikeReceiver = new NearBookedBikeReceiver();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mNearBikeReceiver, filterNearby);
+
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mStopTrackingReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mStopTrackingReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mNearBikeReceiver);
     }
 
     @Nullable
@@ -106,10 +116,7 @@ public class TrajectoryTracker extends Service implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d("UbiBike", "NewLocation");
-
-        ApplicationContext.getInstance().getData().
-                setLastPosition(location.getLatitude(), location.getLongitude());
+        Log.d("UbiBike", "NewLocation: " + location.getLatitude() + "   " + location.getLongitude());
 
         //was user near station on previous position
         boolean prevPositionNearStation = mNearStation;
@@ -121,6 +128,8 @@ public class TrajectoryTracker extends Service implements LocationListener {
             ApplicationContext.getInstance().getData().setLastPosition(location.getLatitude(),
                                                                         location.getLongitude());
 
+            ApplicationContext.getInstance().updateUI();
+
         }
         else{
             mPositionChanged = false;
@@ -129,6 +138,8 @@ public class TrajectoryTracker extends Service implements LocationListener {
         if(mPositionChanged){
 
             ArrayList<BikePickupStation> stations = ApplicationContext.getInstance().getData().getBikeStations();
+
+            mNearStation = false;
 
             //checking if user is near some station
             for(BikePickupStation station : stations){
@@ -207,7 +218,7 @@ public class TrajectoryTracker extends Service implements LocationListener {
             //main tracking loop
             while(!mStopTracking){
 
-                if(mTrackingEnabled) {
+                if(mTrackingEnabled && mPositionChanged) {
 
                     //new trajectory to register
                     if (mNewTrajectory) {
@@ -238,16 +249,20 @@ public class TrajectoryTracker extends Service implements LocationListener {
 
                     ApplicationContext.getInstance().getData().setLastTrackedTrajectory(mTrajectory);
 
-                    mFinishTracking = false;
+                    if(ApplicationContext.getInstance().getActivity() != null){
+                        ApplicationContext.getInstance().getActivity().
+                                showTrajectoryOnMap(mTrajectory.getTrajectoryID(), true, false);
+                    }
 
+                    mFinishTracking = false;
                 }
 
                 //Sleep a little bit to avoid constant looping
-                try {
+               /* try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     Log.e("Uncaught exception", e.toString());
-                }
+                }*/
             }
 
             stopSelf();
@@ -265,6 +280,13 @@ public class TrajectoryTracker extends Service implements LocationListener {
         @Override
         public void onReceive(Context context, Intent intent) {
             mNearBike = intent.getBooleanExtra(NEAR_BOOKED_BIKE, false);
+
+            if(mNearBike) {
+                Toast.makeText(TrajectoryTracker.this, "Booked bike nearby", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(TrajectoryTracker.this, "Booked bike isn't nearby", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -278,6 +300,7 @@ public class TrajectoryTracker extends Service implements LocationListener {
         @Override
         public void onReceive(Context context, Intent intent) {
             mStopTracking = true;
+            Toast.makeText(TrajectoryTracker.this, "", Toast.LENGTH_SHORT).show();
         }
     }
 }

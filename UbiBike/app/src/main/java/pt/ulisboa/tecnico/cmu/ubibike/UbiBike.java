@@ -13,6 +13,7 @@ import android.os.Messenger;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -97,13 +98,11 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
 
         registerBroadcastReceiver();
 
+        //to guarantee that method is not invoked again on activity recreation
         if(savedInstanceState == null){
             Intent i = new Intent(this, TrajectoryTracker.class);
             startService(i);
-        }
 
-        //to guarantee that method is not invoked again on activity recreation
-        if(savedInstanceState == null) {
             wifiP2pTurnOn();
         }
 
@@ -166,6 +165,8 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
 
         unregisterReceiver(mReceiver);
         wifiP2pTurnOff();
+
+        requestStopTrajectoryTracking();
     }
 
     @Override
@@ -355,7 +356,7 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
     public void requestStopTrajectoryTracking(){
         Intent sIntent = new Intent();
         sIntent.setAction(TrajectoryTracker.StopTrajectoryTrackingReceiver.STOP);
-        sendBroadcast(sIntent);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(sIntent);
     }
 
     /**
@@ -366,7 +367,7 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         Intent sIntent = new Intent();
         sIntent.putExtra(TrajectoryTracker.NearBookedBikeReceiver.NEAR_BOOKED_BIKE, bikeNearby);
         sIntent.setAction(TrajectoryTracker.NearBookedBikeReceiver.NEAR_BOOKED_BIKE);
-        sendBroadcast(sIntent);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(sIntent);
     }
 
 

@@ -368,8 +368,7 @@ public class ServerCommunicationHandler {
 
                     JsonParser.parseRegisterAccountResponseFromJson(json, appData);
 
-                    int uid = ApplicationContext.getInstance().getData().getUID();
-                    ApplicationContext.getInstance().getStorageManager().storeClientKeyPairOnBD(uid, publicKey, privateKey);
+                    ApplicationContext.getInstance().getStorageManager().storeClientKeyPairOnBD(userID, publicKey, privateKey);
 
                     ApplicationContext.getInstance().setData(appData);
                     ApplicationContext.getInstance().getActivity().finishLogin();

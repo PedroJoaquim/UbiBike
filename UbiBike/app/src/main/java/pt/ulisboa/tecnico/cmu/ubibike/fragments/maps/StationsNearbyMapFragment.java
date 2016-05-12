@@ -31,6 +31,7 @@ public class StationsNearbyMapFragment extends MapFragment {
 
     private HashMap<String, BikePickupStation> mMarkerStation = new HashMap<>(); //key = marker ID
     private int mCurrentSelectedStation;
+    private Marker mCurrentPositionMarker;
 
 
     @Override
@@ -112,6 +113,16 @@ public class StationsNearbyMapFragment extends MapFragment {
     @Override
     public void updateUI() {
         updateBookingButton();
+
+        LatLng lastPosition = ApplicationContext.getInstance().getData().getLastPosition();
+        mCurrentPositionMarker.setPosition(lastPosition);
+
+
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(lastPosition).zoom(15.0f).build();
+
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+        mGoogleMap.moveCamera(cameraUpdate);
     }
 
 
@@ -142,7 +153,7 @@ public class StationsNearbyMapFragment extends MapFragment {
                 .icon(BitmapDescriptorFactory
                         .fromResource(R.drawable.current_position_marker));
 
-        Marker pos = mGoogleMap.addMarker(currentPositionMarker);
+        mCurrentPositionMarker = mGoogleMap.addMarker(currentPositionMarker);
 
         //adding stations to map
         for(BikePickupStation station : bikeStations){
