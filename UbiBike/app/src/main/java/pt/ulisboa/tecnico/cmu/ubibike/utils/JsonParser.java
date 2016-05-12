@@ -758,6 +758,8 @@ public class JsonParser {
     public static JSONObject parsePublicKeyToken(String json) {
         try{
 
+            json = json.substring(json.indexOf("{"));
+
             JSONObject result = new JSONObject(json);
 
             if(!result.has(USER_ID) || !result.has(USERNAME) || !result.has(PUBLIC_KEY) || !result.has(TTL)){
@@ -766,7 +768,7 @@ public class JsonParser {
 
             return result;
 
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return null;
         }
     }

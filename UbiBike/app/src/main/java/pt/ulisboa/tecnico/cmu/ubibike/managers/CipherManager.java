@@ -32,7 +32,7 @@ public class CipherManager {
      * @return - base 64 string
      */
     public static String encodeToBase64String(byte[] rawData){
-        return Base64.encodeToString(rawData, Base64.DEFAULT);
+        return Base64.encodeToString(rawData, Base64.NO_WRAP);
     }
 
     /**
@@ -40,7 +40,7 @@ public class CipherManager {
      * @return - decoded byte[]
      */
     public static byte[] decodeFromBase64String(String encodedData){
-        return Base64.decode(encodedData, Base64.DEFAULT);
+        return Base64.decode(encodedData, Base64.NO_WRAP);
     }
 
     /**

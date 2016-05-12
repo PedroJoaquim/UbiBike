@@ -416,8 +416,9 @@ public class ServerCommunicationHandler {
 
             try {
 
+                String requestType = json != null ? "POST" : "GET";
 
-                response = HttpRequests.performHttpCall("GET", url, json);
+                response = HttpRequests.performHttpCall(requestType, url, json);
 
                 if(response != null && !JsonParser.isJSONValid(response)){ // Request error message received
                     JSONObject json = new JSONObject();

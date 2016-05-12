@@ -68,7 +68,7 @@ public class PointsTransactionUtils {
                 return -1;
             }
 
-            if(validPublicKeyToken(publicKeyToken, sourceUsername)){
+            if(!validPublicKeyToken(publicKeyToken, sourceUsername)){
                 return -1;
             }
 
@@ -119,9 +119,10 @@ public class PointsTransactionUtils {
 
         String username = publicKeyToken.getString(JsonParser.USERNAME);
         long ttl = Long.valueOf(publicKeyToken.getString(JsonParser.TTL));
+        long currentTime = System.currentTimeMillis();
 
         return username.equals(sourceUsername) &&
-                ttl >= System.currentTimeMillis();
+                ttl >= currentTime;
     }
 
     private static JSONObject readPublicKeyToken(String sourcePublicKeyToken) {

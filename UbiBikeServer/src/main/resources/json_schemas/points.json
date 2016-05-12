@@ -22,5 +22,5 @@
        "type": "string"
     }
   },
-  "required": ["transaction_info", "target_logical_clock", "validation_token", "source_public_key_token"]
+  "required": ["original_json_base_64", "target_logical_clock", "validation_token", "source_public_key_token"]
 }
