@@ -116,7 +116,6 @@ public class ServerCommunicationHandler {
             }
             else if(store){
                 storePendingRequest(url, requestType, json);
-                Toast.makeText(ApplicationContext.getInstance(), "Check your internet connection first.", Toast.LENGTH_SHORT).show();
             }
 
         } catch (NoSuchMethodException e) {
@@ -135,9 +134,6 @@ public class ServerCommunicationHandler {
         int id = ApplicationContext.getInstance().getNextPendingRequestID();
         PendingRequest pReq = new PendingRequest(id, url, requestType, json);
         ApplicationContext.getInstance().addPendingRequest(pReq);
-
-        String msg = "Pending request [id=" + pReq.getID() + "] stored.";
-        Toast.makeText(ApplicationContext.getInstance(), msg , Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -149,9 +145,6 @@ public class ServerCommunicationHandler {
         //if pReq == null, there are no more pending requests to execute
         if(pReq != null) {
             performGenericRequest(pReq.getUrl(), pReq.getRequestType(), pReq.getJson(), false, pReq.getID());
-
-            String msg = "Pending request [id=" + pReq.getID() + "] execution attempt.";
-            Toast.makeText(ApplicationContext.getInstance(), msg , Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -441,8 +434,6 @@ public class ServerCommunicationHandler {
         protected void onPostExecute(String jsonStr) {
 
             if(jsonStr == null){
-                String msg = "Couldn't perform " + getRequestType(requestType) + " request.";
-                Toast.makeText(ApplicationContext.getInstance(), msg, Toast.LENGTH_SHORT).show();
                 return;
             }
             else if (jsonStr.equals("{}")){   //null or empty
@@ -467,13 +458,9 @@ public class ServerCommunicationHandler {
 
                         ApplicationContext.getInstance().updateUI();
 
-                        Toast.makeText(ApplicationContext.getInstance(),
-                                "Success at " + getRequestType(requestType) + " request.", Toast.LENGTH_SHORT).show();
                     }
 
                 } catch (Exception e) {
-                    String msg = "Couldn't perform " + getRequestType(requestType) + " request.";
-                    Toast.makeText(ApplicationContext.getInstance(), msg, Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
@@ -483,9 +470,6 @@ public class ServerCommunicationHandler {
             if(pendentRequestID != null) {
                 ApplicationContext.getInstance().removePendingRequest(pendentRequestID);
                 executeNextPendingRequest();
-
-                String msg = "Pending request [id=" + pendentRequestID + "] executed with success.";
-                Toast.makeText(ApplicationContext.getInstance(), msg , Toast.LENGTH_SHORT).show();
             }
         }
     }
