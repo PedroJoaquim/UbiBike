@@ -217,12 +217,11 @@ public class TrajectoryTracker extends Service implements LocationListener {
             Bike bike  = ApplicationContext.getInstance().getData().getBikeBooked();
             if(bike != null && mTrajectory != null){
 
-                //Toast.makeText(TrajectoryTracker.this, "Tracking disabled & Trajectory finished", Toast.LENGTH_SHORT).show();
+                mTrajectory.addRoutePosition(mLastPosition.getLatitude(), mLastPosition.getLongitude());
 
                 mTrajectory.finishRoute();
 
                 mTrajectory.setEndStationID(mStation.getSid());
-
 
 
                 Log.d("UbiBike", "[Trajectory " + mTrajectory.getTrajectoryID() + "]" + "Tracking finished");

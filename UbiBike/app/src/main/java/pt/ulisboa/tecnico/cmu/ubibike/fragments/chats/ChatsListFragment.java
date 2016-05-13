@@ -119,8 +119,10 @@ public class ChatsListFragment extends Fragment implements UpdatableUI {
 
         if(ApplicationContext.getInstance().getNearbyPeerCommunication().getGroupChat().isEmpty()){
             groupChat.setVisibility(View.GONE);
+            mView.findViewById(R.id.no_nearby_textView).setVisibility(View.VISIBLE);
         }
         else{
+            mView.findViewById(R.id.no_nearby_textView).setVisibility(View.GONE);
             groupChat.setVisibility(View.VISIBLE);
             TextView group_textView = (TextView) mView.findViewById(R.id.group_textView);
 

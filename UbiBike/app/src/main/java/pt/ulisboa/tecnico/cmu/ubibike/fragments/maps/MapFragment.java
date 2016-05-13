@@ -28,7 +28,6 @@ public abstract class MapFragment extends Fragment implements UpdatableUI {
 
     protected View mView;
 
-
     protected abstract void onCreateSpecific();
     protected abstract void setUIElements();
     protected abstract void showSpecificMap();
@@ -59,14 +58,6 @@ public abstract class MapFragment extends Fragment implements UpdatableUI {
 
         return mView;
     }
-
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_map_fragment, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
 
     private void setMap(){
 

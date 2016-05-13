@@ -74,6 +74,16 @@ public class ConsistencyManager {
 
                     DBObjectCreation.insertPointsTransaction(DBConnection.getConnection(), pt);
 
+                    /*
+                     * remove identical pending event (sent by the other user)
+                     */
+                    PendingEvent pe = DBObjectSelector.getEquivalentPendingEvents(DBConnection.getConnection(), pt);
+
+                    if(pe != null){
+                        DBObjectRemove.removePendingEvent(DBConnection.getConnection(), pe.getPeID());
+                    }
+
+
                     checkPendingEvents(sourceUser);
                     checkPendingEvents(targetUser);
                 } else{
@@ -90,16 +100,7 @@ public class ConsistencyManager {
 
     //do not consider the same request twice
     private boolean actionAlreadyPerformed(PointsTransactionAllInfo pt) throws SQLException {
-
-        if(DBObjectSelector.getEquivalentPointsTransaction(DBConnection.getConnection(), pt) != null){
-            return true;
-        }
-
-        if(DBObjectSelector.getEquivalentPendingEvents(DBConnection.getConnection(), pt) != null){
-            return true;
-        }
-
-        return false;
+        return DBObjectSelector.getEquivalentPointsTransaction(DBConnection.getConnection(), pt) != null;
     }
 
 
