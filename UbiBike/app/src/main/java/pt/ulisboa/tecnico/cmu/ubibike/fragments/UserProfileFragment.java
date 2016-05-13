@@ -83,19 +83,37 @@ public class UserProfileFragment extends Fragment {
         TextView longestRideDistance = (TextView) view.findViewById(R.id.longest_ride_distance);
         TextView longestRidePoints = (TextView) view.findViewById(R.id.longest_ride_points);
         TextView longestRideDuration = (TextView) view.findViewById(R.id.longest_ride_duration);
+        TextView rank = (TextView) view.findViewById(R.id.rank);
+        TextView totalSharedPoints = (TextView) view.findViewById(R.id.total_shared_points);
+        TextView longestRideAverageSpeed = (TextView) view.findViewById(R.id.longest_ride_average_speed);
 
         totalPoints.append(" " + data.getTotalPoints());
         totalDistance.append(" " + data.getTotalDistance());
         totalHours.append(" " + data.getTotalHours());
         totalRides.append(" " + data.getTotalRides());
+        rank.append(" " + data.getGlobalRank());
         if (data.getLongestRide() != null) {
             longestRideDistance.append(" " + data.getLongestRide().getTravelledDistance());
             longestRidePoints.append(" " + data.getLongestRide().getPointsEarned());
+            long diff = data.getLongestRide().getEndTime().getTime() - data.getLongestRide().getStartTime().getTime();
+            long diffMinutes = diff / (60 * 1000) % 60;
+            longestRideDuration.append(" " + diffMinutes + "min.");
+            longestRideAverageSpeed.append(" 0 km/h");
         }
-        else {
+        else { // TODO: remove hardcoded below
             longestRideDistance.append(" 0.0");
             longestRidePoints.append(" 0");
+            longestRideDuration.append(" 0 min.");
+            longestRideAverageSpeed.append(" 0 km/h");
         }
+        totalSharedPoints.append(" 0");
+
+
+
+
+
+
+
 
     }
 
