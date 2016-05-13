@@ -40,7 +40,7 @@
     },
     "distance":{
       "description": "ride distance in meters",
-      "type": "number"
+      "type": "integer"
     },
     "logical_clock":{
        "description": "trajectory logical clock",
