@@ -71,7 +71,7 @@ public class DBObjectCreation {
         stmt.setString(1, pt.getSourceUsername());
         stmt.setInt(2, pt.getSourceLogialClock());
         stmt.setString(3, pt.getTargetUsername());
-        stmt.setInt(4, pt.getSourceLogialClock());
+        stmt.setInt(4, pt.getTargetLogicalClock());
         stmt.setInt(5, pt.getPoints());
         stmt.setLong(6, pt.getTimestamp());
 
