@@ -71,16 +71,11 @@ public class TrajectoryViewMapFragment extends MapFragment {
 
         switch(item.getItemId()){
             case R.id.action_upload_trajectory:
+
                 Trajectory t = ApplicationContext.getInstance().getData().getTrajectory(mTrajectoryBeingShowed);
 
                 ApplicationContext.getInstance().getServerCommunicationHandler().
-                        performTrajectoryPostRequest(mTrajectoryBeingShowed,
-                                t.getStartStationID(),
-                                t.getEndStationID(),
-                                t.getRoute(),
-                                (int) t.getStartTime().getTime(),
-                                (int) t.getEndTime().getTime(),
-                                t.getTravelledDistance());
+                        performTrajectoryPostRequest(t);
 
 
                 return true;

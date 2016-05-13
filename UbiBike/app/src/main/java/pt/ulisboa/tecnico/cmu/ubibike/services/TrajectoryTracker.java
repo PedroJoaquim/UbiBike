@@ -223,6 +223,8 @@ public class TrajectoryTracker extends Service implements LocationListener {
 
                 mTrajectory.setEndStationID(mStation.getSid());
 
+
+
                 Log.d("UbiBike", "[Trajectory " + mTrajectory.getTrajectoryID() + "]" + "Tracking finished");
 
                 ApplicationContext.getInstance().getData().setLastTrackedTrajectory(mTrajectory);
@@ -232,9 +234,13 @@ public class TrajectoryTracker extends Service implements LocationListener {
                             showTrajectoryOnMap(mTrajectory.getTrajectoryID(), true, false);
                 }
 
-                //telling server
+                //notify bick drop to server
                 ApplicationContext.getInstance().getServerCommunicationHandler().
                         performBikePickDropRequest(bike.getBid(), mStation.getSid(), false);
+
+                //notify new trajectory to the server
+                ApplicationContext.getInstance().getServerCommunicationHandler().
+                        performTrajectoryPostRequest(mTrajectory);
 
                 //we are no longer tracking
                 mTrajectory = null;

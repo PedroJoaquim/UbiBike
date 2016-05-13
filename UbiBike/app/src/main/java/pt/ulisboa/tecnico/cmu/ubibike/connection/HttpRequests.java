@@ -35,7 +35,9 @@ public class HttpRequests {
             urlConnection.setRequestProperty("Content-Type", "application/json");
 
             OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
+            String jsonStr = json.toString();
             out.write(json.toString());
+            String lol = json.toString();
             out.close();
         }
 

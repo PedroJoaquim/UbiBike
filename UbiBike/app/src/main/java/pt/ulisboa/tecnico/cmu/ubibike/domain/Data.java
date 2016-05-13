@@ -6,6 +6,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -86,6 +87,7 @@ public class Data {
         if(!mTrajectories.isEmpty()) {
             mLongestRide = mTrajectories.get(0);
         }
+
         for(Trajectory t : mTrajectories) {
             mTotalDistance += t.getTravelledDistance();
             mTotalTime += (t.getEndTime().getTime() - t.getStartTime().getTime());
@@ -330,8 +332,13 @@ public class Data {
         return mTotalDistance;
     }
 
-    public double getTotalHours() {
+    public long getTotalDurationInMillis() {
         return mTotalTime;
+    }
+
+    public String getReadableTotalTrajectoriesDuration(){
+
+        return new SimpleDateFormat("HH:mm:ss").format(new Date(getTotalDurationInMillis())).toString();
     }
 
     public int getTotalRides() {

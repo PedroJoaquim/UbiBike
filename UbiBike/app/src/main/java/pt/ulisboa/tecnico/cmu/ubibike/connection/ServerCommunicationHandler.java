@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
+import pt.ulisboa.tecnico.cmu.ubibike.domain.Trajectory;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.CipherManager;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.MobileConnectionManager;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.StorageManager;
@@ -45,7 +46,8 @@ public class ServerCommunicationHandler {
     private static final int REQUEST_PUBLIC_KEY_TOKEN = 0;
     private static final int REQUEST_USER_INFO = 1;
     private static final int REQUEST_STATIONS_NEARBY = 2;
-    private static final int REQUEST_BIKE_PICK_DROP = 3;
+    private static final int REQUEST_BIKE_PICK = 3;
+    private static final int REQUEST_BIKE_DROP = 8;
     private static final int REQUEST_TRAJECTORY_POST = 4;
     private static final int REQUEST_BIKE_BOOK = 5;
     private static final int REQUEST_BIKE_UNBOOK = 6;
@@ -182,17 +184,16 @@ public class ServerCommunicationHandler {
 
         JSONObject json = JsonParser.buildBikePickDropRequestJson(bid, sid, bikePick);
 
-        performGenericRequest(url, REQUEST_BIKE_PICK_DROP, json, true, null);
+        int requestType = bikePick ? REQUEST_BIKE_PICK : REQUEST_BIKE_DROP;
+        performGenericRequest(url, requestType, json, true, null);
     }
 
-    public void performTrajectoryPostRequest(int userTid, int startSid, int endSid,
-                                             ArrayList<LatLng> positions, int startTimestamp,
-                                             int endTimestamp, double distance){
+    public void performTrajectoryPostRequest(Trajectory t){
 
         String url = buildUrl(URL_TRAJECTORY_POST, AUTH_REQUEST);
 
-        JSONObject json = JsonParser.buildTrajectoryPostRequestJson(userTid, startSid, endSid, positions,
-                startTimestamp, endTimestamp, distance);
+        JSONObject json = JsonParser.buildTrajectoryPostRequestJson(t.getUserTrajectoryID(), t.getStartStationID(), t.getEndStationID(),
+                t.getRoute(), t.getStartTime().getTime(), t.getEndTime().getTime() , Double.valueOf(t.getTravelledDistance()).intValue(), t.getLogicalClock());
 
         performGenericRequest(url, REQUEST_TRAJECTORY_POST, json, true, null);
     }
@@ -493,6 +494,11 @@ public class ServerCommunicationHandler {
             ApplicationContext.getInstance().getData().setBikeBooked(null);
             Toast.makeText(ApplicationContext.getInstance(), "Success at bike unbooking request.", Toast.LENGTH_SHORT).show();
         }
+        else if(requestType == REQUEST_BIKE_DROP){
+            ApplicationContext.getInstance().getData().setBikeBooked(null);
+            Toast.makeText(ApplicationContext.getInstance(), "Success at bike drop request.", Toast.LENGTH_SHORT).show();
+            ApplicationContext.getInstance().updateUI();
+        }
     }
 
 
@@ -525,7 +531,8 @@ public class ServerCommunicationHandler {
             case REQUEST_PUBLIC_KEY_TOKEN: request =  "public key token"; break;
             case REQUEST_USER_INFO: request = "user info"; break;
             case REQUEST_STATIONS_NEARBY: request = "stations nearby"; break;
-            case REQUEST_BIKE_PICK_DROP: request = "bike pick/drop"; break;
+            case REQUEST_BIKE_PICK: request = "bike pick up"; break;
+            case REQUEST_BIKE_DROP: request = "bike drop"; break;
             case REQUEST_BIKE_BOOK: request = "bike book"; break;
             case REQUEST_BIKE_UNBOOK: request = "bike unbook"; break;
             case REQUEST_POINTS_TRANSACTION: request = "points transaction"; break;

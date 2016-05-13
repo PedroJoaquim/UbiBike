@@ -149,11 +149,12 @@ public class JsonParser {
         }
     }
 
-    public static JSONObject buildTrajectoryPostRequestJson(int userTid, int startSid, int endSid,
+    public static JSONObject buildTrajectoryPostRequestJson(String userTid, int startSid, int endSid,
                                                             ArrayList<LatLng> positions,
-                                                            int startTimestamp,
-                                                            int endTimestamp,
-                                                            double distance){
+                                                            long startTimestamp,
+                                                            long endTimestamp,
+                                                            int distance,
+                                                            int logicalClock){
         try{
 
             JSONObject json = new JSONObject();
@@ -171,14 +172,14 @@ public class JsonParser {
                 pos.put(LATITUDE, coord.latitude);
                 pos.put(LONGITUDE, coord.longitude);
 
-                routeCoordinates.put(coord);
+                routeCoordinates.put(pos);
             }
 
             json.put(COORDINATES, routeCoordinates);
             json.put(START_TIME, startTimestamp);
             json.put(END_TIME, endTimestamp);
             json.put(DISTANCE, distance);
-
+            json.put(LOGICAL_CLOCK, logicalClock);
 
             return json;
         }
@@ -373,6 +374,7 @@ public class JsonParser {
                 trj.put(POINTS_EARNED, trajectory.getPointsEarned());
                 trj.put(START_TIME, trajectory.getStartTime().getTime());
                 trj.put(END_TIME, trajectory.getEndTime().getTime());
+                trj.put(LOGICAL_CLOCK, trajectory.getLogicalClock());
 
                 trajectories.put(trj);
             }
@@ -594,13 +596,14 @@ public class JsonParser {
                     trajectoryPositions.add(new LatLng(positionLatitude, positionLongitude));
                 }
 
-                int startStationID = 0; //TODO
-                int endStationID = 0; //TODO
+                int startStationID = trajectory.getInt(START_STATION_ID);
+                int endStationID = trajectory.getInt(END_STATION_ID);
                 double distance = trajectory.getDouble(DISTANCE);
                 Date startTime = new Date(trajectory.getLong(START_TIME));
                 Date endTime = new Date(trajectory.getLong(END_TIME));
+                int logicalClock = trajectory.getInt(LOGICAL_CLOCK);
 
-                trajectories.add(new Trajectory(tid, startStationID, endStationID, trajectoryPositions, distance, startTime, endTime));
+                trajectories.add(new Trajectory(tid, startStationID, endStationID, trajectoryPositions, distance, startTime, endTime, logicalClock));
             }
 
             return trajectories;

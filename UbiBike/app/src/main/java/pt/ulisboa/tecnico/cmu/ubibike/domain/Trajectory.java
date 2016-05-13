@@ -1,16 +1,14 @@
 package pt.ulisboa.tecnico.cmu.ubibike.domain;
 
 import android.text.format.DateUtils;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
+import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.SphericalUtil;
 
 
@@ -29,6 +27,8 @@ public class Trajectory implements Comparable<Trajectory> {
     private Date mStartTime;
     private Date mEndTime;
     private int mPointsEarned;
+    private int mLogicalClock;
+
 
     /**
      * Starting a new Trajectory
@@ -45,6 +45,7 @@ public class Trajectory implements Comparable<Trajectory> {
         mTrajectoryPositions.add(new LatLng(startLatitude, startLongitude));
         mStartTime = new Date();
         mDistance = 0.0;
+        mLogicalClock = 0;
     }
 
     /**
@@ -57,7 +58,7 @@ public class Trajectory implements Comparable<Trajectory> {
      * @param startTime - start time
      * @param endTime - end time
      */
-    public Trajectory(int routeID, int startStationID, int endStationID, ArrayList<LatLng> route, double distance, Date startTime, Date endTime) {
+    public Trajectory(int routeID, int startStationID, int endStationID, ArrayList<LatLng> route, double distance, Date startTime, Date endTime, int logicalClock) {
         mTrajectoryID = routeID;
         mStartStationID = startStationID;
         mEndStationID = endStationID;
@@ -65,7 +66,9 @@ public class Trajectory implements Comparable<Trajectory> {
         mDistance = distance;
         mStartTime = startTime;
         mEndTime = endTime;
-        mPointsEarned = (int) mDistance / 10;
+        mPointsEarned = Double.valueOf(mDistance).intValue() * 10;
+        mLogicalClock = logicalClock;
+
 
         LatLng startPosition = route.get(0);
         LatLng endPosition = route.get(route.size() - 1);
@@ -108,9 +111,13 @@ public class Trajectory implements Comparable<Trajectory> {
         LatLng endPosition = mTrajectoryPositions.get(mTrajectoryPositions.size() - 1);
         mCameraPosition = SphericalUtil.interpolate(startPosition, endPosition, 0.5);
         mEndTime = new Date();
-
+        mPointsEarned = Double.valueOf(mDistance).intValue() * 10;
+        mLogicalClock = ApplicationContext.getInstance().getData().getNextLogicalClock();
     }
 
+    public String getUserTrajectoryID(){
+        return ApplicationContext.getInstance().getData().getUsername() + "#" + getTrajectoryID();
+    }
     /**
      * Sets finish station id
      *
@@ -195,6 +202,10 @@ public class Trajectory implements Comparable<Trajectory> {
      */
     public Date getEndTime(){
         return mEndTime;
+    }
+
+    public int getLogicalClock() {
+        return mLogicalClock;
     }
 
 

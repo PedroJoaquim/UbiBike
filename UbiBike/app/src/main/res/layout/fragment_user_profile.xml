@@ -86,7 +86,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Total distance (m):"
+                android:text="Total distance (km):"
                 android:id="@+id/total_distance"
                 android:padding="15dp"
                 android:background="#676C89"
@@ -117,7 +117,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Distance (m):"
+                android:text="Distance (km):"
                 android:id="@+id/longest_ride_distance"
                 android:padding="15dp"
                 android:background="#676C89"
@@ -139,16 +139,6 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Points Earned:"
                 android:id="@+id/longest_ride_points"
-                android:padding="15dp"
-                android:background="#676C89"
-                android:textColor="#ffffff" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Average speed:"
-                android:id="@+id/longest_ride_average_speed"
                 android:padding="15dp"
                 android:background="#676C89"
                 android:textColor="#ffffff" />
