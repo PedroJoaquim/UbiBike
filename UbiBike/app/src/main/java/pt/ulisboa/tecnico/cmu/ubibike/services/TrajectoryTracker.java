@@ -42,10 +42,10 @@ public class TrajectoryTracker extends Service implements LocationListener {
     private BikePickupStation mStation;
 
     private boolean mNearBike = false;
+    private boolean prevPositionNearStation = false;
 
     private boolean mNewTrajectory = false;
     private boolean mTrackingEnabled = false;
-    private boolean mFinishTracking = false;
     private boolean mStopTracking = false;
     private StopTrajectoryTrackingReceiver mStopTrackingReceiver;
     private NearBookedBikeReceiver mNearBikeReceiver;
@@ -106,8 +106,9 @@ public class TrajectoryTracker extends Service implements LocationListener {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         MyRunnable mainBackgroundRunnable = new MyRunnable();
-        Thread thread = new Thread(mainBackgroundRunnable);
-        thread.start();
+
+       // Thread thread = new Thread(mainBackgroundRunnable);
+       // thread.start();
 
         Toast.makeText(TrajectoryTracker.this, "Tracking thread started", Toast.LENGTH_SHORT).show();
 
@@ -120,7 +121,7 @@ public class TrajectoryTracker extends Service implements LocationListener {
         Log.d("UbiBike", "NewLocation: " + location.getLatitude() + "   " + location.getLongitude());
 
         //was user near station on previous position
-        boolean prevPositionNearStation = mNearStation;
+        prevPositionNearStation = mNearStation;
 
         if(mLastPosition != location){
             mLastPosition = location;
@@ -159,9 +160,7 @@ public class TrajectoryTracker extends Service implements LocationListener {
 
         //START TRACKING - user moved away from station on bike (wasnt already being tracked)
         //BIKE PICK UP
-        if(prevPositionNearStation && !mNearStation && mNearBike && !mTrackingEnabled){
-            mTrackingEnabled = true;
-            mNewTrajectory = true;
+        if(prevPositionNearStation && !mNearStation && mNearBike && mTrajectory == null){
 
             Toast.makeText(TrajectoryTracker.this, "Tracking enabled & New trajectory", Toast.LENGTH_SHORT).show();
 
@@ -171,35 +170,54 @@ public class TrajectoryTracker extends Service implements LocationListener {
             ApplicationContext.getInstance().getServerCommunicationHandler().
                     performBikePickDropRequest(bookedBikeID, mStation.getSid(), true);
 
+
+            int trajectoryID = ApplicationContext.getInstance().getData().getNextTrajectoryID();
+            int startStationID = mStation.getSid();
+            double startLatitude = mStation.getPositionLatitude();
+            double startLongitude = mStation.getPositionLongitude();
+
+            mTrajectory = new Trajectory(trajectoryID, startStationID, startLatitude, startLongitude);
+
+            Log.d("UbiBike", "[Trajectory " + mTrajectory.getTrajectoryID() + "]" + "Starting registering new trajectory.");
+
+            mTrajectory.addRoutePosition(mLastPosition.getLatitude(), mLastPosition.getLongitude());
+
+            Log.d("UbiBike", "[Trajectory " + mTrajectory.getTrajectoryID() + "]" + "Position added");
+
+            Toast.makeText(TrajectoryTracker.this, "Left Station with bike starting tracking", Toast.LENGTH_LONG).show();
+
         }
         //PAUSE TRACKING - user is away from station and got off his bike
         else if(!prevPositionNearStation && !mNearStation && !mNearBike){
-            mTrackingEnabled = false;
 
-            Toast.makeText(TrajectoryTracker.this, "Tracking disabled1", Toast.LENGTH_SHORT).show();
+            Toast.makeText(TrajectoryTracker.this, "Pausing tracking left bike not in station", Toast.LENGTH_LONG).show();
+           // Toast.makeText(TrajectoryTracker.this, "Tracking disabled1", Toast.LENGTH_SHORT).show();
         }
         //RESUME TRACKING - user is away from station and on his bike
         else if(!prevPositionNearStation && !mNearStation && mNearBike){
-            mTrackingEnabled = true;
 
-            Toast.makeText(TrajectoryTracker.this, "Tracking enabled", Toast.LENGTH_SHORT).show();
+            if(mTrajectory != null) {
+                mTrajectory.addRoutePosition(mLastPosition.getLatitude(), mLastPosition.getLongitude());
+                Toast.makeText(TrajectoryTracker.this, "ADDING POSITION", Toast.LENGTH_LONG).show();
+                Log.d("UbiBike", "[Trajectory " + mTrajectory.getTrajectoryID() + "]" + "Position added");
+            }
+
+          //  Toast.makeText(TrajectoryTracker.this, "Tracking enabled", Toast.LENGTH_SHORT).show();
         }
         //PAUSE TRACKING - user near station but off his bike
         else if(prevPositionNearStation && mNearStation && !mNearBike){
-            mTrackingEnabled = false;
 
-            Toast.makeText(TrajectoryTracker.this, "Tracking disabled2", Toast.LENGTH_SHORT).show();
+            Toast.makeText(TrajectoryTracker.this, "In station without bike", Toast.LENGTH_SHORT).show();
         }
         //FINISH TRACKING - user parked the bike and left the station
         //BIKE DROP
         else if(prevPositionNearStation && !mNearStation && !mNearBike){
 
+            Toast.makeText(TrajectoryTracker.this, "Left bike on station droping off", Toast.LENGTH_LONG).show();
             Bike bike  = ApplicationContext.getInstance().getData().getBikeBooked();
             if(bike != null && mTrajectory != null){
 
-                mTrackingEnabled = false;
-
-                Toast.makeText(TrajectoryTracker.this, "Tracking disabled & Trajectory finished", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(TrajectoryTracker.this, "Tracking disabled & Trajectory finished", Toast.LENGTH_SHORT).show();
 
                 mTrajectory.finishRoute();
 
@@ -217,6 +235,9 @@ public class TrajectoryTracker extends Service implements LocationListener {
                 //telling server
                 ApplicationContext.getInstance().getServerCommunicationHandler().
                         performBikePickDropRequest(bike.getBid(), mStation.getSid(), false);
+
+                //we are no longer tracking
+                mTrajectory = null;
             }
         }
     }
@@ -243,6 +264,8 @@ public class TrajectoryTracker extends Service implements LocationListener {
 
             //main tracking loop
             while(!mStopTracking){
+
+
 
                 if(mTrackingEnabled && mPositionChanged) {
 
@@ -303,7 +326,9 @@ public class TrajectoryTracker extends Service implements LocationListener {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            mStopTracking = true;
+
+            stopSelf();
+
             Toast.makeText(TrajectoryTracker.this, "", Toast.LENGTH_SHORT).show();
         }
     }

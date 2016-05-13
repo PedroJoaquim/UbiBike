@@ -83,7 +83,9 @@ public class Data {
         mDateStationsUpdated = dateStationsUpdated;
 
 
-        mLongestRide = mTrajectories.get(0);
+        if(!mTrajectories.isEmpty()) {
+            mLongestRide = mTrajectories.get(0);
+        }
         for(Trajectory t : mTrajectories) {
             mTotalDistance += t.getTravelledDistance();
             mTotalTime += (t.getEndTime().getTime() - t.getStartTime().getTime());
@@ -161,7 +163,7 @@ public class Data {
     public void addTrajectory(Trajectory newTrajectory){
         mTrajectories.add(newTrajectory);
 
-        if(newTrajectory.getTravelledDistance() > mLongestRide.getTravelledDistance()){
+        if((mLongestRide == null) || (newTrajectory.getTravelledDistance() > mLongestRide.getTravelledDistance())) {
             mLongestRide = newTrajectory;
         }
 
@@ -303,7 +305,7 @@ public class Data {
     }
 
     public int getNextTrajectoryID(){
-        int maxId = 0;
+        int maxId = -1;
 
         for(Trajectory t : mTrajectories){
             maxId = (t.getTrajectoryID() > maxId) ? t.getTrajectoryID() : maxId;

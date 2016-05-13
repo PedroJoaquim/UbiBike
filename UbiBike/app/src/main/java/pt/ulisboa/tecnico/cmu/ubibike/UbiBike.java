@@ -308,10 +308,11 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
      * @param explicitReplace - not relevant here
      */
     public void showTrajectoryOnMap(int trajectoryID, boolean trackedTrajectoryView, boolean explicitReplace){
-        Fragment fragment = new TrajectoryListFragment();
+        Fragment fragment = new TrajectoryViewMapFragment();
 
         Bundle arguments = new Bundle();
         arguments.putInt(TrajectoryViewMapFragment.TRAJECTORY_ID_KEY, trajectoryID);
+
         fragment.setArguments(arguments);
 
         replaceFragment(fragment, explicitReplace, true);
