@@ -72,7 +72,7 @@ public class StationsNearbyMapFragment extends MapFragment {
             @Override
             public void onClick(View v) {
 
-                if(!MobileConnectionManager.isOnline(getActivity())){
+                if(!ApplicationContext.getInstance().isInternetConnected()){
                     Toast.makeText(getActivity(), "Check your internet connection first.", Toast.LENGTH_SHORT).show();
                     return;
                 }

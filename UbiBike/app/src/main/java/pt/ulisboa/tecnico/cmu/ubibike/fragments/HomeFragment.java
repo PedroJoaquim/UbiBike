@@ -10,9 +10,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Switch;
+import android.widget.Toast;
 
+import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.R;
 import pt.ulisboa.tecnico.cmu.ubibike.UbiBike;
 
@@ -71,6 +75,21 @@ public class HomeFragment extends Fragment {
         ImageButton stationsNearby = (ImageButton) v.findViewById(R.id.bike_stations_icon);
         ImageButton userProfile = (ImageButton) v.findViewById(R.id.user_icon);
         ImageButton chats = (ImageButton) v.findViewById(R.id.message_groups_icon);
+        final Switch wifi_toggle = (Switch) v.findViewById(R.id.wifi_toggle);
+
+        wifi_toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    ApplicationContext.getInstance().setWifiState(true);
+                    Toast.makeText(getActivity(), "Wifi enabled", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    ApplicationContext.getInstance().setWifiState(false);
+                    Toast.makeText(getActivity(), "Wifi disabled", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         trajectories.setOnClickListener(new View.OnClickListener() {
             @Override

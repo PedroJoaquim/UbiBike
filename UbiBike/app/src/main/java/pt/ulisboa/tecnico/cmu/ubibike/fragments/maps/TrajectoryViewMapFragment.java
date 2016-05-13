@@ -29,10 +29,12 @@ public class TrajectoryViewMapFragment extends MapFragment {
 
     private int mTrajectoryBeingShowed;
     private int mTrajectoriesCount;
+    private boolean mTrackedTrajectoryView;
 
     private boolean mShowTrajectoryInfo;
 
     public static final String TRAJECTORY_ID_KEY = "trajectory_id";
+    public static final String TRACKED_TRAJECTORY_VIEW_KEY = "tracked_trajectory_view";
 
     @Override
     protected void onCreateSpecific(){
@@ -41,6 +43,8 @@ public class TrajectoryViewMapFragment extends MapFragment {
 
         mTrajectoryBeingShowed = getArguments().getInt(TRAJECTORY_ID_KEY);
         mTrajectoriesCount =  ApplicationContext.getInstance().getData().getTrajectoriesCount();
+
+        mTrackedTrajectoryView = getArguments().getBoolean(TRACKED_TRAJECTORY_VIEW_KEY);
 
     }
 
@@ -58,37 +62,15 @@ public class TrajectoryViewMapFragment extends MapFragment {
         ApplicationContext.getInstance().setCurrentFragment(null);
     }
 
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
-        MenuItem item = menu.findItem(R.id.action_upload_trajectory);
-        item.setVisible(false);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch(item.getItemId()){
-            case R.id.action_upload_trajectory:
-
-                Trajectory t = ApplicationContext.getInstance().getData().getTrajectory(mTrajectoryBeingShowed);
-
-                ApplicationContext.getInstance().getServerCommunicationHandler().
-                        performTrajectoryPostRequest(t);
-
-
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
     protected void setUIElements(){
         FrameLayout nextTrajectory = (FrameLayout) mView.findViewById(R.id.next_trajectory_frame);
         FrameLayout previousTrajectory = (FrameLayout) mView.findViewById(R.id.prev_trajectory_frame);
         FrameLayout trajectoryInfo = (FrameLayout) mView.findViewById(R.id.trajectory_info_frame);
+
+        if(mTrackedTrajectoryView){
+            previousTrajectory.setVisibility(View.GONE);
+            nextTrajectory.setVisibility(View.GONE);
+        }
 
 
         //hide prev / next trajectory buttons when showing tracked trajectory
@@ -166,10 +148,15 @@ public class TrajectoryViewMapFragment extends MapFragment {
 
         mTrajectoryBeingShowed = trajectoryID;
 
-        String title = "Trajectory view (" + (mTrajectoryBeingShowed + 1) + "/"
-                + mTrajectoriesCount + ")";
+        if(mTrackedTrajectoryView) {
+            getParentActivity().getSupportActionBar().setTitle("Tracked trajectory");
+        }
+        else {
+            String title = "Trajectory view (" + (mTrajectoryBeingShowed + 1) + "/"
+                    + mTrajectoriesCount + ")";
 
-        getParentActivity().getSupportActionBar().setTitle(title);
+            getParentActivity().getSupportActionBar().setTitle(title);
+        }
 
 
         Trajectory trajectory = ApplicationContext.getInstance()

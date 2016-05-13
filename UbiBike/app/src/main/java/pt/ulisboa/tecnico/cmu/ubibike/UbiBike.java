@@ -38,7 +38,6 @@ import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
 
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketManager;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
-import pt.ulisboa.tecnico.cmu.ubibike.domain.Trajectory;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.chats.ChatFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.chats.ChatsListFragment;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.HomeFragment;
@@ -100,13 +99,8 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
 
         //to guarantee that method is not invoked again on activity recreation
         if(savedInstanceState == null){
-            Intent i = new Intent(this, TrajectoryTracker.class);
-            startService(i);
-
             wifiP2pTurnOn();
         }
-
-
     }
 
 
@@ -166,7 +160,7 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         unregisterReceiver(mReceiver);
         wifiP2pTurnOff();
 
-        requestStopTrajectoryTracking();
+        ApplicationContext.getInstance().requestStopTrajectoryTrackingService();
     }
 
     @Override
@@ -312,6 +306,7 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
 
         Bundle arguments = new Bundle();
         arguments.putInt(TrajectoryViewMapFragment.TRAJECTORY_ID_KEY, trajectoryID);
+        arguments.putBoolean(TrajectoryViewMapFragment.TRACKED_TRAJECTORY_VIEW_KEY, trackedTrajectoryView);
 
         fragment.setArguments(arguments);
 
@@ -350,16 +345,6 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         replaceFragment(fragment, false, true);
     }
 
-
-    /**
-     * Broadcasts an intent to stop the trajectory tracking service
-     */
-    public void requestStopTrajectoryTracking(){
-        Intent sIntent = new Intent();
-        sIntent.setAction(TrajectoryTracker.StopTrajectoryTrackingReceiver.STOP);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(sIntent);
-    }
-
     /**
      * Broadcasts an intent to notify about user being near to booked bike
      * So that tracking services knows about it
@@ -371,16 +356,6 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         LocalBroadcastManager.getInstance(this).sendBroadcast(sIntent);
     }
 
-
-
-    /**
-     * Finishes trajectory tracking and shows it to the user
-     */
-    public void finishTrajectoryTracking(){
-        Trajectory trackedTrajectory = ApplicationContext.getInstance().getData().getLastTrackedTrajectory();
-
-        showTrajectoryOnMap(trackedTrajectory.getTrajectoryID(), true, false);
-    }
 
 
     /**
@@ -445,7 +420,6 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         public void onReceive(final Context context, final Intent intent) {
 
             mInternetConnected = MobileConnectionManager.isOnline(context);
-            ApplicationContext.getInstance().setInternetConnected(mInternetConnected);
 
             if (mInternetConnected) {
 
@@ -554,7 +528,7 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
 
     public void wifiP2pDisconnectAllPeers(){
 
-        //TODO
+        //TODO oi?
 
         /*
         ArrayList<SimWifiP2pSocket> sockets = ApplicationContext.getInstance().getNearbyPeerCommunication().get

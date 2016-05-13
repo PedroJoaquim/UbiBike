@@ -116,6 +116,7 @@ public class ServerCommunicationHandler {
             }
             else if(store){
                 storePendingRequest(url, requestType, json);
+                Toast.makeText(ApplicationContext.getInstance(), "Check your internet connection first.", Toast.LENGTH_SHORT).show();
             }
 
         } catch (NoSuchMethodException e) {
@@ -493,11 +494,13 @@ public class ServerCommunicationHandler {
         if(requestType == REQUEST_BIKE_UNBOOK){
             ApplicationContext.getInstance().getData().setBikeBooked(null);
             Toast.makeText(ApplicationContext.getInstance(), "Success at bike unbooking request.", Toast.LENGTH_SHORT).show();
+            ApplicationContext.getInstance().requestStopTrajectoryTrackingService();
         }
         else if(requestType == REQUEST_BIKE_DROP){
             ApplicationContext.getInstance().getData().setBikeBooked(null);
             Toast.makeText(ApplicationContext.getInstance(), "Success at bike drop request.", Toast.LENGTH_SHORT).show();
             ApplicationContext.getInstance().updateUI();
+            ApplicationContext.getInstance().requestStopTrajectoryTrackingService();
         }
     }
 

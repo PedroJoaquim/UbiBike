@@ -110,7 +110,7 @@ public class TrajectoryTracker extends Service implements LocationListener {
        // Thread thread = new Thread(mainBackgroundRunnable);
        // thread.start();
 
-        Toast.makeText(TrajectoryTracker.this, "Tracking thread started", Toast.LENGTH_SHORT).show();
+        Toast.makeText(TrajectoryTracker.this, "Tracking service started", Toast.LENGTH_SHORT).show();
 
         return START_NOT_STICKY;
     }
@@ -335,7 +335,7 @@ public class TrajectoryTracker extends Service implements LocationListener {
 
             stopSelf();
 
-            Toast.makeText(TrajectoryTracker.this, "", Toast.LENGTH_SHORT).show();
+            Toast.makeText(TrajectoryTracker.this, "Tracking service stopped", Toast.LENGTH_SHORT).show();
         }
     }
 }

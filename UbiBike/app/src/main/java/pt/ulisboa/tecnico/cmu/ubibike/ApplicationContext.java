@@ -1,6 +1,8 @@
 package pt.ulisboa.tecnico.cmu.ubibike;
 
 import android.app.Application;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 import java.lang.reflect.Array;
@@ -12,9 +14,11 @@ import pt.ulisboa.tecnico.cmu.ubibike.connection.PendingRequest;
 import pt.ulisboa.tecnico.cmu.ubibike.connection.ServerCommunicationHandler;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Data;
 import pt.ulisboa.tecnico.cmu.ubibike.fragments.UpdatableUI;
+import pt.ulisboa.tecnico.cmu.ubibike.managers.MobileConnectionManager;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.SessionManager;
 import pt.ulisboa.tecnico.cmu.ubibike.managers.StorageManager;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.NearbyPeerCommunication;
+import pt.ulisboa.tecnico.cmu.ubibike.services.TrajectoryTracker;
 
 
 public class ApplicationContext extends Application {
@@ -23,7 +27,6 @@ public class ApplicationContext extends Application {
 
     private UbiBike mActivity;  //current activity instance
     private UpdatableUI mFragment;  //current opened fragment instance (null if not UI updatable)
-    private boolean mInternetConnected;
 
     private int mUid;
     private String mPassword;
@@ -36,7 +39,7 @@ public class ApplicationContext extends Application {
 
     private NearbyPeerCommunication mNearbyPeerCommunication;
 
-
+    private boolean mWifiOn = true;
 
     public static ApplicationContext getInstance() {
         return mInstance;
@@ -164,13 +167,6 @@ public class ApplicationContext extends Application {
         this.mPassword = mPassword;
     }
 
-    public boolean isInternetConnected() {
-        return mInternetConnected;
-    }
-
-    public void setInternetConnected(boolean mInternetConnected) {
-        this.mInternetConnected = mInternetConnected;
-    }
 
 
 
@@ -222,4 +218,38 @@ public class ApplicationContext extends Application {
     }
 
 
+    public void setWifiState(boolean state){
+        mWifiOn = state;
+    }
+
+    public boolean getWifiState(){
+        return mWifiOn;
+    }
+
+
+    /**
+     * Checks internet connection
+     */
+    public boolean isInternetConnected(){
+        return MobileConnectionManager.isOnline(this) && mWifiOn;
+    }
+
+
+
+    /**
+     * Starts background tracking service
+     */
+    public void startTrajectoryTrackingService(){
+        Intent i = new Intent(this, TrajectoryTracker.class);
+        startService(i);
+    }
+
+    /**
+     * Broadcasts an intent to stop the trajectory tracking service
+     */
+    public void requestStopTrajectoryTrackingService(){
+        Intent sIntent = new Intent();
+        sIntent.setAction(TrajectoryTracker.StopTrajectoryTrackingReceiver.STOP);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(sIntent);
+    }
 }
