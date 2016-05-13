@@ -3,15 +3,17 @@ package pt.ulisboa.tecnico.cmu.ubibike.peercommunication.tasks;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketServer;
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.NearbyPeerCommunication;
-
+import pt.ulisboa.tecnico.cmu.ubibike.utils.CommunicationUtils;
 
 
 public class IncomingCommunicationTask extends AsyncTask<Void, String, Void> {
@@ -35,19 +37,15 @@ public class IncomingCommunicationTask extends AsyncTask<Void, String, Void> {
                 SimWifiP2pSocket sock = serverSocket.accept();
 
                 try {
-                    BufferedReader sockIn = new BufferedReader(
-                            new InputStreamReader(sock.getInputStream()));
+                    BufferedReader inputStream = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+                    BufferedOutputStream outputStream = new BufferedOutputStream(sock.getOutputStream());
 
-                    String content = "";
-                    String st = "";
+                    String content = CommunicationUtils.fromChannelFormat(inputStream.readLine());
 
-                    while ((st = sockIn.readLine()) != null){
-                        content += st + '\n';
-                    }
-
-                    content = content.substring(0, content.length()-1);
                     String response = NearbyPeerCommunication.processReceivedMessage(content);
-                    sock.getOutputStream().write((response + "\n").getBytes());
+
+                    outputStream.write((response + "\n").getBytes());
+                    outputStream.flush();
                 }
                 catch (IOException e) {
                     Log.d("Error reading socket:", e.getMessage());

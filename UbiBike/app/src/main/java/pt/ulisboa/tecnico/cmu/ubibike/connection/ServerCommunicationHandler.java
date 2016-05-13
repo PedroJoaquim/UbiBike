@@ -30,7 +30,7 @@ public class ServerCommunicationHandler {
     private PublicKey publicKey;
     private PrivateKey privateKey;
 
-    private static String HOST_SERVER = "http://85.246.102.173:8000";
+    private static String HOST_SERVER = "http://85.246.101.218:8000";
     private static String URL_LOGIN = "/auth";                               //[POST] json_schema = authentication.json
     private static String URL_REGISTER_ACCOUNT = "/registration";            //[POST] json_schema = register.json
     private static String URL_PUBLIC_KEY_TOKEN = "/PublicKeyToken";          //[GET]  url com session_token & uid
@@ -492,9 +492,6 @@ public class ServerCommunicationHandler {
         if(requestType == REQUEST_BIKE_UNBOOK){
             ApplicationContext.getInstance().getData().setBikeBooked(null);
             Toast.makeText(ApplicationContext.getInstance(), "Success at bike unbooking request.", Toast.LENGTH_SHORT).show();
-        } else if( requestType == REQUEST_POINTS_TRANSACTION) {
-
-            Toast.makeText(ApplicationContext.getInstance(), "Success at bike unbooking request.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -531,6 +528,7 @@ public class ServerCommunicationHandler {
             case REQUEST_BIKE_PICK_DROP: request = "bike pick/drop"; break;
             case REQUEST_BIKE_BOOK: request = "bike book"; break;
             case REQUEST_BIKE_UNBOOK: request = "bike unbook"; break;
+            case REQUEST_POINTS_TRANSACTION: request = "points transaction"; break;
         }
 
         return request;

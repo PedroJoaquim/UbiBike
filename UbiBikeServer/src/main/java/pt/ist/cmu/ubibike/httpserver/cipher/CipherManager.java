@@ -11,7 +11,7 @@ import java.security.*;
  */
 public class CipherManager {
 
-    private static final String ALGORITHM = "RSA";
+    private static final String ALGORITHM = "RSA/ECB/PKCS1Padding";
 
     public static byte[] cipher(byte[] plainData, Key key){
 

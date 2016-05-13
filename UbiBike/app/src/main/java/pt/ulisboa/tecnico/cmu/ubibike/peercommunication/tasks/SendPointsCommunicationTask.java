@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,6 +14,7 @@ import java.net.UnknownHostException;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
 import pt.ulisboa.tecnico.cmu.ubibike.peercommunication.NearbyPeerCommunication;
+import pt.ulisboa.tecnico.cmu.ubibike.utils.CommunicationUtils;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.JsonParser;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.PointsTransactionUtils;
 
@@ -55,25 +57,22 @@ public class SendPointsCommunicationTask extends AsyncTask<String, Void, String>
     private int sendMessage(String finalMessage, String deviceName) {
 
         String targetLogicalClock = "";
-        SimWifiP2pSocket clientSocket = null;
+
 
         try {
 
-            String virtualAddress = ApplicationContext.getInstance().
-                    getNearbyPeerCommunication().getDeviceVirtualAddressByName(deviceName);
+            String virtualAddress = ApplicationContext.getInstance().getNearbyPeerCommunication().getDeviceVirtualAddressByName(deviceName);
 
             String[] splittedAddr = virtualAddress.split(":");
 
-            clientSocket = new SimWifiP2pSocket(splittedAddr[0], Integer.parseInt(splittedAddr[1]));
-            BufferedReader sockIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            SimWifiP2pSocket clientSocket = new SimWifiP2pSocket(splittedAddr[0], Integer.parseInt(splittedAddr[1]));
+            BufferedOutputStream outputStream = new BufferedOutputStream(clientSocket.getOutputStream());
+            BufferedReader inputReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
+            outputStream.write((CommunicationUtils.toChannelFormat(finalMessage) + "\n").getBytes());
+            outputStream.flush();
 
-            clientSocket.getOutputStream().write((finalMessage + "\n").getBytes());
-            clientSocket.close();
-
-
-            targetLogicalClock = sockIn.readLine();
-            targetLogicalClock.replace("\n", "");
+            targetLogicalClock = inputReader.readLine();
 
         } catch (UnknownHostException e) {
             return -1;

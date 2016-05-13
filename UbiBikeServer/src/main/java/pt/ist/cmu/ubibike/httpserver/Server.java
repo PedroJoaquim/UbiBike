@@ -29,7 +29,6 @@ public class Server {
 
     }
 
-
     /**
      * Configures the http server object being created
      *      defines the handlers for the contexts

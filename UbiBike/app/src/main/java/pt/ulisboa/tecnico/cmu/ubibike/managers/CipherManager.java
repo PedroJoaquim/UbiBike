@@ -13,7 +13,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.logging.Level;
 
 import javax.crypto.Cipher;
 
@@ -140,7 +139,7 @@ public class CipherManager {
     public static byte[] cipher(byte[] plainData, Key key){
 
         try{
-            Cipher cipher = Cipher.getInstance("RSA");
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.ENCRYPT_MODE, key);
 
             return cipher.doFinal(plainData);
@@ -154,7 +153,7 @@ public class CipherManager {
 
         try{
 
-            Cipher cipher = Cipher.getInstance("RSA");
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.DECRYPT_MODE, key);
 
             return cipher.doFinal(cipheredData);
