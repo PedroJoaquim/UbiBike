@@ -428,8 +428,6 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
                 }
 
 
-
-
                 if(ApplicationContext.getInstance().getData() != null) {
 
                     Date lastStationsUpdated = ApplicationContext.getInstance().getData().getLastStationUpdated();
@@ -464,9 +462,7 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
      */
     @Override
     public void onPeersAvailable(SimWifiP2pDeviceList peers) {
-
-        //TODO
-
+        //empty on purpose
     }
 
     @Override
@@ -474,7 +470,6 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
         SimWifiP2pBroadcastReceiver.processPeersChanged(devices);
         SimWifiP2pBroadcastReceiver.processNetworkMembership(groupInfo);
     }
-
 
     public void wifiP2pTurnOn(){
 
@@ -507,7 +502,6 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
 
     }
 
-
     public void wifiP2pRequestGroupsInfo(){
         if (mBound) {
             mManager.requestGroupInfo(mChannel, UbiBike.this);
@@ -525,23 +519,6 @@ public class UbiBike extends AppCompatActivity implements PeerListListener, Grou
                     Toast.LENGTH_SHORT).show();
         }
     }
-
-    public void wifiP2pDisconnectAllPeers(){
-
-        //TODO oi?
-
-        /*
-        ArrayList<SimWifiP2pSocket> sockets = ApplicationContext.getInstance().getNearbyPeerCommunication().get
-
-        for(SimWifiP2pSocket socket : sockets){
-            try {
-                socket.close();
-            } catch (IOException e) {
-                //ignore
-            }
-        }*/
-    }
-
 
     private ServiceConnection mConnection = new ServiceConnection() {
         // callbacks for service binding, passed to bindService()

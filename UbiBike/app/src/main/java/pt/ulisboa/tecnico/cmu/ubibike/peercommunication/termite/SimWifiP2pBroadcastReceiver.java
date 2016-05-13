@@ -63,9 +63,7 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
             SimWifiP2pInfo ginfo = (SimWifiP2pInfo) intent.getSerializableExtra(
                     SimWifiP2pBroadcast.EXTRA_GROUP_INFO);
 
-
-            //TODO what about this?
-
+            //add logic here if u want, not used
         }
     }
 
@@ -76,7 +74,6 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
     public static void processPeersChanged(SimWifiP2pDeviceList devices) {
 
         checkBookedBikeInRange(devices);
-
 
         ApplicationContext.getInstance()
                 .getNearbyPeerCommunication().updateNearbyDevices(devices);

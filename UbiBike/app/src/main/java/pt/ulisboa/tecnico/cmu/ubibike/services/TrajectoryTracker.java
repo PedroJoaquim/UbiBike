@@ -43,7 +43,6 @@ public class TrajectoryTracker extends Service implements LocationListener {
 
     private boolean mNearBike = false;
     private boolean prevPositionNearStation = false;
-    private boolean prevPositionNearBike = false;
 
     private boolean mNewTrajectory = false;
     private boolean mTrackingEnabled = false;
@@ -100,11 +99,6 @@ public class TrajectoryTracker extends Service implements LocationListener {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        MyRunnable mainBackgroundRunnable = new MyRunnable();
-
-       // Thread thread = new Thread(mainBackgroundRunnable);
-       // thread.start();
 
         Toast.makeText(TrajectoryTracker.this, "Tracking service started", Toast.LENGTH_SHORT).show();
 
@@ -245,45 +239,6 @@ public class TrajectoryTracker extends Service implements LocationListener {
     public void onProviderDisabled(String provider) {
         Toast.makeText(TrajectoryTracker.this, "OnProviderDisabled", Toast.LENGTH_SHORT).show();
     }
-
-
-    private class MyRunnable implements Runnable {
-
-        public void run() {
-
-            //main tracking loop
-            while(!mStopTracking){
-
-
-
-                if(mTrackingEnabled && mPositionChanged) {
-
-                    //new trajectory to register
-                    if (mNewTrajectory) {
-                        int trajectoryID = ApplicationContext.getInstance().getData().getNextTrajectoryID();
-                        int startStationID = mStation.getSid();
-                        double startLatitude = mStation.getPositionLatitude();
-                        double startLongitude = mStation.getPositionLongitude();
-
-                        mTrajectory = new Trajectory(trajectoryID, startStationID, startLatitude, startLongitude);
-                        mNewTrajectory = false;
-
-                        Log.d("UbiBike", "[Trajectory " + mTrajectory.getTrajectoryID() + "]" + "Starting registering new trajectory.");
-                    }
-
-                    if(mTrajectory != null) {
-                        mTrajectory.addRoutePosition(mLastPosition.getLatitude(), mLastPosition.getLongitude());
-
-                        Log.d("UbiBike", "[Trajectory " + mTrajectory.getTrajectoryID() + "]" + "Position added");
-                    }
-
-                    mPositionChanged = false;
-                }
-            }
-
-            stopSelf();
-        }
-    };
 
 
     /**

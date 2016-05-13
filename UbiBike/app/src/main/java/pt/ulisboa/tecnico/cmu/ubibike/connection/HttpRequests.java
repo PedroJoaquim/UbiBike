@@ -41,7 +41,6 @@ public class HttpRequests {
 
 
         int httpResponseCode = urlConnection.getResponseCode();
-        String msg = urlConnection.getResponseMessage();
 
         if (httpResponseCode == HttpsURLConnection.HTTP_OK){
             String line;
@@ -59,7 +58,6 @@ public class HttpRequests {
         }
         else if(httpResponseCode == HttpsURLConnection.HTTP_UNAUTHORIZED){
             urlConnection.disconnect();
-            //TODO specify action here
         }
         else {
             urlConnection.disconnect();

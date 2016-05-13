@@ -41,7 +41,7 @@ public class ServerCommunicationHandler {
     private static String URL_USER_INFO = "/User";                           //[GET] url com session_token & uid
     private static String URL_STATIONS_INFO = "/Stations";                   //[GET] url com session_token & uid
     private static String URL_BIKE_UNBOOKING = "/BikeUnbooking";             //[GET] url com session_token & uid
-    private static String URL_POINTS_TRANSACTION = "/PointsTransaction";     //TODO
+    private static String URL_POINTS_TRANSACTION = "/PointsTransaction";
 
     private static final int REQUEST_PUBLIC_KEY_TOKEN = 0;
     private static final int REQUEST_USER_INFO = 1;

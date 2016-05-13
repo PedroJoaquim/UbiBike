@@ -66,8 +66,6 @@ public class SessionManager {
         mEditor.clear();
         mEditor.commit();
 
-        //TODO redirect to login screen
-
     }
 
     /**
