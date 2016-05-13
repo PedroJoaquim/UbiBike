@@ -108,6 +108,7 @@ public class Trajectory implements Comparable<Trajectory> {
         LatLng endPosition = mTrajectoryPositions.get(mTrajectoryPositions.size() - 1);
         mCameraPosition = SphericalUtil.interpolate(startPosition, endPosition, 0.5);
         mEndTime = new Date();
+
     }
 
     /**

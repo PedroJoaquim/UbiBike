@@ -371,7 +371,7 @@ public class ServerCommunicationHandler {
                     JsonParser.parseRegisterAccountResponseFromJson(json, appData);
 
                     ApplicationContext.getInstance().getStorageManager().storeClientKeyPairOnBD(userID, publicKey, privateKey);
-                    
+
                     ApplicationContext.getInstance().getStorageManager().storeServerPublicKeyOnDB(userID, appData.getServerPublicKey());
 
                     ApplicationContext.getInstance().setData(appData);

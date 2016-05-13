@@ -82,6 +82,8 @@ public class Data {
         mDateUserInfoUpdated = dateUserInfoUpdated;
         mDateStationsUpdated = dateStationsUpdated;
 
+
+        mLongestRide = mTrajectories.get(0);
         for(Trajectory t : mTrajectories) {
             mTotalDistance += t.getTravelledDistance();
             mTotalTime += (t.getEndTime().getTime() - t.getStartTime().getTime());

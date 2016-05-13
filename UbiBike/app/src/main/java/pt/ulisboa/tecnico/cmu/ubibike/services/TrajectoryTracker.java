@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 
 import pt.ulisboa.tecnico.cmu.ubibike.ApplicationContext;
+import pt.ulisboa.tecnico.cmu.ubibike.domain.Bike;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.BikePickupStation;
 import pt.ulisboa.tecnico.cmu.ubibike.domain.Trajectory;
 import pt.ulisboa.tecnico.cmu.ubibike.utils.SphericalUtil;
@@ -162,6 +163,8 @@ public class TrajectoryTracker extends Service implements LocationListener {
             mTrackingEnabled = true;
             mNewTrajectory = true;
 
+            Toast.makeText(TrajectoryTracker.this, "Tracking enabled & New trajectory", Toast.LENGTH_SHORT).show();
+
             int bookedBikeID = ApplicationContext.getInstance().getData().getBikeBooked().getBid();
 
             //telling server
@@ -172,26 +175,49 @@ public class TrajectoryTracker extends Service implements LocationListener {
         //PAUSE TRACKING - user is away from station and got off his bike
         else if(!prevPositionNearStation && !mNearStation && !mNearBike){
             mTrackingEnabled = false;
+
+            Toast.makeText(TrajectoryTracker.this, "Tracking disabled1", Toast.LENGTH_SHORT).show();
         }
         //RESUME TRACKING - user is away from station and on his bike
         else if(!prevPositionNearStation && !mNearStation && mNearBike){
             mTrackingEnabled = true;
+
+            Toast.makeText(TrajectoryTracker.this, "Tracking enabled", Toast.LENGTH_SHORT).show();
         }
         //PAUSE TRACKING - user near station but off his bike
         else if(prevPositionNearStation && mNearStation && !mNearBike){
             mTrackingEnabled = false;
+
+            Toast.makeText(TrajectoryTracker.this, "Tracking disabled2", Toast.LENGTH_SHORT).show();
         }
         //FINISH TRACKING - user parked the bike and left the station
         //BIKE DROP
         else if(prevPositionNearStation && !mNearStation && !mNearBike){
-            mTrackingEnabled = false;
-            mFinishTracking = true;
 
-            int bookedBikeID = ApplicationContext.getInstance().getData().getBikeBooked().getBid();
+            Bike bike  = ApplicationContext.getInstance().getData().getBikeBooked();
+            if(bike != null && mTrajectory != null){
 
-            //telling server
-            ApplicationContext.getInstance().getServerCommunicationHandler().
-                    performBikePickDropRequest(bookedBikeID, mStation.getSid(), false);
+                mTrackingEnabled = false;
+
+                Toast.makeText(TrajectoryTracker.this, "Tracking disabled & Trajectory finished", Toast.LENGTH_SHORT).show();
+
+                mTrajectory.finishRoute();
+
+                mTrajectory.setEndStationID(mStation.getSid());
+
+                Log.d("UbiBike", "[Trajectory " + mTrajectory.getTrajectoryID() + "]" + "Tracking finished");
+
+                ApplicationContext.getInstance().getData().setLastTrackedTrajectory(mTrajectory);
+
+                if(ApplicationContext.getInstance().getActivity() != null){
+                    ApplicationContext.getInstance().getActivity().
+                            showTrajectoryOnMap(mTrajectory.getTrajectoryID(), true, false);
+                }
+
+                //telling server
+                ApplicationContext.getInstance().getServerCommunicationHandler().
+                        performBikePickDropRequest(bike.getBid(), mStation.getSid(), false);
+            }
         }
     }
 
@@ -233,36 +259,14 @@ public class TrajectoryTracker extends Service implements LocationListener {
                         Log.d("UbiBike", "[Trajectory " + mTrajectory.getTrajectoryID() + "]" + "Starting registering new trajectory.");
                     }
 
-                    mTrajectory.addRoutePosition(mLastPosition.getLatitude(), mLastPosition.getLongitude());
+                    if(mTrajectory != null) {
+                        mTrajectory.addRoutePosition(mLastPosition.getLatitude(), mLastPosition.getLongitude());
 
-                    Log.d("UbiBike", "[Trajectory " + mTrajectory.getTrajectoryID() + "]" + "Position added");
+                        Log.d("UbiBike", "[Trajectory " + mTrajectory.getTrajectoryID() + "]" + "Position added");
+                    }
 
                     mPositionChanged = false;
                 }
-                //finish current trajectory tracking
-                else if(mFinishTracking) {
-                    mTrajectory.finishRoute();
-
-                    mTrajectory.setEndStationID(mStation.getSid());
-
-                    Log.d("UbiBike", "[Trajectory " + mTrajectory.getTrajectoryID() + "]" + "Tracking finished");
-
-                    ApplicationContext.getInstance().getData().setLastTrackedTrajectory(mTrajectory);
-
-                    if(ApplicationContext.getInstance().getActivity() != null){
-                        ApplicationContext.getInstance().getActivity().
-                                showTrajectoryOnMap(mTrajectory.getTrajectoryID(), true, false);
-                    }
-
-                    mFinishTracking = false;
-                }
-
-                //Sleep a little bit to avoid constant looping
-               /* try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    Log.e("Uncaught exception", e.toString());
-                }*/
             }
 
             stopSelf();
