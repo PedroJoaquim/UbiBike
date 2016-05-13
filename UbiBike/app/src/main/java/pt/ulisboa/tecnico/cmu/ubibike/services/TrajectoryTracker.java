@@ -43,6 +43,7 @@ public class TrajectoryTracker extends Service implements LocationListener {
 
     private boolean mNearBike = false;
     private boolean prevPositionNearStation = false;
+    private boolean prevPositionNearBike = false;
 
     private boolean mNewTrajectory = false;
     private boolean mTrackingEnabled = false;
@@ -162,7 +163,7 @@ public class TrajectoryTracker extends Service implements LocationListener {
         //BIKE PICK UP
         if(prevPositionNearStation && !mNearStation && mNearBike && mTrajectory == null){
 
-            Toast.makeText(TrajectoryTracker.this, "Tracking enabled & New trajectory", Toast.LENGTH_SHORT).show();
+            Toast.makeText(TrajectoryTracker.this, "STARTED TRACKING", Toast.LENGTH_SHORT).show();
 
             int bookedBikeID = ApplicationContext.getInstance().getData().getBikeBooked().getBid();
 
@@ -183,35 +184,24 @@ public class TrajectoryTracker extends Service implements LocationListener {
             mTrajectory.addRoutePosition(mLastPosition.getLatitude(), mLastPosition.getLongitude());
 
             Log.d("UbiBike", "[Trajectory " + mTrajectory.getTrajectoryID() + "]" + "Position added");
-
-            Toast.makeText(TrajectoryTracker.this, "Left Station with bike starting tracking", Toast.LENGTH_LONG).show();
-
         }
         //PAUSE TRACKING - user is away from station and got off his bike
-        else if(!prevPositionNearStation && !mNearStation && !mNearBike){
+        else if(!prevPositionNearStation && !mNearStation && !mNearBike && mTrajectory != null){
 
-            Toast.makeText(TrajectoryTracker.this, "Pausing tracking left bike not in station", Toast.LENGTH_LONG).show();
+            Toast.makeText(TrajectoryTracker.this, "PAUSED TRACKING", Toast.LENGTH_LONG).show();
            // Toast.makeText(TrajectoryTracker.this, "Tracking disabled1", Toast.LENGTH_SHORT).show();
         }
         //RESUME TRACKING - user is away from station and on his bike
-        else if(!prevPositionNearStation && !mNearStation && mNearBike){
+        else if(!prevPositionNearStation && mNearBike && mTrajectory != null){
 
-            if(mTrajectory != null) {
-                mTrajectory.addRoutePosition(mLastPosition.getLatitude(), mLastPosition.getLongitude());
-                Toast.makeText(TrajectoryTracker.this, "ADDING POSITION", Toast.LENGTH_LONG).show();
-                Log.d("UbiBike", "[Trajectory " + mTrajectory.getTrajectoryID() + "]" + "Position added");
-            }
-
-          //  Toast.makeText(TrajectoryTracker.this, "Tracking enabled", Toast.LENGTH_SHORT).show();
+            mTrajectory.addRoutePosition(mLastPosition.getLatitude(), mLastPosition.getLongitude());
+            Toast.makeText(TrajectoryTracker.this, "ADDING POSITION", Toast.LENGTH_LONG).show();
+            Log.d("UbiBike", "[Trajectory " + mTrajectory.getTrajectoryID() + "]" + "Position added");
         }
-        //PAUSE TRACKING - user near station but off his bike
-        else if(prevPositionNearStation && mNearStation && !mNearBike){
 
-            Toast.makeText(TrajectoryTracker.this, "In station without bike", Toast.LENGTH_SHORT).show();
-        }
         //FINISH TRACKING - user parked the bike and left the station
         //BIKE DROP
-        else if(prevPositionNearStation && !mNearStation && !mNearBike){
+        else if(prevPositionNearStation && !mNearStation && !mNearBike && mTrajectory != null){
 
             Toast.makeText(TrajectoryTracker.this, "Left bike on station droping off", Toast.LENGTH_LONG).show();
             Bike bike  = ApplicationContext.getInstance().getData().getBikeBooked();
