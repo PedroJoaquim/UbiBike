@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -271,12 +272,17 @@ public class NearbyPeerCommunication {
             new OutgoingCommunicationTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, device, msg);
         }
 
+        List<String> removeDevices = new ArrayList<>();
+
         //remove old elements from group
         for (String device : mGroupChat.getMembers()) {
             if(gInfo.getDevicesInNetwork().contains(device)){
                 continue;
             }
+            removeDevices.add(device);
+        }
 
+        for (String device: removeDevices) {
             mGroupChat.removeMember(device);
             mUsernames.remove(getUsernameByDeviceName(device));
         }
