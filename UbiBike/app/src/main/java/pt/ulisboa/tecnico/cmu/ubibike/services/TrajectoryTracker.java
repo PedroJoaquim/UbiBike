@@ -67,14 +67,9 @@ public class TrajectoryTracker extends Service implements LocationListener {
 
         mLastPosition = lManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-        if(mLastPosition != null) {
-            Toast.makeText(TrajectoryTracker.this, "Last Position: " + mLastPosition.toString(), Toast.LENGTH_SHORT).show();
-        }
-        else{
-            Toast.makeText(TrajectoryTracker.this, "Last Position = null", Toast.LENGTH_SHORT).show();
+        if(mLastPosition == null) {
             mLastPosition = new Location(LocationManager.GPS_PROVIDER);
         }
-
 
         //registering stop receiver
         IntentFilter filterStop = new IntentFilter(StopTrajectoryTrackingReceiver.STOP);
@@ -195,7 +190,6 @@ public class TrajectoryTracker extends Service implements LocationListener {
         else if(!prevPositionNearStation && mNearBike && mTrajectory != null){
 
             mTrajectory.addRoutePosition(mLastPosition.getLatitude(), mLastPosition.getLongitude());
-            Toast.makeText(TrajectoryTracker.this, "ADDING POSITION", Toast.LENGTH_LONG).show();
             Log.d("UbiBike", "[Trajectory " + mTrajectory.getTrajectoryID() + "]" + "Position added");
         }
 
@@ -203,7 +197,7 @@ public class TrajectoryTracker extends Service implements LocationListener {
         //BIKE DROP
         else if(prevPositionNearStation && !mNearStation && !mNearBike && mTrajectory != null){
 
-            Toast.makeText(TrajectoryTracker.this, "Left bike on station droping off", Toast.LENGTH_LONG).show();
+            Toast.makeText(TrajectoryTracker.this, "Dropping bike", Toast.LENGTH_LONG).show();
             Bike bike  = ApplicationContext.getInstance().getData().getBikeBooked();
             if(bike != null && mTrajectory != null){
 

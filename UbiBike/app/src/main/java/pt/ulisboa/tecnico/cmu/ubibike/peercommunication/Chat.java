@@ -37,7 +37,12 @@ public class Chat {
             ApplicationContext.getInstance().getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    ApplicationContext.getInstance().getCurrentFragment().updateUI();
+                    try{
+                        ApplicationContext.getInstance().getCurrentFragment().updateUI();
+                    } catch (Exception e){
+                        //ignore
+                    }
+
                 }
             });}
         catch (Exception e){

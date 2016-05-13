@@ -126,7 +126,6 @@ public class GroupChatFragment extends ChatFragment{
         super.updateUI();
 
         if(ApplicationContext.getInstance().getNearbyPeerCommunication().getGroupChat().isEmpty()){
-            Toast.makeText(getActivity(), "Group is empty. No users to chat with.", Toast.LENGTH_SHORT).show();
             getParentActivity().onBackPressed();
         }
     }

@@ -193,7 +193,6 @@ public class IndividualChatFragment extends ChatFragment {
         super.updateUI();
 
         if(!ApplicationContext.getInstance().getNearbyPeerCommunication().doesGroupMemberExistByUsername(mUsername)){
-            Toast.makeText(getActivity(), "User out of range. Chat unavailable.", Toast.LENGTH_SHORT).show();
             getParentActivity().onBackPressed();
         }
     }

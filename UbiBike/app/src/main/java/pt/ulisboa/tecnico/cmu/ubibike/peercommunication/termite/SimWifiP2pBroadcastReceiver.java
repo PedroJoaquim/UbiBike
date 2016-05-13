@@ -39,8 +39,6 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
 
         } else if (SimWifiP2pBroadcast.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
 
-            Toast.makeText(mActivity, "Peer list changed",
-                    Toast.LENGTH_SHORT).show();
 
 
             SimWifiP2pDeviceList devices = (SimWifiP2pDeviceList) intent.getSerializableExtra(
