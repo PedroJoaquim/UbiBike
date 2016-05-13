@@ -43,6 +43,7 @@ public class IncomingCommunicationTask extends AsyncTask<Void, String, Void> {
                     String content = CommunicationUtils.fromChannelFormat(inputStream.readLine());
 
                     String response = NearbyPeerCommunication.processReceivedMessage(content);
+                    ApplicationContext.getInstance().updateUI();
 
                     outputStream.write((response + "\n").getBytes());
                     outputStream.flush();

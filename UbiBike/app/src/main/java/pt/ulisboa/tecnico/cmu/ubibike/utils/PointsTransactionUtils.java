@@ -1,6 +1,8 @@
 package pt.ulisboa.tecnico.cmu.ubibike.utils;
 
 
+import android.widget.Toast;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -56,9 +58,9 @@ public class PointsTransactionUtils {
 
             JSONObject baseTransactionInfo = JsonParser.parseBasePointsTransaction(originalJSON);
 
-            String sourceUsername = baseTransactionInfo.getString(JsonParser.SOURCE_USERNAME);
+            final String sourceUsername = baseTransactionInfo.getString(JsonParser.SOURCE_USERNAME);
             String targetUsername = baseTransactionInfo.getString(JsonParser.TARGET_USERNAME);
-            int points = baseTransactionInfo.getInt(JsonParser.POINTS);
+            final int points = baseTransactionInfo.getInt(JsonParser.POINTS);
             long timestamp = baseTransactionInfo.getLong(JsonParser.TIMESTAMP);
 
 
@@ -92,6 +94,12 @@ public class PointsTransactionUtils {
 
             ApplicationContext.getInstance().getData().addTransactionLog(sourceUsername, timestamp);
 
+            ApplicationContext.getInstance().getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(ApplicationContext.getInstance(),"Received " + points + " points from " + sourceUsername , Toast.LENGTH_SHORT).show();
+                }
+            });
             //finally return the points
             return points;
 

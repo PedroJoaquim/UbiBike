@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmu.ubibike;
 
 import android.app.Application;
+import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.security.PrivateKey;
@@ -210,8 +211,15 @@ public class ApplicationContext extends Application {
 
 
     public void updateUI(){
-        if(getCurrentFragment() != null){
-            getCurrentFragment().updateUI();
-        }
+        ApplicationContext.getInstance().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(getCurrentFragment() != null){
+                    getCurrentFragment().updateUI();
+                }
+            }
+        });
     }
+
+
 }

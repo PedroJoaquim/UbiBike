@@ -26,6 +26,11 @@ public class SendPointsCommunicationTask extends AsyncTask<String, Void, String>
      * param[2] = points
      */
 
+    private int targetLogicalClock;
+    private int points;
+    private String targetUsername;
+    private String deviceName;
+
     @Override
     protected String doInBackground(String... params) {
 
@@ -33,13 +38,16 @@ public class SendPointsCommunicationTask extends AsyncTask<String, Void, String>
             return "invalid usage: device_name target_username points";
         }
 
-        String deviceName = params[0];
-        String targetUsername = params[1];
-        int points = Integer.valueOf(params[2]);
+        targetLogicalClock = -1;
+        deviceName = params[0];
+        targetUsername = params[1];
+        points = Integer.valueOf(params[2]);
+
+
         JSONObject pointsTransactionJSON = PointsTransactionUtils.generatePointsTransactionJSON(deviceName, targetUsername, points);
         String finalMessage = NearbyPeerCommunication.buildPointsTransactionMessage(pointsTransactionJSON.toString());
 
-        int targetLogicalClock = sendMessage(finalMessage, deviceName);
+        targetLogicalClock = sendMessage(finalMessage, deviceName);
 
         if(targetLogicalClock == -1){
             return "Erorr in the communication";
@@ -81,5 +89,14 @@ public class SendPointsCommunicationTask extends AsyncTask<String, Void, String>
         }
 
         return Integer.valueOf(targetLogicalClock);
+    }
+
+    @Override
+    protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+
+        if(targetLogicalClock != -1){
+            Toast.makeText(ApplicationContext.getInstance(), points + " points sent successfully to " + targetUsername , Toast.LENGTH_SHORT).show();
+        }
     }
 }

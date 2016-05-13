@@ -128,9 +128,6 @@ public class IndividualChatFragment extends ChatFragment {
                                         Toast.makeText(getActivity(), "The input value must be greater than zero!", Toast.LENGTH_SHORT).show();
 
                                     } else{
-
-                                        Toast.makeText(getActivity(), "" + points, Toast.LENGTH_SHORT).show();
-
                                         new SendPointsCommunicationTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mDeviceName, mUsername, Integer.toString(points));
                                     }
                                 }

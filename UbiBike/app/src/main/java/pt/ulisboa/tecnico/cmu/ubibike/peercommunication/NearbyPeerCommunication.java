@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmu.ubibike.peercommunication;
 
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -180,6 +181,8 @@ public class NearbyPeerCommunication {
         int targetLogicalClock = data.getNextLogicalClock();
         data.addPoints(points);
 
+
+
         //send points to server
         JSONObject pointsTransactionServer = JsonParser.buildPointsTransactionServerJSON(transactionJSON, targetLogicalClock);
         ApplicationContext.getInstance().getServerCommunicationHandler().performPointsTransactionRequest(pointsTransactionServer);
@@ -188,7 +191,12 @@ public class NearbyPeerCommunication {
     }
 
     public static void processIndividualChatMessage(String received){
+
         String[] receivedParts = received.split(SEPARATOR);
+
+        if(receivedParts.length < 3){
+            return;
+        }
 
         String senderUsername = receivedParts[1];
         String messageContent = receivedParts[2];
@@ -201,6 +209,10 @@ public class NearbyPeerCommunication {
 
     private static void processGroupChatMessage(String received) {
         String[] receivedParts = received.split(SEPARATOR);
+
+        if(receivedParts.length < 3){
+            return;
+        }
 
         String senderUsername = receivedParts[1];
         String messageContent = receivedParts[2];

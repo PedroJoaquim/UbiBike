@@ -83,13 +83,6 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
         ApplicationContext.getInstance()
                 .getNearbyPeerCommunication().updateNearbyDevices(devices);
 
-
-        UpdatableUI currentFragment =  ApplicationContext.getInstance().getCurrentFragment();
-
-        //check if there is visible UI updatable fragment to update
-        if(currentFragment != null){
-            currentFragment.updateUI();
-        }
     }
 
     /**
@@ -102,16 +95,10 @@ public class SimWifiP2pBroadcastReceiver extends  BroadcastReceiver{
                 .getNearbyPeerCommunication().setDeviceName(ginfo.getDeviceName());
 
 
-        ApplicationContext.getInstance().getNearbyPeerCommunication().
-                            updateGroupDevices(ginfo);
+        ApplicationContext.getInstance().getNearbyPeerCommunication().updateGroupDevices(ginfo);
 
 
-        UpdatableUI currentFragment =  ApplicationContext.getInstance().getCurrentFragment();
-
-        //check if there is visible UI updatable fragment to update
-        if(currentFragment != null){
-            currentFragment.updateUI();
-        }
+        ApplicationContext.getInstance().updateUI();
     }
 
     /**

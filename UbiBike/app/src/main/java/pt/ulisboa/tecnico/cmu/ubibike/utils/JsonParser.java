@@ -240,7 +240,7 @@ public class JsonParser {
         appData.setTrajectories(trajectories);
         appData.setLastUserInfoUpdated(new Date());
 
-        if(jsonObject.has(BOOKING)){
+        if(jsonObject.has(BOOKING) && !jsonObject.isNull(BOOKING)){
             JSONObject bk = jsonObject.getJSONObject(BOOKING);
 
             int bid = bk.getInt(BIKE_ID);

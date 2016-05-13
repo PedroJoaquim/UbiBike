@@ -343,7 +343,7 @@ public class DBObjectSelector {
     public static PendingEvent getEquivalentPendingEvents(Connection connection, PointsTransactionAllInfo pt) throws SQLException {
         PreparedStatement stmt = connection.prepareStatement("SELECT * FROM pending_events WHERE source_uid = ? AND target_uid = ? AND transaction_timestamp = ?");
         stmt.setString(1, pt.getSourceUsername());
-        stmt.setString(2, pt.getSourceUsername());
+        stmt.setString(2, pt.getTargetUsername());
         stmt.setLong(3, pt.getTimestamp());
 
         ResultSet result = stmt.executeQuery();

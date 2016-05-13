@@ -58,7 +58,6 @@ public class ConsistencyManager {
                 User sourceUser = DBObjectSelector.getUserFromUsername(DBConnection.getConnection(), pt.getSourceUsername());
                 User targetUser = DBObjectSelector.getUserFromUsername(DBConnection.getConnection(), pt.getTargetUsername());
 
-
                 if(actionAlreadyPerformed(pt)){
                     return false;
                 }
