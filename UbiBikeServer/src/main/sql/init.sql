@@ -1,3 +1,4 @@
+SET SESSION sql_mode='NO_AUTO_VALUE_ON_ZERO';
 SET foreign_key_checks = 0;
 
 DROP TABLE IF EXISTS users;
@@ -37,7 +38,7 @@ CREATE TABLE pending_events (
 
 DROP TABLE IF EXISTS trajectories;
 CREATE TABLE trajectories (
-  tid            INT AUTO_INCREMENT NOT NULL,
+  tid            INT                NOT NULL DEFAULT 0,
   uid            INT                NOT NULL,
   start_sid      INT                NOT NULL,
   end_sid        INT                NOT NULL,
@@ -46,8 +47,7 @@ CREATE TABLE trajectories (
   user_tid       VARCHAR(124)       NOT NULL UNIQUE,
   distance       FLOAT              NOT NULL,
   ride_start_timestamp LONG  NOT NULL,
-  ride_end_timestamp LONG  NOT NULL,
-  PRIMARY KEY (tid)
+  ride_end_timestamp LONG  NOT NULL
 );
 
 DROP TABLE IF EXISTS sessions;
